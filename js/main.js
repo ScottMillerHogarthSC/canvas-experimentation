@@ -417,7 +417,7 @@ function updateStage(){
                 else if(enemyKillCount==2) renderEnemy("CyberBike");
                 if(enemyKillCount>2) enemyKillCount=0;
 
-                console.log(enemyKillCount);
+                // console.log(enemyKillCount);
             } else {
                 ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -428,7 +428,6 @@ function updateStage(){
                 isEnemy.run=false;
                 isEnemy.runBack=true;
                 isEnemy.killed=false;
-                enemyKillCount++;
             }
         }
 
@@ -490,6 +489,9 @@ function moveSpriteSheets(){
                 isEnemy.exploding=false;
                 isEnemy.killed=true;
                 sprite_x.explosionX=0;
+                
+                enemyKillCount++;
+
             }
         }
         
@@ -754,9 +756,15 @@ function checkPlayerPosition() {
     // enemy repeat 
     if(!isEnemy.killed){
         
-        if(enemy[whichEnemyIndex].x<=-97){
-            isEnemy.runBack=false;
-            isEnemy.run=true;
+        if(enemy[whichEnemyIndex].x<=-(enemy[whichEnemyIndex].width+1)){
+            if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
+                enemy[whichEnemyIndex].x=canvas.width;
+                isEnemy.runBack=true;
+                isEnemy.run=false;
+            } else {
+                isEnemy.runBack=false;
+                isEnemy.run=true;
+            }
         }
         if(enemy[whichEnemyIndex].x>canvas.width){
             isEnemy.runBack=true;
@@ -775,40 +783,49 @@ function renderEnemy(whichEnemy) {
         return;
     }
 
+    if(isEnemy.exploding){
+
+        // play explosion!
+        spritesheetW.explosionW=explosion.width;
+        ctxEnemy.drawImage(explosion_img, sprite_x.explosionX, 0,
+            96, 96,
+            enemy[whichEnemyIndex].x-enemy[whichEnemyIndex].explosionOffsetX, enemy[whichEnemyIndex].y-enemy[whichEnemyIndex].explosionOffsetY, 
+            96, 96);
+
+    } else {
     
 
-    if(!isEnemy.runBack){
-        ctxEnemy.beginPath();
-            ctxEnemy.rect(enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitX, enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
-            ctxEnemy.fillStyle = "blue";
-            ctxEnemy.fill();
-    } else {
+        if(!isEnemy.runBack){
+            // ctxEnemy.beginPath();
+            //     ctxEnemy.rect(enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitX, enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
+            //     ctxEnemy.fillStyle = "blue";
+            //     ctxEnemy.fill();
+        } else {
 
-        ctxEnemy.beginPath();
-            ctxEnemy.rect(enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB, enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
-            ctxEnemy.fillStyle = "blue";
-            ctxEnemy.fill();
-    }
+            // ctxEnemy.beginPath();
+            //     ctxEnemy.rect(enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB, enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
+            //     ctxEnemy.fillStyle = "blue";
+            //     ctxEnemy.fill();
+        }
 
-    if(isEnemy.runBack){
-        enemy[whichEnemyIndex].x-=moveFactor_enemy; 
+        if(isEnemy.runBack){
+            enemy[whichEnemyIndex].x-=moveFactor_enemy; 
 
-        if(isPlayer.run) {
-            enemy[whichEnemyIndex].x-=moveFactor_enemy;  
-            if(nearEdge.right){
+            if(isPlayer.run) {
                 enemy[whichEnemyIndex].x-=moveFactor_enemy;  
+                if(nearEdge.right){
+                    enemy[whichEnemyIndex].x-=moveFactor_enemy;  
+                }
             }
-        }
-        if(moving_backwards) {
+            if(moving_backwards) {
 
-            enemy[whichEnemyIndex].x+=moveFactor_enemy/1.5;  
-            if(isPlayer.runBack) {
-                enemy[whichEnemyIndex].x+=moveFactor_enemy/3;  
+                enemy[whichEnemyIndex].x+=moveFactor_enemy/1.5;  
+                if(isPlayer.runBack) {
+                    enemy[whichEnemyIndex].x+=moveFactor_enemy/3;  
+                }
             }
-        }
-        
+            
 
-        if(!isEnemy.exploding){
             if(!isEnemy.hurt){
                 spritesheetW.enemyW=enemiesList[whichEnemyIndex][3].width;
                 ctxEnemy.drawImage(enemyImgs[enemyImgIndex.walkBack], sprite_x.enemyX, 0,
@@ -823,25 +840,24 @@ function renderEnemy(whichEnemy) {
                     enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
             }
         }
-    }
-    
-    if(isEnemy.run){
-        enemy[whichEnemyIndex].x+=moveFactor_enemy/3; 
+        
+        if(isEnemy.run){
+            enemy[whichEnemyIndex].x+=moveFactor_enemy/3; 
 
-        if(isPlayer.run) {
-            if(nearEdge.right){
-                enemy[whichEnemyIndex].x-=(moveFactor_enemy*1.5);  
+            if(isPlayer.run) {
+                if(nearEdge.right){
+                    enemy[whichEnemyIndex].x-=(moveFactor_enemy*1.5);  
+                }
             }
-        }
-        if(moving_backwards) {
+            if(moving_backwards) {
 
-            enemy[whichEnemyIndex].x+=moveFactor_enemy/2; 
-            if(isPlayer.runBack) {
-                enemy[whichEnemyIndex].x+=moveFactor_enemy;  
+                enemy[whichEnemyIndex].x+=moveFactor_enemy/2; 
+                if(isPlayer.runBack) {
+                    enemy[whichEnemyIndex].x+=moveFactor_enemy;  
+                }
             }
-        }
 
-        if(!isEnemy.exploding){
+            
             if(!isEnemy.hurt){
                 spritesheetW.enemyW=enemiesList[whichEnemyIndex][2].width;
                 ctxEnemy.drawImage(enemyImgs[enemyImgIndex.walk], sprite_x.enemyX, 0,
@@ -856,48 +872,37 @@ function renderEnemy(whichEnemy) {
                     enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
             }
         }
-    }
 
 
 
-    // [todo] draw enemy health
-    var enemyBarX = enemy[whichEnemyIndex].x+10;
-    var enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
-    var enemyBarW = enemy[whichEnemyIndex].width-56;
-    if(isEnemy.runBack){
-        enemyBarX = enemy .x+enemy[whichEnemyIndex].hitXB+10;
-        enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
-        enemyBarW = enemy[whichEnemyIndex].width-enemy[whichEnemyIndex].hitXB-20;
-    }
-
-    if(!isEnemy.exploding){
-
-        ctxEnemy.beginPath();
-        ctxEnemy.rect(enemyBarX, enemyBarY, enemyBarW, 5);
-        ctxEnemy.fillStyle = "rgba(255,255,255,0.5)";
-        ctxEnemy.fill();
-
-        var enemyhealthBarW=Math.floor((enemy[whichEnemyIndex].health/200)*enemyBarW);
-
-
-        ctxEnemy.beginPath();
-        ctxEnemy.rect(enemyBarX+1, enemyBarY+1, enemyhealthBarW, 3);
-        if(isEnemy.hurt) {
-            ctxEnemy.fillStyle = "rgba(255,0,0,0.7)";
-        } else {
-            ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
+        // [todo] draw enemy health
+        var enemyBarX = enemy[whichEnemyIndex].x+10;
+        var enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
+        var enemyBarW = enemy[whichEnemyIndex].width-56;
+        if(isEnemy.runBack){
+            enemyBarX = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB+10;
+            enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
+            enemyBarW = enemy[whichEnemyIndex].width-enemy[whichEnemyIndex].hitXB-20;
         }
-        ctxEnemy.fill();
-    }
+
+    
+
+            ctxEnemy.beginPath();
+            ctxEnemy.rect(enemyBarX, enemyBarY, enemyBarW, 5);
+            ctxEnemy.fillStyle = "rgba(255,255,255,0.5)";
+            ctxEnemy.fill();
+
+            var enemyhealthBarW=Math.floor((enemy[whichEnemyIndex].health/200)*enemyBarW);
 
 
-    if(isEnemy.exploding){
-        // play explosion!
-        spritesheetW.explosionW=explosion.width;
-        ctxEnemy.drawImage(explosion_img, sprite_x.explosionX, 0,
-            96, 96,
-            enemy[whichEnemyIndex].x-explosion.offsetX, enemy[whichEnemyIndex].y-explosion.offsetY, 
-            96, 96);
+            ctxEnemy.beginPath();
+            ctxEnemy.rect(enemyBarX+1, enemyBarY+1, enemyhealthBarW, 3);
+            if(isEnemy.hurt) {
+                ctxEnemy.fillStyle = "rgba(255,0,0,0.7)";
+            } else {
+                ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
+            }
+            ctxEnemy.fill();
     }
 }
 
@@ -927,6 +932,12 @@ function setEnemyIndex(whichEnemy){
         }
         if(enemyImgs[i].id == whichEnemy+"-Walk") {
             enemyImgIndex.walk=i;
+        }
+        if(enemyImgs[i].id == whichEnemy+"-Attack") {
+            enemyImgIndex.attack=i;
+        }
+        if(enemyImgs[i].id == whichEnemy+"-Attack-back") {
+            enemyImgIndex.attackBack=i;
         }
     }
 }
