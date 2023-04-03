@@ -1,0 +1,21 @@
+@charset "UTF-8";
+/* CSS Document */
+
+@media screen and (min-width: 1088px) and (min-height: 666px) {
+    
+}
+@media screen and (min-width: 982px) {
+    #mobileControls {
+        display: none;
+    }
+    .mobile #mobileControls {
+        display: block;
+    }
+
+}
+@media screen and (min-height: 475px) {
+    
+}
+@media screen and (min-height: 550px) {
+    
+}

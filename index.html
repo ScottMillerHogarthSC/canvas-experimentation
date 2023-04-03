@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            loadAssets();
+        });
+        function loadAssets() {
+            // Load in banner CSS
+            var extCSS = document.createElement("link");
+            extCSS.setAttribute("rel", "stylesheet");
+            extCSS.setAttribute("type", "text/css");
+            extCSS.setAttribute("href", "styles/styles.css");
+            
+            var extCSS1 = document.createElement("link");
+            extCSS1.setAttribute("rel", "stylesheet");
+            extCSS1.setAttribute("type", "text/css");
+            extCSS1.setAttribute("href", "styles/responsive.css");
+
+            extCSS1.onload = function() {
+                cssLoadedHandler();
+            }
+
+            document.getElementsByTagName("head")[0].appendChild(extCSS);
+            document.getElementsByTagName("head")[0].appendChild(extCSS1);
+        }
+
+        /**
+        * Fired when the banners external CSS has been loaded
+        */
+        function cssLoadedHandler()
+        {
+            console.log("CSS LOADED");
+            // start loading external JS
+            loadExtJavaScript();
+        }
+
+        // array of all the external js files we want to politely load
+
+        var arrExtJs = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js','https://code.createjs.com/1.0.0/createjs.min.js','js/splittext.min.js','js/jquery-visibility.js','js/keys.js','js/init.js','js/player-vars.js','js/enemy-vars.js','js/bg-vars.js','js/main.js'];
+
+        
+
+        var loadJsIndex = 0;
+
+        /**
+        * Function loads in an external JS file
+        */
+        function loadExtJavaScript()
+        {
+            // Load in external Javascript file
+            var extJavaScript = document.createElement("script");
+            extJavaScript.setAttribute("type", "text/javascript");
+            extJavaScript.setAttribute("src", arrExtJs[loadJsIndex]);
+                extJavaScript.onload = function()
+                {
+                    jsLoadedHandler();
+                }
+            document.getElementsByTagName("head")[0].appendChild(extJavaScript);
+        }
+
+        /**
+        * Fired when an External JS file has been loaded
+        */
+        function jsLoadedHandler()
+        {
+            console.log("JS LOADED (" + arrExtJs[loadJsIndex] + ")");
+
+            loadJsIndex++;
+
+            if(loadJsIndex < arrExtJs.length)
+            {
+                loadExtJavaScript(); // load next JS file
+            }
+            else
+            {
+                init();
+            }
+        }
+    </script>
+    <!-- <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet"> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script>
+        WebFont.load({
+            google: {
+            families: ['Press Start 2P']
+        }
+      });
+    </script>
+    <style type="text/css">
+        body{
+            position:absolute;
+            border:0 none;
+            outline:0;
+            padding:0;
+            margin:0;
+            background-color:#000;
+            width: 100%;
+            height: 100%;
+        }
+        #container {
+            display: none;
+        }
+        #loadingContent{
+            position:absolute;
+            background-color:#000;
+            z-index:10;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            opacity: 0;
+        }
+        html.wf-pressstart2p-n4-active #loadingContent {
+            opacity: 1;
+        }
+
+
+        #loadingImage{
+            position:absolute;
+            left:50%;
+            top:50%;
+            transform: translate(-50%,-50%);
+            color: #fff;
+        }
+    </style>
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NKMBF439GH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NKMBF439GH');
+    </script>
+
+
+
+    <meta property="og:url"                content="https://stars-are-my-guide.ga/" />
+    <meta property="og:type"               content="website" />
+    <meta property="og:title"              content="Primitai - Stars are my Guide" />
+    <meta property="og:description"        content="Stars are my Guide is the new single from the Primitai album 'Violence of the Skies', with accompanying video game" />
+    <meta property="og:image"              content="https://stars-are-my-guide.ga/images/stars-are-my-guide-primitai-ogimage.jpg" />
+
+ -->
+</head>
+<body class="bg">
+    <audio id="audio"></audio>
+
+
+    <div id="wrap" class="paused mobile">
+        <div id="container">
+            <canvas id="bg-canvas"></canvas>
+            <canvas id="fg-canvas"></canvas>
+            <canvas id="bgOverlay-canvas"></canvas>
+            <canvas id="player-canvas"></canvas>
+            <canvas id="enemy-canvas"></canvas>
+        </div>
+
+    
+
+
+        <div id="footer">
+            &copy;2021 primitai - 
+            <a href="http://www.primitai.com" target="_blank">primitai.com</a>
+        </div>
+    </div>
+
+    <div id="loadingContent">
+        <div id="loadingImage">
+            loading...  please wait.
+        </div>
+    </div>
+</body>
+</html>
