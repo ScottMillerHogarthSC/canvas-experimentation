@@ -285,8 +285,13 @@ function init_renderPlayer() {
 function checkKeyPress(e){
     if(e.code == "Space" && !paused) {
         paused=true;
+        gsap.to(["#paused","#overlay-bg"],0,{display:"block"})
+        gsap.to("#paused",.2,{alpha:1})
+        gsap.to("#overlay-bg",1,{alpha:1})
+        
     } else {
         paused=false;
+        gsap.to(["#paused","#overlay-bg"],0,{alpha:0,display:"none"})
     }
 }
 
@@ -712,17 +717,18 @@ function checkPlayerPosition() {
     var enemyH = enemy[whichEnemyIndex].hitH;
 
 
+    
     // [todo] enemy hit area
-        ctxEnemy.beginPath();
-        ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
-        ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
-        ctxEnemy.fill();
+        // ctxEnemy.beginPath();
+        // ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
+        // ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
+        // ctxEnemy.fill();
 
     // [todo] player hit area
-        ctxEnemy.beginPath();
-        ctxEnemy.rect(playerL, playerT, player.hitW, player.hitH);
-        ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
-        ctxEnemy.fill();
+        // ctxEnemy.beginPath();
+        // ctxEnemy.rect(playerL, playerT, player.hitW, player.hitH);
+        // ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
+        // ctxEnemy.fill();
         
     
  // old collison
@@ -743,7 +749,7 @@ function checkPlayerPosition() {
         && playerL < enemyL + enemy[whichEnemyIndex].hitW
         && playerL + player.hitW > enemyL
         && playerT < enemyT + enemy[whichEnemyIndex].hitH
-        && playerT + player.hitH > enemyT){
+        && playerT + player.hitH > enemyT ){
 
         // colliding! 
         isPlayer.hurt=true;

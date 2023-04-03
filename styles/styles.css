@@ -31,7 +31,8 @@ body{
     height: 100%;
     overflow: hidden;
 }
-#container canvas {
+#container canvas,
+#container #overlays {
     position: absolute;
     transform: translate(-50%,-50%);
     top: 50%;
@@ -43,24 +44,6 @@ body{
 #wrap {
     overflow: hidden;
     text-align: center;
-}
-.fire {
-    background-image: url(../images/fire.gif);
-    mix-blend-mode: lighten;
-    height: 100%;
-    width: 320px;
-    background-position: bottom;
-    background-repeat: repeat-x;
-    background-size: 100px;
-}
-#fireL {
-    left: 0;
-    transform: rotate(90deg) translateY(20%);
-}
-#fireR {
-    left: auto;
-    right: 0;
-    transform: rotate(-90deg) translateY(-20%);
 }
 .hidden {
     opacity: 0;
@@ -74,6 +57,25 @@ body{
     mix-blend-mode: color;
 }
 
+.overlays {
+    display: none;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    opacity: 0;
+}
+#overlay-bg {
+    background-color: rgba(255,120,140,0.5);
+    mix-blend-mode: saturation;
+}
+#overlay-death {
+    mix-blend-mode: color;
+}
+.txt {
+    color: #fff;
+    text-align: center;
+    transform: translateY(50%);
+}
 
 
 #footer {
