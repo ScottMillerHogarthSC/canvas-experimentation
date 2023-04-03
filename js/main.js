@@ -698,8 +698,10 @@ function checkPlayerPosition() {
     
     var playerR = player.x+player.hitW;
     var playerL = player.x+player.hitX;
+    if(moving_backwards) { playerL = player.x+player.hitXB; }
     var playerT = player.y+player.hitY;
     var playerB = player.y+player.hitH;
+    var playerH = player.hitH;
 
 
     var enemyL = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitX;
@@ -707,18 +709,50 @@ function checkPlayerPosition() {
     var enemyR = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitW;
     var enemyT = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY;
     var enemyB = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitH;
+    var enemyH = enemy[whichEnemyIndex].hitH;
+
+
+    // [todo] enemy hit area
+        ctxEnemy.beginPath();
+        ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
+        ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
+        ctxEnemy.fill();
+
+    // [todo] player hit area
+        ctxEnemy.beginPath();
+        ctxEnemy.rect(playerL, playerT, player.hitW, player.hitH);
+        ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
+        ctxEnemy.fill();
+        
     
-    if(playerR>=enemyL 
-        && playerL<=enemyR
-         && playerT>=enemyT 
-         && !isEnemy.killed){
+ // old collison
+    // if(!isEnemy.killed
+    //     && playerR>=enemyL 
+    //     && playerL>=enemyR
+    //     && playerR<=enemyR
+    //     && playerT>=enemyT
+    // ){
+
+
+                        //    a.x < b.x + b.width 
+                        // && a.x + a.width > b.x
+                        // && a.y < b.y + b.height
+                        // && a.y + a.height > b.y
+
+    if(!isEnemy.killed 
+        && playerL < enemyL + enemy[whichEnemyIndex].hitW
+        && playerL + player.hitW > enemyL
+        && playerT < enemyT + enemy[whichEnemyIndex].hitH
+        && playerT + player.hitH > enemyT){
 
         // colliding! 
         isPlayer.hurt=true;
         health--;
         health = health < 0 ? 0 : health;
         if(health==0) collided=true;
+
     } else {
+
         isPlayer.hurt=false;
     }
 
@@ -773,6 +807,8 @@ function checkPlayerPosition() {
     }
 }
 
+
+    
 var moveFactor_enemy = 1;
 var whichEnemyIndex=0;
 function renderEnemy(whichEnemy) {
@@ -793,20 +829,7 @@ function renderEnemy(whichEnemy) {
             96, 96);
 
     } else {
-    
 
-        if(!isEnemy.runBack){
-            // ctxEnemy.beginPath();
-            //     ctxEnemy.rect(enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitX, enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
-            //     ctxEnemy.fillStyle = "blue";
-            //     ctxEnemy.fill();
-        } else {
-
-            // ctxEnemy.beginPath();
-            //     ctxEnemy.rect(enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB, enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
-            //     ctxEnemy.fillStyle = "blue";
-            //     ctxEnemy.fill();
-        }
 
         if(isEnemy.runBack){
             enemy[whichEnemyIndex].x-=moveFactor_enemy; 

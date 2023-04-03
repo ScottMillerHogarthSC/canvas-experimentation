@@ -1,5 +1,5 @@
 var player_groundY = 320-48-32;
-var player = {x:0,y:player_groundY,width:48,height:48,hitW:30,hitX:0,hitH:36,hitY:12};
+var player = {x:0,y:player_groundY,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12};
 
 
 var isPlayer = {
