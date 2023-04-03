@@ -370,8 +370,7 @@ function updateStage(){
     if(imgLoaded==imageAdded && !collided && !paused){
 
         
-        
-        showCanvas();
+        if(!canvasShowing) { showCanvas(); }
     
 
         // background 
@@ -1023,10 +1022,11 @@ function mobileBtnDoNothing(ev){
     }
 }
 
-
+var canvasShowing=false;
 function showCanvas(){
     document.getElementById("loadingContent").style.display="none";
     container.style.display = "block";
+    canvasShowing=true;
 }
 
 

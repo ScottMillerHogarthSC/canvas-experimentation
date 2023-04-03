@@ -26,22 +26,26 @@ function init()
     } else {
         wrap.classList.remove("mobile");
     }
-    if (audio.canPlayType('audio/ogg')) {
-        audio.setAttribute('src','01_stars_are_my_guide.ogg');
-
-    } else if (audio.canPlayType('audio/mpeg')) {
-        audio.setAttribute('src','01_stars_are_my_guide.mp3');
-    } 
-     else {
-        console.log("browser doesnt support audio");
-    }
 
 
-    if (audio.readyState > 3) {
-        loadedAudio();
-    } else {
-        preloadAudio(); 
-    }
+    // if (audio.canPlayType('audio/ogg')) {
+    //     audio.setAttribute('src','01_stars_are_my_guide.ogg');
+
+    // } else if (audio.canPlayType('audio/mpeg')) {
+    //     audio.setAttribute('src','01_stars_are_my_guide.mp3');
+    // } 
+    //  else {
+    //     console.log("browser doesnt support audio");
+    // }
+
+
+    // if (audio.readyState > 3) {
+    //     loadedAudio();
+    // } else {
+    //     preloadAudio(); 
+    // }
+
+    start();
 }
 
 function preloadAudio(){
@@ -55,6 +59,7 @@ function preloadAudio(){
 
 function failedtoLoadAudio(e){
     console.log("COULD NOT LOAD AUDIO");
+
 }
 
 var audioLoaded = false;
@@ -75,12 +80,14 @@ function loadedAudio(){
         
         
 
-        initCanvasAnim();
-
-        Keyboard.listenForEvents([Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
-
-        document.body.addEventListener('keypress', checkKeyPress);
+        start();
     }
 }
 
+function start(){
+    initCanvasAnim();
 
+    Keyboard.listenForEvents([Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
+
+    document.body.addEventListener('keypress', checkKeyPress);
+}
