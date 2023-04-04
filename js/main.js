@@ -487,16 +487,21 @@ function moveSpriteSheets(){
     counter++;
     if(counter>999) counter=0;
     if(counter%6==0){
-        sprite_x.playerX+=player.width;
+        
 
         if(isPlayer.dead){
-            if(sprite_x.playerX>=spritesheetW.playerW) {
+            if(!moving_backwards) sprite_x.playerX+=player.width;
+            else sprite_x.playerX-=player.width;
+
+            if(sprite_x.playerX>=spritesheetW.playerW || sprite_x.playerX<=0) {
                 // only play this anim once!
                 collided=true;
                 gsap.to(["#overlay-death","#died"],0,{display:"block"})
                 gsap.to("#died",.2,{alpha:1})
                 gsap.to("#overlay-death",1,{alpha:1})
             }   
+        } else {
+            sprite_x.playerX+=player.width;
         }
 
         
@@ -586,8 +591,6 @@ function renderPlayer() {
 
     if(isPlayer.dead){ 
 
-        spritesheetW.playerW=player_dead.width;
-
         // ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
         if(!moving_backwards){
             ctxPlayer.drawImage(player_dead_img, sprite_x.playerX, 0,
@@ -602,6 +605,8 @@ function renderPlayer() {
         }
     } else if(isPlayer.hurt){ 
 
+
+        // [todo] - move this elsewhere:
         spritesheetW.playerW=player_hurt.width;
 
         // ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
@@ -618,6 +623,7 @@ function renderPlayer() {
         }
     } else if(isPlayer.jump){ 
 
+        // [todo] - move this elsewhere:
         spritesheetW.playerW=player_jump.width;
 
         // ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
@@ -1027,7 +1033,11 @@ function killEnemy(whichEnemy){
 var onlyDieOnce = false;
 function playerDeath(){
     if(!onlyDieOnce) {
-        sprite_x.playerX=0;
+
+        spritesheetW.playerW=player_dead.width;
+
+        if(!moving_backwards) sprite_x.playerX=0;
+        else sprite_x.playerX=(spritesheetW.playerW);
         onlyDieOnce=true;
         isPlayer.dead=true;
     }
