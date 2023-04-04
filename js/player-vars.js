@@ -1,5 +1,5 @@
 var player_groundY = 320-48-32;
-var player = {x:0,y:player_groundY,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12};
+var player = {x:0,y:player_groundY,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12,health:10};
 
 
 var isPlayer = {
@@ -10,7 +10,8 @@ var isPlayer = {
     attack:false,
     attackBack:false,
     hurt:false,
-    jump:false
+    jump:false,
+    dead: false
 }
 
 
@@ -23,7 +24,9 @@ var player_idle = {url:"images/Biker/Walk.png",width:288,height:48},
     player_hurt = {url:"images/Biker/Hurt.png",width:96,height:48},
     player_hurtBack = {url:"images/Biker/Hurt-back.png",width:96,height:48},
     player_jump = {url:"images/Biker/Jump.png",width:384,height:48},
-    player_jumpBack = {url:"images/Biker/Jump-back.png",width:384,height:48};
+    player_jumpBack = {url:"images/Biker/Jump-back.png",width:384,height:48},
+    player_dead = {url:"images/Biker/Death.png",width:288,height:48},
+    player_deadBack = {url:"images/Biker/Death-back.png",width:288,height:48};
 
 var shoot = {url:"images/Shoot/1_1.png",width:288,height:48,offsetX:10,offsetY:4},
     shootBack = {url:"images/Shoot/1_1-back.png",width:288,height:48,offsetX:86,offsetY:4};

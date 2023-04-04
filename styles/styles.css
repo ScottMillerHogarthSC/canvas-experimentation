@@ -70,6 +70,7 @@ body{
 }
 #overlay-death {
     mix-blend-mode: color;
+    background-color: rgba(255,120,140,0.5);
 }
 .txt {
     color: #fff;

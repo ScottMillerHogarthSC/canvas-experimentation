@@ -51,7 +51,7 @@ var ctxEnemy = enemy_canvas.getContext('2d');
 var imageAdded= 0,
     imgLoaded = 0;
 
-var health = 1000;
+var full_health = 1000;
 
 
 
@@ -260,6 +260,22 @@ function init_renderPlayer() {
             imgLoaded++;
         }
 
+    // player dead
+
+        player_dead_img = new Image();
+        imageAdded++;
+        player_dead_img.src = player_dead.url;
+        player_dead_img.onload = function(){
+            imgLoaded++;
+        }
+
+        player_deadBack_img = new Image();
+        imageAdded++;
+        player_deadBack_img.src = player_deadBack.url;
+        player_deadBack_img.onload = function(){
+            imgLoaded++;
+        }
+
     // player jump
     
         player_jump_img = new Image();
@@ -379,32 +395,32 @@ function updateStage(){
     
 
         // background 
+        if(!isPlayer.dead){
+            moveBg();
 
-        moveBg();
+            ctxBG.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctxBG.clearRect(0, 0, canvas.width, canvas.height);
+            for(i = 0; i<bgsImgs.length; i++) {
+                ctxBG.drawImage(bgsImgs[i], bgsList[i].x, bgsList[i].y, bgsList[i].width, bgsList[i].height);
+                ctxBG.drawImage(bgsImgs[i], (bgsList[i].x+bgsList[i].width), bgsList[i].y, bgsList[i].width, bgsList[i].height);
+            }
+            
+            for(i=0; i<buildingsImgs.length; i++){
+                ctxBG.drawImage(buildingsImgs[i], buildingsList[i].x, bgBuildings.y, bgBuildings.width, bgBuildings.height);
+                ctxBG.drawImage(buildingsImgs[i], (buildingsList[i].x+buildingsList[i].width), bgBuildings.y, bgBuildings.width, bgBuildings.height);
+            }
+            
+            ctxBG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
+            ctxBG.drawImage(fg_img, (fg.x+fg.width), fg.y, fg.width, fg.height);
+            ctxBG.drawImage(fg_img, (fg.x-fg.width), fg.y, fg.width, fg.height);
 
-        for(i = 0; i<bgsImgs.length; i++) {
-            ctxBG.drawImage(bgsImgs[i], bgsList[i].x, bgsList[i].y, bgsList[i].width, bgsList[i].height);
-            ctxBG.drawImage(bgsImgs[i], (bgsList[i].x+bgsList[i].width), bgsList[i].y, bgsList[i].width, bgsList[i].height);
+            
+
+            // background overlay
+            ctxOverlay.clearRect(0, 0, canvas.width, canvas.height);
+            ctxOverlay.drawImage(bgOverlay_img, bgOverlay.x, bgOverlay.y, bgOverlay.width, bgOverlay.height)
+            ctxOverlay.drawImage(bgOverlay_img, (bgOverlay.x+bgOverlay.width), bgOverlay.y, bgOverlay.width, bgOverlay.height)
         }
-        
-        for(i=0; i<buildingsImgs.length; i++){
-            ctxBG.drawImage(buildingsImgs[i], buildingsList[i].x, bgBuildings.y, bgBuildings.width, bgBuildings.height);
-            ctxBG.drawImage(buildingsImgs[i], (buildingsList[i].x+buildingsList[i].width), bgBuildings.y, bgBuildings.width, bgBuildings.height);
-        }
-        
-        ctxBG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
-        ctxBG.drawImage(fg_img, (fg.x+fg.width), fg.y, fg.width, fg.height);
-        ctxBG.drawImage(fg_img, (fg.x-fg.width), fg.y, fg.width, fg.height);
-
-        
-
-        // background overlay
-        ctxOverlay.clearRect(0, 0, canvas.width, canvas.height);
-        ctxOverlay.drawImage(bgOverlay_img, bgOverlay.x, bgOverlay.y, bgOverlay.width, bgOverlay.height)
-        ctxOverlay.drawImage(bgOverlay_img, (bgOverlay.x+bgOverlay.width), bgOverlay.y, bgOverlay.width, bgOverlay.height)
-        
         
         
 
@@ -465,11 +481,24 @@ function updateStage(){
     }
 }
 
+
+
 function moveSpriteSheets(){
     counter++;
     if(counter>999) counter=0;
     if(counter%6==0){
         sprite_x.playerX+=player.width;
+
+        if(isPlayer.dead){
+            if(sprite_x.playerX>=spritesheetW.playerW) {
+                // only play this anim once!
+                collided=true;
+                gsap.to(["#overlay-death","#died"],0,{display:"block"})
+                gsap.to("#died",.2,{alpha:1})
+                gsap.to("#overlay-death",1,{alpha:1})
+            }   
+        }
+
         
          // if player is in middle of a jump anim:
         if(keysWait){
@@ -498,8 +527,7 @@ function moveSpriteSheets(){
                 enemyKillCount++;
 
             }
-        }
-        
+        }        
     }
     if(counter%2==0){
         sprite_x.shootX+=player.width;
@@ -514,7 +542,7 @@ function renderUI() {
     ctxPlayer.fill();
 
     ctxPlayer.beginPath();
-    var healthBarW=Math.floor((health/1000)*68);
+    var healthBarW=Math.floor((player.health/full_health)*68);
 
     ctxPlayer.rect(11, 11, healthBarW, 8);
     if(isPlayer.hurt) {
@@ -556,7 +584,23 @@ function renderPlayer() {
         // if(player.x>=-26) { player.x-=5; }
     }
 
-    if(isPlayer.hurt){ 
+    if(isPlayer.dead){ 
+
+        spritesheetW.playerW=player_dead.width;
+
+        // ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
+        if(!moving_backwards){
+            ctxPlayer.drawImage(player_dead_img, sprite_x.playerX, 0,
+                player.width, player.height,
+                player.x, player.y, 
+                player.width, player.height);
+        } else {
+            ctxPlayer.drawImage(player_deadBack_img, sprite_x.playerX, 0,
+                player.width, player.height,
+                player.x, player.y, 
+                player.width, player.height);
+        }
+    } else if(isPlayer.hurt){ 
 
         spritesheetW.playerW=player_hurt.width;
 
@@ -753,10 +797,15 @@ function checkPlayerPosition() {
 
         // colliding! 
         isPlayer.hurt=true;
-        health--;
-        health = health < 0 ? 0 : health;
-        if(health==0) collided=true;
+        player.health--;
+        player.health = player.health < 0 ? 0 : player.health;
+        if(player.health==0) { 
 
+            // [todo] player death
+            // sprite_x.playerX=0;
+            
+            playerDeath();
+        }
     } else {
 
         isPlayer.hurt=false;
@@ -973,6 +1022,15 @@ function setEnemyIndex(whichEnemy){
 
 function killEnemy(whichEnemy){
     isEnemy.exploding=true;
+}
+
+var onlyDieOnce = false;
+function playerDeath(){
+    if(!onlyDieOnce) {
+        sprite_x.playerX=0;
+        onlyDieOnce=true;
+        isPlayer.dead=true;
+    }
 }
 
 var moveFactor = .5;
