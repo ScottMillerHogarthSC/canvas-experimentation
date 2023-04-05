@@ -429,20 +429,18 @@ function updateStage(){
 
         
         if(!enemyIndexFlag) {
-            setEnemyIndex("CyberBike");
+            setEnemyIndex();
         } else {
             if(!isEnemy.killed){
-                // if(enemyKillCount==0) renderEnemy("BattleCar");
-                if(enemyKillCount==0) renderEnemy("CyberBike");
-                else if(enemyKillCount==1) renderEnemy("BattleCar");
-                else if(enemyKillCount==2) renderEnemy("CyberBike");
-                if(enemyKillCount>2) enemyKillCount=0;
-
-                // console.log(enemyKillCount);
+                
+                renderEnemy();
+                
             } else {
                 ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
 
-                setEnemyIndex("BattleCar");
+                setEnemyIndex();
+
+                // [todo] next enemy:
 
                 enemy[whichEnemyIndex].health=200;
                 enemy[whichEnemyIndex].x=canvas.width;
@@ -517,8 +515,17 @@ function moveSpriteSheets(){
 
 
 
-        sprite_x.enemyX+=enemy[whichEnemyIndex].width;
-        if(sprite_x.enemyX>=spritesheetW.enemyW) sprite_x.enemyX=0;
+        if(isEnemy.attack){
+            if(sprite_x.enemyX>=spritesheetW.enemyW) {
+                // only play this anim once!
+                isEnemy.attack=false;
+            }
+            sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+        } 
+        else {
+            sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+            if(sprite_x.enemyX>=spritesheetW.enemyW) sprite_x.enemyX=0;
+        }
         
 
         if(isEnemy.exploding){
@@ -851,7 +858,11 @@ function checkPlayerPosition() {
     // enemy repeat 
     if(!isEnemy.killed){
         
+
+         // [todo] - enemy turns to you and attack
         if(enemy[whichEnemyIndex].x<=player.x-(enemy[whichEnemyIndex].width*2)){
+
+
             if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
                 enemy[whichEnemyIndex].x=canvas.width;
                 isEnemy.runBack=true;
@@ -859,6 +870,8 @@ function checkPlayerPosition() {
             } else {
                 isEnemy.runBack=false;
                 isEnemy.run=true;
+
+                enemyAttack();
             }
         }
         if(enemy[whichEnemyIndex].x>canvas.width){
@@ -966,7 +979,7 @@ function renderEnemy(whichEnemy) {
                 enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height,
                 enemy[whichEnemyIndex].x, enemy[whichEnemyIndex].y, 
                 enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
-        } if(isEnemy.attack){
+        } else if(isEnemy.attack){
             spritesheetW.enemyW=enemiesList[whichEnemyIndex][4].width;
             ctxEnemy.drawImage(enemyImgs[enemyImgIndex.attack], sprite_x.enemyX, 0,
                 enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height,
@@ -1011,12 +1024,22 @@ var enemyIndexFlag = false;
 function setEnemyIndex(whichEnemy){
 
     enemyIndexFlag=true;
-    enemyImgIndex = {walkBack:0, hurtBack:0}
+    enemyImgIndex = {walkBack:0, hurtBack:0, walk:0, hurt:0, attack:0, attackBack:0}
 
+    if(whichEnemy==undefined){
+        if(enemyKillCount>=enemy.length) { enemyKillCount=0; }
+        whichEnemyIndex=enemyKillCount;
+        
+        if(whichEnemyIndex==0) { whichEnemy="CyberBike"; }
+        if(whichEnemyIndex==1) { whichEnemy="BattleCar"; }
 
-    // set index
-    if(whichEnemy=="BattleCar") {whichEnemyIndex=1}
-    else {whichEnemyIndex=0}
+// set index manually if passed in to this func:
+    } else if(whichEnemy=="BattleCar") { 
+        whichEnemyIndex = 1;
+    } else if(whichEnemy=="CyberBike") { 
+        whichEnemyIndex = 0;
+    }
+
 
 
 
@@ -1046,6 +1069,11 @@ function setEnemyIndex(whichEnemy){
 function killEnemy(whichEnemy){
     isEnemy.exploding=true;
 }
+function enemyAttack(whichEnemy){
+    isEnemy.attack=true;    
+    sprite_x.enemyX=0;
+}
+
 
 var onlyDieOnce = false;
 function playerDeath(){

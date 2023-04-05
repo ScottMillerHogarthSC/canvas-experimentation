@@ -12,7 +12,7 @@ var isEnemy = {
     idleBack:false,
     run:false,
     runBack:true,
-    attack:true,
+    attack:false,
     attackBack:false,
     hurt:false,
     hurtBack:false,
