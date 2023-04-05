@@ -910,15 +910,18 @@ function renderEnemy(whichEnemy) {
             }
             
 
-            if(!isEnemy.hurt){
-                spritesheetW.enemyW=enemiesList[whichEnemyIndex][3].width;
-                ctxEnemy.drawImage(enemyImgs[enemyImgIndex.walkBack], sprite_x.enemyX, 0,
+            if(isEnemy.hurt){
+                spritesheetW.enemyW=enemiesList[whichEnemyIndex][7].width;
+                ctxEnemy.drawImage(enemyImgs[enemyImgIndex.hurtBack], sprite_x.enemyX, 0,
                     enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height,
                     enemy[whichEnemyIndex].x, enemy[whichEnemyIndex].y, 
                     enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
+
+
             } else {
-                spritesheetW.enemyW=enemiesList[whichEnemyIndex][7].width;
-                ctxEnemy.drawImage(enemyImgs[enemyImgIndex.hurtBack], sprite_x.enemyX, 0,
+                // walk
+                spritesheetW.enemyW=enemiesList[whichEnemyIndex][3].width;
+                ctxEnemy.drawImage(enemyImgs[enemyImgIndex.walkBack], sprite_x.enemyX, 0,
                     enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height,
                     enemy[whichEnemyIndex].x, enemy[whichEnemyIndex].y, 
                     enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
@@ -955,6 +958,20 @@ function renderEnemy(whichEnemy) {
                     enemy[whichEnemyIndex].x, enemy[whichEnemyIndex].y, 
                     enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
             }
+        }
+
+        if(isEnemy.attackBack){
+            spritesheetW.enemyW=enemiesList[whichEnemyIndex][5].width;
+            ctxEnemy.drawImage(enemyImgs[enemyImgIndex.attackBack], sprite_x.enemyX, 0,
+                enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height,
+                enemy[whichEnemyIndex].x, enemy[whichEnemyIndex].y, 
+                enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
+        } if(isEnemy.attack){
+            spritesheetW.enemyW=enemiesList[whichEnemyIndex][4].width;
+            ctxEnemy.drawImage(enemyImgs[enemyImgIndex.attack], sprite_x.enemyX, 0,
+                enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height,
+                enemy[whichEnemyIndex].x, enemy[whichEnemyIndex].y, 
+                enemy[whichEnemyIndex].width, enemy[whichEnemyIndex].height);
         }
 
 
