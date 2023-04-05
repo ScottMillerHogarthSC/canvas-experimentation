@@ -292,14 +292,14 @@ function init_renderPlayer() {
             imgLoaded++;
         }
 
-        tlJump.to(player,.9,{y:player_groundY-enemy[whichEnemyIndex].hitH-5,ease:"power3.out"},0).to(player,.8,{y:player_groundY,ease:"sine.in"},"<.7")
+        tlJump.to(player,.9,{y:player_groundY-player.jumpH,ease:"power3.out"},0).to(player,.8,{y:player_groundY,ease:"sine.in"},"<.7")
         tlJump.duration(.6);
 
 }
 
 
 function checkKeyPress(e){
-    if(e.code == "Space" && !paused) {
+    if(e.code == "Space" && !paused && !isPlayer.dead) {
         paused=true;
         gsap.to(["#paused","#overlay-bg"],0,{display:"block"})
         gsap.to("#paused",.2,{alpha:1})
@@ -851,7 +851,7 @@ function checkPlayerPosition() {
     // enemy repeat 
     if(!isEnemy.killed){
         
-        if(enemy[whichEnemyIndex].x<=-(enemy[whichEnemyIndex].width+1)){
+        if(enemy[whichEnemyIndex].x<=player.x-(enemy[whichEnemyIndex].width*2)){
             if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
                 enemy[whichEnemyIndex].x=canvas.width;
                 isEnemy.runBack=true;
