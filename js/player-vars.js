@@ -16,7 +16,7 @@ var isPlayer = {
 
 
 var player_idle = {url:"images/Biker/Walk.png",width:288,height:48},
-    player_idleBack = {url:"images/Biker/Walk-back.png",width:288,height:48},
+    player_idleBack = {url:"images/Biker/Biker_idle.png",width:192,height:48},
     player_run = {url:"images/Biker/Run.png",width:288,height:48},
     player_runBack = {url:"images/Biker/Run-back.png",width:288,height:48},
     player_attack = {url:"images/Biker/Idle1.png",width:192,height:48},

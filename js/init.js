@@ -31,21 +31,21 @@ function init()
     // if (audio.canPlayType('audio/ogg')) {
     //     audio.setAttribute('src','01_stars_are_my_guide.ogg');
 
-    // } else if (audio.canPlayType('audio/mpeg')) {
-    //     audio.setAttribute('src','01_stars_are_my_guide.mp3');
-    // } 
-    //  else {
-    //     console.log("browser doesnt support audio");
-    // }
+    if (audio.canPlayType('audio/mpeg')) {
+        audio.setAttribute('src','shredded-midi.mp3');
+    } 
+     else {
+        console.log("browser doesnt support audio");
+    }
 
 
-    // if (audio.readyState > 3) {
-    //     loadedAudio();
-    // } else {
-    //     preloadAudio(); 
-    // }
+    if (audio.readyState > 3) {
+        loadedAudio();
+    } else {
+        preloadAudio(); 
+    }
 
-    start();
+    // start();
 }
 
 function preloadAudio(){
@@ -87,6 +87,7 @@ function loadedAudio(){
 function start(){
     initCanvasAnim();
 
+    
     Keyboard.listenForEvents([Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
 
     document.body.addEventListener('keypress', checkKeyPress);

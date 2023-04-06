@@ -1,5 +1,6 @@
 
 var Keyboard = {};
+var firstpress = true;
 
 Keyboard.LEFT = 37;
 Keyboard.RIGHT = 39;
@@ -22,6 +23,10 @@ Keyboard._onKeyDown = function (event) {
     if (keyCode in this._keys) {
         event.preventDefault();
         this._keys[keyCode] = true;
+    }
+    if(firstpress){
+        firstpress=false;
+        audio.play();
     }
 };
 
