@@ -34,8 +34,8 @@ function init()
 
     if (audio.canPlayType('audio/mpeg')) {
         if(!window.location.search.includes("mute")){
-            if(!window.location.href.includes("scottmillerhogarthsc")){
-                console.log("online")
+            if(window.location.href.includes("scottmillerhogarthsc")){
+                console.log("online");
                 audio.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
             } else {
                 console.log("local")
