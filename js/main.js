@@ -66,10 +66,12 @@ var counter=0;
 var isSongToEnding=false; 
 var collided=false; 
 var paused=false;
+var muted = false;
 var moving_backwards = false; 
 
 var tlJump = gsap.timeline({paused:true,onComplete:function(){keysWait=false; isPlayer.jump=false}});
 
+var highlights=false;
 
 
 var frameRate = 100;
@@ -306,7 +308,13 @@ function checkKeyPress(e){
     // console.log(e.code);
 
     if(e.code == "KeyM") {
-        audio.volume=0;
+        if(!muted){
+            audio.volume=0;
+            muted=true;
+        } else {
+            audio.volume=1;
+            muted=false;
+        }
     }
     else if(e.code == "Space" && !paused && !isPlayer.dead) {
         paused=true;
@@ -320,7 +328,7 @@ function checkKeyPress(e){
         paused=false;
         gsap.to(["#paused","#overlay-bg"],0,{alpha:0,display:"none"})
 
-        audio.play();
+        if(!isPlayingAudio) audio.play();
     }
 }
 
@@ -793,18 +801,19 @@ function checkPlayerPosition() {
     var enemyH = enemy[whichEnemyIndex].hitH;
 
 
-    
+    if(highlights){
     // [todo] enemy hit area
-        // ctxEnemy.beginPath();
-        // ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
-        // ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
-        // ctxEnemy.fill();
+        ctxEnemy.beginPath();
+        ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
+        ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
+        ctxEnemy.fill();
 
     // [todo] player hit area
-        // ctxEnemy.beginPath();
-        // ctxEnemy.rect(playerL, playerT, player.hitW, player.hitH);
-        // ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
-        // ctxEnemy.fill();
+        ctxEnemy.beginPath();
+        ctxEnemy.rect(playerL, playerT, player.hitW, player.hitH);
+        ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
+        ctxEnemy.fill();
+    }
 
     if(!isEnemy.killed 
         && playerL < enemyL + enemy[whichEnemyIndex].hitW
@@ -1010,10 +1019,9 @@ function renderEnemyUI(){
     // [todo] draw enemy health
     var enemyBarX = enemy[whichEnemyIndex].x+10;
     var enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
-    var enemyBarW = enemy[whichEnemyIndex].width-56;
+    var enemyBarW = enemy[whichEnemyIndex].hitW-20
     if(isEnemy.runBack){
         enemyBarX = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB+10;
-        enemyBarW = enemy[whichEnemyIndex].width-enemy[whichEnemyIndex].hitXB-20;
     }
 
     ctxEnemy.beginPath();

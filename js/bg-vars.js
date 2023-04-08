@@ -14,16 +14,16 @@ var bgsImgs = [];
 
 var bgBuildings = {x:1152,y:0,width:1152,height:324};
 var buildingsList = [
-	{url:"images/bg-buildings1.png", x:-bgBuildings.width},
-	{url:"images/bg-buildings0.png", x:0},
-	{url:"images/bg-buildings2.png", x:bgBuildings.width},
-	{url:"images/bg-buildings3.png", x:bgBuildings.width*2},
-	{url:"images/bg-buildings4.png", x:bgBuildings.width*3},
-	{url:"images/bg-buildings5.png", x:bgBuildings.width*4}
+	{url:"images/Buildings/bg-buildings1.png", x:-bgBuildings.width},
+	{url:"images/Buildings/bg-buildings0.png", x:0},
+	{url:"images/Buildings/bg-buildings2.png", x:bgBuildings.width},
+	{url:"images/Buildings/bg-buildings3.png", x:bgBuildings.width*2},
+	{url:"images/Buildings/bg-buildings4.png", x:bgBuildings.width*3},
+	{url:"images/Buildings/bg-buildings5.png", x:bgBuildings.width*4}
 ];
 var buildingsImgs = [];
 
-var fg = {url:"images/fg.png", x:0,y:0,width:1152,height:324};
+var fg = {url:"images/Foreground/fg.png", x:0,y:0,width:1152,height:324};
 
 
 var numOfBuildings = buildingsList.length;

@@ -9,6 +9,13 @@ function init()
         
         frameRate=window.location.search.split("frameRate=")[1];
     }
+    if(window.location.search.includes("highlights")){
+        highlights=true;
+    }
+    if(window.location.search.includes("mute")){
+        muted=true;
+    }
+
 
 
     // main content
@@ -33,18 +40,13 @@ function init()
     //     audio.setAttribute('src','01_stars_are_my_guide.ogg');
 
     if (audio.canPlayType('audio/mpeg')) {
-        if(!window.location.search.includes("mute")){
-            if(window.location.href.includes("scottmillerhogarthsc")){
-                console.log("online");
-                audio.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
-            } else {
-                console.log("local")
-                audio.setAttribute('src','shredded-midi.mp3');
-            }
-
+        
+        if(window.location.href.includes("scottmillerhogarthsc")){
+            console.log("online");
+            audio.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
         } else {
-            console.log("audio muted");
-            start();
+            console.log("local")
+            audio.setAttribute('src','shredded-midi.mp3');
         }
     } 
     else {
@@ -80,19 +82,23 @@ function failedtoLoadAudio(e){
 }
 
 var audioLoaded = false;
+var isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;;
 function loadedAudio(){
     if(!audioLoaded){
         audioLoaded = true;
+
+        isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
     
         audio.removeEventListener('canplay', loadedAudio);
         audio.addEventListener('error', failedtoLoadAudio);
-    
+        
+        if(muted) { audio.volume=0; }
     
         $(document).on('show.visibility', function() {
-            
+            if(!isPlayingAudio) audio.play();
         });
         $(document).on('hide.visibility', function() {
-            audio.pause();
+            if(isPlayingAudio) audio.pause();
         });
         
         
