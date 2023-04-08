@@ -32,7 +32,7 @@ function init()
     //     audio.setAttribute('src','01_stars_are_my_guide.ogg');
 
     if (audio.canPlayType('audio/mpeg')) {
-        audio.setAttribute('src','shredded-midi.mp3');
+        audio.setAttribute('src','http://scottapmiller.com/shredded-midi.mp3');
     } 
      else {
         console.log("browser doesnt support audio");
@@ -59,6 +59,8 @@ function preloadAudio(){
 
 function failedtoLoadAudio(e){
     console.log("COULD NOT LOAD AUDIO");
+
+
     start();
 
 
