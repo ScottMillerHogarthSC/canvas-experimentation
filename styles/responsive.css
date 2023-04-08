@@ -5,12 +5,12 @@
     
 }
 @media screen and (min-width: 982px) {
-    #mobileControls {
+    /*#mobileControls {
         display: none;
     }
     .mobile #mobileControls {
         display: block;
-    }
+    }*/
 
 }
 @media screen and (min-height: 475px) {

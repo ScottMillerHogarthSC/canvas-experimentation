@@ -59,7 +59,7 @@ var nearEdge = {left:false,right:false}
 
 var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0};
 
-var spritesheetW = {playerW: player_idle.width, enemyW:enemiesList[0][0].width, shootW:shoot.width, explosionW:explosion.width }; // sprites width
+var spritesheetW = {playerW: player_idle.width, enemyW:enemiesList[0][0].width, shootW:player_shoot.width, explosionW:explosion.width }; // sprites width
 
 var counter=0;
     
@@ -126,6 +126,10 @@ function initCanvasAnim(){
     createjs.Ticker.addEventListener("tick", checkKeys);
     createjs.Ticker.framerate = frameRate;
     // createjs.Ticker.framerate = 26;
+
+
+
+    bindButtons();
 }
 
 
@@ -219,17 +223,17 @@ function init_renderPlayer() {
 
     // shoot
 
-        shoot_img = new Image();
+        player_shoot_img = new Image();
         imageAdded++;
-        shoot_img.src = shoot.url;
-        shoot_img.onload = function(){
+        player_shoot_img.src = player_shoot.url;
+        player_shoot_img.onload = function(){
             imgLoaded++;
         }
 
-        shootBack_img = new Image();
+        player_shootBack_img = new Image();
         imageAdded++;
-        shootBack_img.src = shootBack.url;
-        shootBack_img.onload = function(){
+        player_shootBack_img.src = player_shootBack.url;
+        player_shootBack_img.onload = function(){
             imgLoaded++;
         }
 
@@ -336,39 +340,19 @@ function checkKeys(){
             }
         }
         else if (Keyboard.isDown(Keyboard.LEFT)) { 
-            moving_backwards = true;
-
-            isPlayer.idle=false;
-            isPlayer.run=false;
-            isPlayer.runBack=true;
+            backwards();
         }
         else if (Keyboard.isDown(Keyboard.RIGHT)) { 
-            moving_backwards = false;
-
-            isPlayer.idle=false;
-            isPlayer.runBack=false;
-            isPlayer.run=true;
-
+            forwards();
         }
 
 
         if(Keyboard.isDown(Keyboard.DOWN)){
-            isPlayer.idle=false;
-            isPlayer.runBack=false;
-            isPlayer.run=false;
-            if(moving_backwards) {
-                isPlayer.attackBack=true;
-            } else {
-                isPlayer.attack=true;
-            }
+            shoot();
         }
 
         if(Keyboard.isDown(Keyboard.UP)){
-            isPlayer.idle=false;
-            isPlayer.idleBack=false;
-            isPlayer.jump=true;
-            keysWait=true;
-            tlJump.seek(0).play();
+            jump();
         }
 
         if(!Keyboard.isDown(Keyboard.LEFT) 
@@ -385,11 +369,45 @@ function checkKeys(){
             if(!moving_backwards) isPlayer.idle=true;
             else isPlayer.idleBack=true;
 
-            
         }
     }
 
 }
+
+function jump() {
+    isPlayer.idle=false;
+    isPlayer.idleBack=false;
+    isPlayer.jump=true;
+    keysWait=true;
+    tlJump.seek(0).play();
+}
+
+function shoot(){
+    isPlayer.idle=false;
+    isPlayer.runBack=false;
+    isPlayer.run=false;
+    if(moving_backwards) {
+        isPlayer.attackBack=true;
+    } else {
+        isPlayer.attack=true;
+    }
+}
+
+function forwards(){
+    moving_backwards = false;
+
+    isPlayer.idle=false;
+    isPlayer.runBack=false;
+    isPlayer.run=true;
+}
+function backwards() {
+    moving_backwards = true;
+
+    isPlayer.idle=false;
+    isPlayer.run=false;
+    isPlayer.runBack=true;
+}
+
 function updateStage(){
     // console.log(imgLoaded,imageAdded);
     if(imgLoaded==imageAdded && !collided && !paused){
@@ -705,10 +723,10 @@ function renderPlayer() {
 
 
             // do gun flash
-            spritesheetW.shootW=shoot.width;
-            ctxPlayer.drawImage(shoot_img, sprite_x.shootX, 0,
+            spritesheetW.shootW=player_shoot.width;
+            ctxPlayer.drawImage(player_shoot_img, sprite_x.shootX, 0,
                 player.width, player.height,
-                player.x+player.width-shoot.offsetX, player.y-shoot.offsetY, 
+                player.x+player.width-player_shoot.offsetX, player.y-player_shoot.offsetY, 
                 player.width, player.height);
         }
         else if(isPlayer.attackBack) {
@@ -725,10 +743,10 @@ function renderPlayer() {
                 player.width, player.height);
 
             // do gun flash back
-            spritesheetW.shootW=shoot.width;
-            ctxPlayer.drawImage(shootBack_img, sprite_x.shootX, 0,
+            spritesheetW.shootW=player_shoot.width;
+            ctxPlayer.drawImage(player_shootBack_img, sprite_x.shootX, 0,
                 player.width, player.height,
-                player.x+player.width-shootBack.offsetX, player.y-shootBack.offsetY, 
+                player.x+player.width-player_shootBack.offsetX, player.y-player_shootBack.offsetY, 
                 player.width, player.height);
         }
         else if(isPlayer.idle){
@@ -806,21 +824,6 @@ function checkPlayerPosition() {
         // ctxEnemy.rect(playerL, playerT, player.hitW, player.hitH);
         // ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
         // ctxEnemy.fill();
-        
-    
- // old collison
-    // if(!isEnemy.killed
-    //     && playerR>=enemyL 
-    //     && playerL>=enemyR
-    //     && playerR<=enemyR
-    //     && playerT>=enemyT
-    // ){
-
-
-                        //    a.x < b.x + b.width 
-                        // && a.x + a.width > b.x
-                        // && a.y < b.y + b.height
-                        // && a.y + a.height > b.y
 
     if(!isEnemy.killed 
         && playerL < enemyL + enemy[whichEnemyIndex].hitW
@@ -834,9 +837,6 @@ function checkPlayerPosition() {
         player.health = player.health < 0 ? 0 : player.health;
         if(player.health==0) { 
 
-            // [todo] player death
-            // sprite_x.playerX=0;
-            
             playerDeath();
         }
     } else {
@@ -855,7 +855,7 @@ function checkPlayerPosition() {
             enemy[whichEnemyIndex].health--;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
             if(enemy[whichEnemyIndex].health==0) {
-                killEnemy("CyberBike");
+                killEnemy();
             }
         } else {
             isEnemy.hurt=false;
@@ -871,7 +871,7 @@ function checkPlayerPosition() {
             enemy[whichEnemyIndex].health--;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
             if(enemy[whichEnemyIndex].health==0) {
-                killEnemy("CyberBike");
+                killEnemy();
             }
         } else {
             isEnemy.hurt=false;
@@ -916,14 +916,15 @@ var whichEnemyIndex=0;
 var startedAttack = false;
 function renderEnemy(whichEnemy) {
     
-    ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
+    
 
     if(isEnemy.killed){
+        ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
         return;
     }
 
     if(isEnemy.exploding){
-
+        ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
         // play explosion!
         spritesheetW.explosionW=explosion.width;
         ctxEnemy.drawImage(explosion_img, sprite_x.explosionX, 0,
@@ -982,7 +983,7 @@ function renderEnemy(whichEnemy) {
 
         } else if(isEnemy.hurt){
             // hurt
-            spritesheetW.enemyW=enemiesList[whichEnemyIndex][5].width;
+            spritesheetW.enemyW=enemiesList[whichEnemyIndex][6].width;
             drawEnemy(enemyImgIndex.hurt, sprite_x.enemyX, whichEnemyIndex)
 
         } else if(isEnemy.attack) {
@@ -1046,6 +1047,7 @@ function renderEnemy(whichEnemy) {
 
 // drawEnemy(enemyImgs[enemyImgIndex.hurtBack], sprite_x.enemyX)
 function drawEnemy(img, spx, ind){
+    ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
     ctxEnemy.drawImage(enemyImgs[img], spx, 0,
         enemy[ind].width, enemy[ind].height,
         enemy[ind].x, enemy[ind].y, 

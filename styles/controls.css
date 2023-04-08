@@ -1,0 +1,122 @@
+#mobileControls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    padding: 0;
+    opacity: .7;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+#mobileControls.optionsShowing,
+#mobileControls.off,
+.mobile #mobileControls.optionsShowing, 
+.mobile #mobileControls.off {
+    /*display: none;*/
+}
+.mobileControl,.btnMove  {
+    position: absolute;
+    padding: 0;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    outline: none;
+    cursor: pointer;
+
+}
+#btnsMove {
+    bottom: 10px;
+    left: 6px;
+    width: 150px;
+    height: 150px;
+    background-image: url(../images/Controls/mobileControls.png);
+    background-size: 100% auto;
+    background-position: 0 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#btnsMove.backwards{
+    background-position-y: 52%;
+    left: 8px;
+    bottom: 8px;
+}
+#btnsMove.down{
+    background-position-y: 101%;
+}
+#btnsMove.up{
+    background-position-y: -459px;
+    height: 147px;
+}
+#btnsMove.forwards{
+    background-position-y: 25%;
+}
+.btnMove,#btnJump,#btnWheelie, #btnOption{
+    width: 50px;
+    height: 56px;
+    position: absolute;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#btnMoveUp {
+    top: -6px;
+    left: 50px;
+}
+#btnMoveForwards {
+    top: 47px;
+    left: 100px;
+}
+#btnMoveBackwards {
+    top: 47px;
+    left: 0px;
+}
+#btnMoveDown {
+    top: 103px;
+    left: 50px;
+}
+#btnOption,#btnStart{
+    top: 19px;
+    left: 27px;
+    width: 85px;
+    height: 109px;
+}
+#btnStart{
+    left: 125px;
+}
+#btns{
+    background-image: url(../images/Controls/btns.png);
+    background-size: 100% auto;
+    background-position: 0 0;
+    width: 168px;
+    height: 150px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-repeat: no-repeat; 
+}
+#btns.pressedWheelie {
+    background-position: 0px -150px;
+}
+#btns.pressedJump {
+    background-position: 0px bottom;
+}
+#btnWheelie,
+#btnJump {
+    bottom: 71px;
+    right: 10px;
+    height: 70px;
+    width: 70px;
+}
+#btnWheelie {
+    right: 91px;
+    bottom: 8px;
+}

@@ -20,12 +20,18 @@
             extCSS1.setAttribute("type", "text/css");
             extCSS1.setAttribute("href", "styles/responsive.css");
 
+            var extCSS2 = document.createElement("link");
+            extCSS2.setAttribute("rel", "stylesheet");
+            extCSS2.setAttribute("type", "text/css");
+            extCSS2.setAttribute("href", "styles/controls.css");
+
             extCSS1.onload = function() {
                 cssLoadedHandler();
             }
 
             document.getElementsByTagName("head")[0].appendChild(extCSS);
             document.getElementsByTagName("head")[0].appendChild(extCSS1);
+            document.getElementsByTagName("head")[0].appendChild(extCSS2);
         }
 
         /**
@@ -40,7 +46,7 @@
 
         // array of all the external js files we want to politely load
 
-        var arrExtJs = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js','https://code.createjs.com/1.0.0/createjs.min.js','js/splittext.min.js','js/jquery-visibility.js','js/keys.js','js/init.js','js/player-vars.js','js/enemy-vars.js','js/bg-vars.js','js/main.js'];
+        var arrExtJs = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js','https://code.createjs.com/1.0.0/createjs.min.js','js/splittext.min.js','js/jquery-visibility.js','js/keys.js','js/buttons.js','js/init.js','js/player-vars.js','js/enemy-vars.js','js/bg-vars.js','js/main.js'];
 
         
 
@@ -165,7 +171,6 @@
             <canvas id="bgOverlay-canvas"></canvas>
             <canvas id="enemy-canvas"></canvas>
             <canvas id="player-canvas"></canvas>
-            
         </div>
 
         <div id="text-overlay">
@@ -175,6 +180,24 @@
             <div id="died" class="txt overlays">you died</div>
         </div>
 
+        <div id="mobileControls" class="off">
+            <div id="mobilePause"></div>
+            <div id="mobilePause2"></div>
+            <div id="btnsMove" class="mobileControl">
+                <button id="btnMoveUp" class="btnMove" />
+                <button id="btnMoveForwards" class="btnMove" />
+                <button id="btnMoveBackwards" class="btnMove" />
+                <button id="btnMoveDown" class="btnMove" />
+            </div>
+            <div id="start-select" class="mobileControl">
+                <button id="btnOption" class="mobileControl"></button>
+                <button id="btnStart" class="mobileControl"></button>
+            </div>
+            <div id="btns" class="mobileControl">
+                <button id="btnJump" class="mobileControl" />
+                <button id="btnWheelie" class="mobileControl" />
+            </div>
+        </div>
     
 
 
