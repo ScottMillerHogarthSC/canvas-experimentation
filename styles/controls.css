@@ -11,10 +11,13 @@
     -webkit-tap-highlight-color: transparent;
 }
 #mobileControls.optionsShowing,
-#mobileControls.off,
+#mobileControls,
 .mobile #mobileControls.optionsShowing, 
-.mobile #mobileControls.off {
-    /*display: none;*/
+.mobile #mobileControls.off{
+    display: none;
+}
+.mobile #mobileControls {
+    display: block;
 }
 .mobileControl,.btnMove  {
     position: absolute;

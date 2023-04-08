@@ -1,7 +1,7 @@
 var canvas = {width:576,height:320}
 var enemy_groundY = 320-96-32;
 var enemy = [{x:canvas.width,y:enemy_groundY,width:96,height:96,hitW:60,hitX:0,hitXB:36,hitH:37,hitY:59,health:200,explosionOffsetX:20,explosionOffsetY:0}, // CyberBike - whichEnemyIndex: 0
-            {x:-97,y:enemy_groundY,width:96,height:96,hitW:96,hitX:0,hitXB:0,hitH:60,hitY:36,health:200,explosionOffsetX:0,explosionOffsetY:0}]; // BattleCar - whichEnemyIndex: 1
+            {x:canvas.width,y:enemy_groundY,width:96,height:96,hitW:96,hitX:0,hitXB:0,hitH:60,hitY:36,health:200,explosionOffsetX:0,explosionOffsetY:0}]; // BattleCar - whichEnemyIndex: 1
 
 var enemyKillCount=0;
 

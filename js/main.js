@@ -1,4 +1,4 @@
-var wrap,container;
+var wrap,container,audio;
 var body = document.body,
 html = document.documentElement;
 var pageHeight = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -303,7 +303,12 @@ function init_renderPlayer() {
 
 
 function checkKeyPress(e){
-    if(e.code == "Space" && !paused && !isPlayer.dead) {
+    // console.log(e.code);
+
+    if(e.code == "KeyM") {
+        audio.volume=0;
+    }
+    else if(e.code == "Space" && !paused && !isPlayer.dead) {
         paused=true;
         gsap.to(["#paused","#overlay-bg"],0,{display:"block"})
         gsap.to("#paused",.2,{alpha:1})
@@ -448,41 +453,17 @@ function updateStage(){
 
         
         renderPlayer();
+        renderPlayerUI();
 
         
-        if(!enemyIndexFlag) {
-            setEnemyIndex();
-        } else {
-            if(!isEnemy.killed){
-                
-                renderEnemy();
-                
-            } else {
-                ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
 
-                setEnemyIndex();
-
-                // [todo] next enemy:
-
-                enemy[whichEnemyIndex].health=200;
-                enemy[whichEnemyIndex].x=canvas.width;
-
-                isEnemy.runBack=true;
-
-                isEnemy.run=false;
-                isEnemy.attack=false;
-                isEnemy.attackBack=false;
-                isEnemy.hurt=false;
-                isEnemy.hurtBack=false;
-                isEnemy.killed=false;
-                isEnemy.exploding=false;
-                sprite_x.enemyX=0;
-            }
-        }
+        renderEnemy();
 
 
-        renderUI();
         
+        
+
+
 
         if(nearEdge.left){
             ctxPlayer.beginPath();
@@ -585,7 +566,7 @@ function moveSpriteSheets(){
     }
 }
 
-function renderUI() {
+function renderPlayerUI() {
     ctxPlayer.beginPath();
     ctxPlayer.rect(10, 10, 70, 10);
     ctxPlayer.fillStyle = "#fff";
@@ -916,10 +897,20 @@ var whichEnemyIndex=0;
 var startedAttack = false;
 function renderEnemy(whichEnemy) {
     
-    
+    // init enemy:
+    if(!enemyIndexFlag) {
+
+        // only do this once:
+        setEnemyIndex();
+
+    }
+
 
     if(isEnemy.killed){
         ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
+
+        // re-initialise enemy for a new one:
+        enemyIndexFlag=false;
         return;
     }
 
@@ -932,116 +923,115 @@ function renderEnemy(whichEnemy) {
             enemy[whichEnemyIndex].x-enemy[whichEnemyIndex].explosionOffsetX, enemy[whichEnemyIndex].y-enemy[whichEnemyIndex].explosionOffsetY, 
             96, 96);
 
-    } else {
+        return;
+    }
+
+
 
 
 
                 // DO ENEMY MOVE FACTOR CLACULATIONS
 
 
-        if(isEnemy.runBack){
-            enemy[whichEnemyIndex].x-=moveFactor_enemy; 
+    if(isEnemy.runBack){
+        enemy[whichEnemyIndex].x-=moveFactor_enemy; 
 
-            if(isPlayer.run) {
+        if(isPlayer.run) {
+            enemy[whichEnemyIndex].x-=moveFactor_enemy;  
+            if(nearEdge.right){
                 enemy[whichEnemyIndex].x-=moveFactor_enemy;  
-                if(nearEdge.right){
-                    enemy[whichEnemyIndex].x-=moveFactor_enemy;  
-                }
-            }
-            if(moving_backwards) {
-
-                enemy[whichEnemyIndex].x+=moveFactor_enemy/1.5;  
-                if(isPlayer.runBack) {
-                    enemy[whichEnemyIndex].x+=moveFactor_enemy/3;  
-                }
-            }
-        } else if(isEnemy.run){
-            enemy[whichEnemyIndex].x+=moveFactor_enemy/3; 
-
-            if(isPlayer.run) {
-                if(nearEdge.right){
-                    enemy[whichEnemyIndex].x-=(moveFactor_enemy*1.5);  
-                }
-            }
-            if(moving_backwards) {
-
-                enemy[whichEnemyIndex].x+=moveFactor_enemy/2; 
-                if(isPlayer.runBack) {
-                    enemy[whichEnemyIndex].x+=moveFactor_enemy;  
-                }
             }
         }
+        if(moving_backwards) {
 
-
-
-            
-
-        if(isEnemy.hurtBack){
-            // hurtback
-            spritesheetW.enemyW=enemiesList[whichEnemyIndex][7].width;
-            drawEnemy(enemyImgIndex.hurtBack, sprite_x.enemyX, whichEnemyIndex)
-
-        } else if(isEnemy.hurt){
-            // hurt
-            spritesheetW.enemyW=enemiesList[whichEnemyIndex][6].width;
-            drawEnemy(enemyImgIndex.hurt, sprite_x.enemyX, whichEnemyIndex)
-
-        } else if(isEnemy.attack) {
-            if(!startedAttack){
-                startedAttack=true;
-                sprite_x.enemyX=0;
+            enemy[whichEnemyIndex].x+=moveFactor_enemy/1.5;  
+            if(isPlayer.runBack) {
+                enemy[whichEnemyIndex].x+=moveFactor_enemy/3;  
             }
-            spritesheetW.enemyW=enemiesList[whichEnemyIndex][4].width;    
-            //attack
-            drawEnemy(enemyImgIndex.attack, sprite_x.enemyX, whichEnemyIndex);
-            
-        } else if(isEnemy.attackBack){
-            //attackBack
-            spritesheetW.enemyW=enemiesList[whichEnemyIndex][5].width;
-            drawEnemy(enemyImgIndex.attackBack, sprite_x.enemyX, whichEnemyIndex);
-        } else if(isEnemy.runBack) {
-            // walkBack
-            spritesheetW.enemyW=enemiesList[whichEnemyIndex][3].width;
-            drawEnemy(enemyImgIndex.walkBack, sprite_x.enemyX, whichEnemyIndex);
-
-        } else if(isEnemy.run) {
-            //walk
-            spritesheetW.enemyW=enemiesList[whichEnemyIndex][2].width;
-            drawEnemy(enemyImgIndex.walk, sprite_x.enemyX, whichEnemyIndex);
-
         }
+    } else if(isEnemy.run){
+        enemy[whichEnemyIndex].x+=moveFactor_enemy/3; 
 
-
-
-        // [todo] draw enemy health
-        var enemyBarX = enemy[whichEnemyIndex].x+10;
-        var enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
-        var enemyBarW = enemy[whichEnemyIndex].width-56;
-        if(isEnemy.runBack){
-            enemyBarX = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB+10;
-            enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
-            enemyBarW = enemy[whichEnemyIndex].width-enemy[whichEnemyIndex].hitXB-20;
-        }
-
-    
-
-            ctxEnemy.beginPath();
-            ctxEnemy.rect(enemyBarX, enemyBarY, enemyBarW, 5);
-            ctxEnemy.fillStyle = "rgba(255,255,255,0.5)";
-            ctxEnemy.fill();
-
-            var enemyhealthBarW=Math.floor((enemy[whichEnemyIndex].health/200)*enemyBarW);
-
-
-            ctxEnemy.beginPath();
-            ctxEnemy.rect(enemyBarX+1, enemyBarY+1, enemyhealthBarW, 3);
-            if(isEnemy.hurt) {
-                ctxEnemy.fillStyle = "rgba(255,0,0,0.7)";
-            } else {
-                ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
+        if(isPlayer.run) {
+            if(nearEdge.right){
+                enemy[whichEnemyIndex].x-=(moveFactor_enemy*1.5);  
             }
-            ctxEnemy.fill();
+        }
+        if(moving_backwards) {
+
+            enemy[whichEnemyIndex].x+=moveFactor_enemy/2; 
+            if(isPlayer.runBack) {
+                enemy[whichEnemyIndex].x+=moveFactor_enemy;  
+            }
+        }
     }
+
+    if(isEnemy.hurtBack){
+        // hurtback
+        spritesheetW.enemyW=enemiesList[whichEnemyIndex][7].width;
+        drawEnemy(enemyImgIndex.hurtBack, sprite_x.enemyX, whichEnemyIndex)
+
+    } else if(isEnemy.hurt){
+        // hurt
+        spritesheetW.enemyW=enemiesList[whichEnemyIndex][6].width;
+        drawEnemy(enemyImgIndex.hurt, sprite_x.enemyX, whichEnemyIndex)
+
+    } else if(isEnemy.attack) {
+        if(!startedAttack){
+            startedAttack=true;
+            sprite_x.enemyX=0;
+        }
+        spritesheetW.enemyW=enemiesList[whichEnemyIndex][4].width;    
+        //attack
+        drawEnemy(enemyImgIndex.attack, sprite_x.enemyX, whichEnemyIndex);
+        
+    } else if(isEnemy.attackBack){
+        //attackBack
+        spritesheetW.enemyW=enemiesList[whichEnemyIndex][5].width;
+        drawEnemy(enemyImgIndex.attackBack, sprite_x.enemyX, whichEnemyIndex);
+    } else if(isEnemy.runBack) {
+        // walkBack
+        spritesheetW.enemyW=enemiesList[whichEnemyIndex][3].width;
+        drawEnemy(enemyImgIndex.walkBack, sprite_x.enemyX, whichEnemyIndex);
+
+    } else if(isEnemy.run) {
+        //walk
+        spritesheetW.enemyW=enemiesList[whichEnemyIndex][2].width;
+        drawEnemy(enemyImgIndex.walk, sprite_x.enemyX, whichEnemyIndex);
+
+    }
+
+
+    renderEnemyUI();
+    
+}
+
+function renderEnemyUI(){
+    // [todo] draw enemy health
+    var enemyBarX = enemy[whichEnemyIndex].x+10;
+    var enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
+    var enemyBarW = enemy[whichEnemyIndex].width-56;
+    if(isEnemy.runBack){
+        enemyBarX = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB+10;
+        enemyBarW = enemy[whichEnemyIndex].width-enemy[whichEnemyIndex].hitXB-20;
+    }
+
+    ctxEnemy.beginPath();
+    ctxEnemy.rect(enemyBarX, enemyBarY, enemyBarW, 5);
+    ctxEnemy.fillStyle = "rgba(255,255,255,0.5)";
+    ctxEnemy.fill();
+
+    var enemyhealthBarW=Math.floor((enemy[whichEnemyIndex].health/200)*enemyBarW);
+
+
+    ctxEnemy.beginPath();
+    ctxEnemy.rect(enemyBarX+1, enemyBarY+1, enemyhealthBarW, 3);
+    if(isEnemy.hurt) {
+        ctxEnemy.fillStyle = "rgba(255,0,0,0.7)";
+    } else {
+        ctxEnemy.fillStyle = "rgba(0,255,0,0.5)";
+    }
+    ctxEnemy.fill();
 }
 
 
@@ -1098,6 +1088,23 @@ function setEnemyIndex(whichEnemy){
             enemyImgIndex.attackBack=i;
         }
     }
+
+
+    // reset Enemy Vars:
+
+    enemy[whichEnemyIndex].health=200;
+    enemy[whichEnemyIndex].x=canvas.width;
+
+    isEnemy.runBack=true;
+
+    isEnemy.run=false;
+    isEnemy.attack=false;
+    isEnemy.attackBack=false;
+    isEnemy.hurt=false;
+    isEnemy.hurtBack=false;
+    isEnemy.killed=false;
+    isEnemy.exploding=false;
+    sprite_x.enemyX=0;
 }
 
 function killEnemy(whichEnemy){

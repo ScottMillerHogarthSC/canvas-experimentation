@@ -14,6 +14,7 @@ function init()
     // main content
     wrap = document.getElementById("wrap");
     container = document.getElementById("container");
+    audio = document.getElementById("audio");
 
     
     resizeWindow();
@@ -32,9 +33,21 @@ function init()
     //     audio.setAttribute('src','01_stars_are_my_guide.ogg');
 
     if (audio.canPlayType('audio/mpeg')) {
-        audio.setAttribute('src','http://scottapmiller.com/shredded-midi.mp3');
+        if(!window.location.search.includes("mute")){
+            if(!window.location.href.includes("scottmiller")){
+                console.log("online")
+                audio.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
+            } else {
+                console.log("local")
+                audio.setAttribute('src','shredded-midi.mp3');
+            }
+
+        } else {
+            console.log("audio muted");
+            start();
+        }
     } 
-     else {
+    else {
         console.log("browser doesnt support audio");
     }
 
