@@ -69,7 +69,10 @@ var paused=false;
 var muted = false;
 var moving_backwards = false; 
 
-var tlJump = gsap.timeline({paused:true,onComplete:function(){keysWait=false; isPlayer.jump=false}});
+var tlJump = gsap.timeline({paused:true,onComplete:function(){
+    keysWait=false; 
+    isPlayer.jump=false
+}});
 
 var highlights=false;
 
@@ -316,16 +319,26 @@ function checkKeyPress(e){
             muted=false;
         }
     }
-    else if(e.code == "Space" && !paused && !isPlayer.dead) {
+    else if(e.code == "Space") {
+        gamePause();
+    } else {
+        gamePause();
+    }
+}
+
+function gamePause(){
+    
+    if(!paused && !isPlayer.dead){
         paused=true;
-        gsap.to(["#paused","#overlay-bg"],0,{display:"block"})
-        gsap.to("#paused",.2,{alpha:1})
+        gsap.to(["#paused","#overlay-bg","#start-select"],0,{display:"block"})
+        gsap.to(["#paused","#start-select"],.2,{alpha:1})
         gsap.to("#overlay-bg",1,{alpha:1})
 
         audio.pause();
-        
     } else {
+
         paused=false;
+        gsap.to(["#start-select"],0,{alpha:0})
         gsap.to(["#paused","#overlay-bg"],0,{alpha:0,display:"none"})
 
         if(!isPlayingAudio) audio.play();
@@ -365,7 +378,15 @@ function checkKeys(){
         }
 
         if(Keyboard.isDown(Keyboard.UP)){
-            jump();
+            if(!jumping){
+                jump();
+            } else {
+                if(!moving_backwards) isPlayer.idle=true;
+                else isPlayer.idleBack=true;
+            }
+        }
+        if(!Keyboard.isDown(Keyboard.UP)){
+            jumping=false;
         }
 
         if(!Keyboard.isDown(Keyboard.LEFT) 
@@ -385,6 +406,9 @@ function checkKeys(){
         }
     }
 
+    
+    
+
 }
 
 function jump() {
@@ -392,6 +416,7 @@ function jump() {
     isPlayer.idleBack=false;
     isPlayer.jump=true;
     keysWait=true;
+    jumping=true;
     tlJump.seek(0).play();
 }
 
@@ -474,19 +499,19 @@ function updateStage(){
 
 
         if(nearEdge.left){
-            ctxPlayer.beginPath();
-            ctxPlayer.rect(0, 0, 1, canvas.height);
-            ctxPlayer.fillStyle = "red";
-            ctxPlayer.fill();
+            // ctxPlayer.beginPath();
+            // ctxPlayer.rect(0, 0, 1, canvas.height);
+            // ctxPlayer.fillStyle = "red";
+            // ctxPlayer.fill();
         } else {
             
 
         }
         if(nearEdge.right){
-            ctxPlayer.beginPath();
-            ctxPlayer.rect(canvas.width-1, 0, canvas.width, canvas.height);
-            ctxPlayer.fillStyle = "red";
-            ctxPlayer.fill();
+            // ctxPlayer.beginPath();
+            // ctxPlayer.rect(canvas.width-1, 0, canvas.width, canvas.height);
+            // ctxPlayer.fillStyle = "red";
+            // ctxPlayer.fill();
         } else {
             
         }
@@ -495,6 +520,8 @@ function updateStage(){
         moveSpriteSheets();
         
         checkPlayerPosition();
+
+        checkGroundY();
     }
 }
 
@@ -507,12 +534,9 @@ function moveSpriteSheets(){
         
 
         if(isPlayer.dead){
-            if(!moving_backwards) sprite_x.playerX+=player.width;
-            else {
-                //[todo] - stop player when backwards:
-                // sprite_x.playerX-=player.width;
-            }
-
+            
+            sprite_x.playerX+=player.width;
+            
             if(sprite_x.playerX>=spritesheetW.playerW || sprite_x.playerX<=0) {
                 // only play this anim once!
                 collided=true;
@@ -758,7 +782,7 @@ function renderPlayer() {
 }
 
 function checkPlayerPosition() {
-    if(player.x>(canvas.width-150+(player.width/2))){
+    if(player.x>(canvas.width-100+(player.width/2))){
         nearEdge.right=true;
     } else {
         nearEdge.right=false;
@@ -779,6 +803,7 @@ function checkPlayerPosition() {
     }
 
  
+
 
 
 
@@ -899,7 +924,15 @@ function checkPlayerPosition() {
     }
 }
 
+function checkGroundY(){
+    // console.log(fg.x,player.x)
+    // if(fg.x<-256 && fg.x>-392){
 
+    // } 
+    // if(player.x<136){
+    //     console.log("yo")
+    // }
+}
     
 var moveFactor_enemy = 1;
 var whichEnemyIndex=0;
@@ -1029,7 +1062,7 @@ function renderEnemyUI(){
     ctxEnemy.fillStyle = "rgba(255,255,255,0.5)";
     ctxEnemy.fill();
 
-    var enemyhealthBarW=Math.floor((enemy[whichEnemyIndex].health/200)*enemyBarW);
+    var enemyhealthBarW=Math.floor((enemy[whichEnemyIndex].health/enemy[whichEnemyIndex].fullhealth)*enemyBarW);
 
 
     ctxEnemy.beginPath();
@@ -1100,7 +1133,7 @@ function setEnemyIndex(whichEnemy){
 
     // reset Enemy Vars:
 
-    enemy[whichEnemyIndex].health=200;
+    enemy[whichEnemyIndex].health=enemy[whichEnemyIndex].fullhealth;
     enemy[whichEnemyIndex].x=canvas.width;
 
     isEnemy.runBack=true;
@@ -1126,10 +1159,14 @@ function playerDeath(){
 
         spritesheetW.playerW=player_dead.width;
 
-        if(!moving_backwards) sprite_x.playerX=0;
-        else sprite_x.playerX=(spritesheetW.playerW);
-        onlyDieOnce=true;
+        if(!moving_backwards) {
+            sprite_x.playerX=0;
+            
+        }
         isPlayer.dead=true;
+        // else sprite_x.playerX=(spritesheetW.playerW);
+        onlyDieOnce=true;
+        
     }
 }
 

@@ -25,6 +25,9 @@ function bindButtons(){
     btnJump.addEventListener("mousedown", mobileBtnPressed);
     btnWheelie.addEventListener("mousedown", mobileBtnPressed);
 
+    btnStart.addEventListener('touchend', gamePause);
+
+
 // mobile buttons released:
 
     btnMoveUp.addEventListener("touchend", mobileBtnReleased);
@@ -46,24 +49,23 @@ function mobileBtnPressed(ev){
     if(ev.cancelable) {
         ev.preventDefault();
     }
-
-    
-        if(this.id=="btnJump") {
-        	createjs.Ticker.addEventListener("tick", jump);
-            $('#btns').addClass('pressedJump');
-        }
-        if(this.id=="btnWheelie") {
-        	createjs.Ticker.addEventListener("tick", shoot);
-            $('#btns').addClass('pressedWheelie');
-        }
-        if(this.id=="btnMoveForwards") {
-        	createjs.Ticker.addEventListener("tick", forwards);
-            $('#btnsMove').addClass('forwards');
-        }
-        if(this.id=="btnMoveBackwards") {
-        	createjs.Ticker.addEventListener("tick", backwards);
-            $('#btnsMove').addClass('backwards');
-        }
+    if(this.id=="btnJump") {
+    	// createjs.Ticker.addEventListener("tick", jump);
+        jump();
+        $('#btns').addClass('pressedJump');
+    }
+    if(this.id=="btnWheelie") {
+    	createjs.Ticker.addEventListener("tick", shoot);
+        $('#btns').addClass('pressedWheelie');
+    }
+    if(this.id=="btnMoveForwards") {
+    	createjs.Ticker.addEventListener("tick", forwards);
+        $('#btnsMove').addClass('forwards');
+    }
+    if(this.id=="btnMoveBackwards") {
+    	createjs.Ticker.addEventListener("tick", backwards);
+        $('#btnsMove').addClass('backwards');
+    }
 }
 
 function mobileBtnReleased(ev) {
@@ -83,7 +85,7 @@ function mobileBtnReleased(ev) {
 
     }
     if(this.id=="btnJump") {
-    	createjs.Ticker.removeEventListener("tick", jump);
+    	// createjs.Ticker.removeEventListener("tick", jump);
         $('#introBtnK').removeClass('pressed');
         $('#btns').removeClass('pressedJump');
     }

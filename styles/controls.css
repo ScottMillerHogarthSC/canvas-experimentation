@@ -86,6 +86,17 @@
     top: 103px;
     left: 50px;
 }
+#start-select {
+    position: absolute;
+    right: 418px;
+    bottom: 0px;
+    width: 238px;
+    height: 128px;
+    opacity: 1;
+    background-image: url(../images/Controls/start-select.png);
+    background-size: 100% auto;
+    opacity: 0;
+}
 #btnOption,#btnStart{
     top: 19px;
     left: 27px;
