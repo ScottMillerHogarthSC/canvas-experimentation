@@ -23,7 +23,6 @@ var buildingsList = [
 ];
 var buildingsImgs = [];
 
-var fg = {url:"images/Foreground/fg.png", x:0,y:0,width:1152,height:324};
 
 
 var numOfBuildings = buildingsList.length;

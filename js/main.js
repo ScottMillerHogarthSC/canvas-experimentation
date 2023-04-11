@@ -98,7 +98,7 @@ function initCanvasAnim(){
         imageAdded++;
         fg_img.src = fg.url;
         fg_img.onload = function(){
-            ctxBG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
+            ctxFG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
             imgLoaded++;
         }
 
@@ -457,6 +457,7 @@ function updateStage(){
         // background 
         if(!isPlayer.dead){
             moveBg();
+            moveFg();
 
             ctxBG.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -470,9 +471,7 @@ function updateStage(){
                 ctxBG.drawImage(buildingsImgs[i], (buildingsList[i].x+buildingsList[i].width), bgBuildings.y, bgBuildings.width, bgBuildings.height);
             }
             
-            ctxBG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
-            ctxBG.drawImage(fg_img, (fg.x+fg.width), fg.y, fg.width, fg.height);
-            ctxBG.drawImage(fg_img, (fg.x-fg.width), fg.y, fg.width, fg.height);
+            renderFG();
 
             
 
@@ -490,7 +489,7 @@ function updateStage(){
 
         
 
-        renderEnemy();
+        // renderEnemy();
 
 
         
@@ -521,11 +520,34 @@ function updateStage(){
         
         checkPlayerPosition();
 
-        checkGroundY();
+        
     }
 }
 
+function moveFg(){
+    if(!moving_backwards){
+        fg.x=fg.x-(moveFactor*x_moveAmount_fg);
+        obstacles.x=obstacles.x-(moveFactor*x_moveAmount_fg);
+    } else {
+        fg.x=fg.x+(moveFactor*x_moveAmount_fg);
+        obstacles.x=obstacles.x+(moveFactor*x_moveAmount_fg);
+    }
 
+}
+
+function renderFG(){
+    ctxFG.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctxFG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
+    ctxFG.drawImage(fg_img, (fg.x+fg.width), fg.y, fg.width, fg.height);
+    ctxFG.drawImage(fg_img, (fg.x-fg.width), fg.y, fg.width, fg.height);
+
+    // ctxFG.beginPath();
+    // // ctxFG.rect(obstacle.x, player.y+player.hitY, player.hitW, player.hitH);
+    // ctxFG.rect(obstacles.x, player_groundY, 32, 1);
+    // ctxFG.fillStyle = "#fff";
+    // ctxFG.fill();
+}
 
 function moveSpriteSheets(){
     counter++;
@@ -637,15 +659,7 @@ function renderPlayer() {
         //     ctxPlayer.fill();
     }
 
-    
-    if(isPlayer.run){
-        player.x+=2;
-    } 
-    if(isPlayer.runBack){
-        player.x-=2;
 
-        // if(player.x>=-26) { player.x-=5; }
-    }
 
     if(isPlayer.dead){ 
 
@@ -782,6 +796,40 @@ function renderPlayer() {
 }
 
 function checkPlayerPosition() {
+
+
+    // console.log(player.y)
+    if(player.x > obstacles.x && player.y >= obstacles.y && player.x < obstacles.x+obstacles.width){
+        player.x-=2;
+        x_moveAmount_bg=0;
+    } else {
+        x_moveAmount_bg=1;
+    }
+    
+
+    if(isPlayer.run){
+        player.x+=2;
+    } 
+    if(isPlayer.runBack){
+        player.x-=2;
+
+        if(player.x > obstacles.x+obstacles.width && player.x < obstacles.x+obstacles.width+player.hitW && player.y >= obstacles.y){
+            x_moveAmount_bg=0;
+
+            player.x+=2;
+        }
+
+    }
+
+    if(player.x > obstacles.x && player.x < (obstacles.x+obstacles.width+player.hitW)){
+        player.y=player_groundY-32;
+    } else {
+        player.y=player_groundY;
+    }
+
+    
+    
+
     if(player.x>(canvas.width-100+(player.width/2))){
         nearEdge.right=true;
     } else {
@@ -801,6 +849,8 @@ function checkPlayerPosition() {
     if((player.x<=0)){
         player.x=0;
     }
+
+    
 
  
 
@@ -924,15 +974,6 @@ function checkPlayerPosition() {
     }
 }
 
-function checkGroundY(){
-    // console.log(fg.x,player.x)
-    // if(fg.x<-256 && fg.x>-392){
-
-    // } 
-    // if(player.x<136){
-    //     console.log("yo")
-    // }
-}
     
 var moveFactor_enemy = 1;
 var whichEnemyIndex=0;
@@ -1172,15 +1213,16 @@ function playerDeath(){
 
 var moveFactor = .5;
 var x_moveAmount_fg = 1.15;
+var x_moveAmount_bg = 1;
 function moveBg(){
     
     if(!moving_backwards){
         if(isPlayer.run){
-            moveFactor = 1;
+            moveFactor = x_moveAmount_bg;
             if(nearEdge.right) {
-                moveFactor = 1.5;
+                moveFactor = x_moveAmount_bg*1.5;
             }
-        } else {moveFactor = .5;}
+        } else {moveFactor = x_moveAmount_bg*.5;}
 
         bgOverlay.x=bgOverlay.x-(moveFactor);
 
@@ -1194,13 +1236,13 @@ function moveBg(){
             buildingsList[i].x=buildingsList[i].x-(moveFactor);
             if(buildingsList[i].x<-((bgBuildings.width*buildingsImgs.length)-canvas.width)) buildingsList[i].x = canvas.width;
         }
-
-        fg.x=fg.x-(moveFactor*x_moveAmount_fg);
+        // moved to moveFg 
+        // fg.x=fg.x-(moveFactor*x_moveAmount_fg);
         
     } else if(moving_backwards){
         
         if(isPlayer.runBack){
-            moveFactor = 1;
+            moveFactor = x_moveAmount_bg;
         } else {moveFactor = 0;}
     
         bgOverlay.x=bgOverlay.x-(moveFactor);
@@ -1217,7 +1259,8 @@ function moveBg(){
 
         }
 
-        fg.x=fg.x+(moveFactor*x_moveAmount_fg);
+        // moved to moveFg 
+        // fg.x=fg.x+(moveFactor*x_moveAmount_fg);
     }
 
     if(bgOverlay.x<-bgOverlay.width) bgOverlay.x = 0;
