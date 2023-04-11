@@ -75,10 +75,7 @@ function preloadAudio(){
 function failedtoLoadAudio(e){
     console.log("COULD NOT LOAD AUDIO");
 
-
     start();
-
-
 }
 
 var audioLoaded = false;
