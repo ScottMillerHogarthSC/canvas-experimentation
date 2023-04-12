@@ -57,6 +57,7 @@ function init()
     } 
     else {
         console.log("browser doesnt support audio");
+        noAudio=true;
     }
 
 
@@ -80,7 +81,7 @@ function preloadAudio(){
 
 function failedtoLoadAudio(e){
     console.log("COULD NOT LOAD AUDIO");
-
+    noAudio=true;
     start();
 }
 

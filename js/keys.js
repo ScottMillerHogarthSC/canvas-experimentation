@@ -26,7 +26,7 @@ Keyboard._onKeyDown = function (event) {
     }
     if(firstpress){
         firstpress=false;
-        audio.play();
+        if(!noAudio) audio.play();
     }
 };
 

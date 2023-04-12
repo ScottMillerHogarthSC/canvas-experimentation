@@ -1,4 +1,4 @@
-var wrap,container,audio;
+var wrap,container,audio,noAudio=false;
 var body = document.body,
 html = document.documentElement;
 var pageHeight = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -309,7 +309,7 @@ function init_renderPlayer() {
         }
 
         // tlJump.to(player,.9,{y:player_groundY-player.jumpH,ease:"power3.out"},0).to(player,.8,{y:player_groundY,ease:"sine.in"},"<.7")
-        tlJump.to(player,.9,{y:player_ground.y-player.jumpH,ease:"power3.out"},0).to(player,.8,{y:player_ground.y,ease:"sine.in"},"<.7")
+        tlJump.to(player,.9,{y:"-="+player.jumpH+"px",ease:"power3.out",yoyo:true,repeat:1},0)
         // tlJump.to("#player-canvas",.9,{y:-player.jumpH,ease:"power3.out"},0).to("#player-canvas",.8,{y:0,ease:"sine.in"},"<.7")
         tlJump.duration(.6);
 
@@ -554,13 +554,6 @@ function renderFG(){
     ctxFG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
     ctxFG.drawImage(fg_img, (fg.x+fg.width), fg.y, fg.width, fg.height);
     ctxFG.drawImage(fg_img, (fg.x-fg.width), fg.y, fg.width, fg.height);
-
-    if(highlights){
-        ctxFG.beginPath();
-        ctxFG.rect(obstacles.x, obstacles.y, obstacles.w, obstacles.h);
-        ctxFG.fillStyle = "rgba(255,255,0,.5)";
-        ctxFG.fill();
-    }
 }
 
 function moveSpriteSheets(){
@@ -831,7 +824,12 @@ function checkPlayerPosition() {
     
 
  
-
+    if(highlights){
+        ctxFG.beginPath();
+        ctxFG.rect(obstacles.x, obstacles.y, obstacles.w, obstacles.h);
+        ctxFG.fillStyle = "rgba(255,255,0,.5)";
+        ctxFG.fill();
+    }
 
 
 // DEFINE PLAYER AREA
@@ -840,99 +838,74 @@ function checkPlayerPosition() {
     var playerL = player.x+player.hitX;
     if(moving_backwards) { playerL = player.x+player.hitXB; }
     var playerT = player.y+player.hitY;
-    var playerB = player.y+player.hitH;
+    var playerB = playerT+player.hitH;
     var playerH = player.hitH;
 
+    var obstacleR = obstacles.x+obstacles.w; 
+    var obstacleL = obstacles.x;
+    var obstacleT = obstacles.y;
+    var obstacleB = obstacles.y+obstacles.h;
 
 
-    // OBSTACLES + PLATFORMS:
-    if(!moving_backwards){
 
-// if walking into obsatacle (forwards)
-        if(playerR > obstacles.x && playerL < obstacles.x+obstacles.width && playerB >= obstacles.y){
-            player.x-=2;
+/////// OBSTACLES + PLATFORMS: //////////
+
+// if within obstacle but lower than its ground level:
+        if(playerR > obstacleL && playerL < obstacleR && playerB > obstacleT){
+            
             x_moveAmount_bg=0;
-        } else {
+
+// if within obstacle but above it:
+        } else if(playerR > obstacleL && playerL < obstacleR && playerB <= obstacleT){ 
+
             x_moveAmount_bg=1;
-        }
-        
-// if running
-        if(isPlayer.run){
-            player.x+=2;
-
-
-// if running into obsatacle (forwards) and not jumping
-            if(playerL > obstacles.x && playerL < obstacles.x+obstacles.width+player.hitW && playerB >= obstacles.y && !isPlayer.jump){
-                x_moveAmount_bg=0;
-
-                player.x-=2;
-            }
-        } 
-    }
-
-    else {
-        if(isPlayer.runBack){
-            player.x-=2;
-
-            if(player.x+player.hitXB > obstacles.x+obstacles.width && player.x+player.hitXB < obstacles.x+obstacles.width+player.hitW && player.y >= obstacles.y && !isPlayer.jump){
-                x_moveAmount_bg=0;
-
+            
+            if(isPlayer.run){
                 player.x+=2;
             }
+            if(isPlayer.runBack){
+                player.x-=2;
+            }
 
-        }
-    }
 
-    if(!moving_backwards){
-
-// if we're within the platform area (going forwards):
-        if(player.x > obstacles.x && player.x < (obstacles.x+obstacles.width+player.hitW)){
             
-            // console.log(tlJump.isActive());
-
-            if(player.y==player_ground.y){
-                player.y=player_ground.y-32;
-
-                // gsap.to(player,.3,{y:player_ground.y-32})
-            } else {
-                // var lineDuration = tlJump.duration();
+            if(tlJump.isActive()){
+                tlJump.pause();
                 
-                // tlJump.pause();
-                // tlJump.seek(lineDuration, false )
-                // gsap.to(player,0,{y:player_ground.y-32})
-
-            }
-
-        } else {
-            if(player.y!=player_ground.y && !tlJump.isActive()){
-               player.y=player_ground.y;
-            }
-        }
-
-    } else{
-
-// if we're within the platform area (going backwards):
-        if(player.x+player.hitXB > obstacles.x && player.x+player.hitXB < (obstacles.x+obstacles.width+player.hitW)){
-            
-            if(player.y==player_ground.y){
-                // player.y=player_ground.y-32;
-                gsap.to(player,.3,{y:player_ground.y-32})
+                if(player.y<obstacleT-player.height){
+                    gsap.to(player,.2,{y:obstacleT-player.height,ease:"power3.in",onComplete:function(){
+                        keysWait=false; 
+                        isPlayer.jump=false
+                        tljump_playing = false;
+                        player_ground.y=playerB;
+                    }},0)
+                } else {
+                    gsap.to(player,0.01,{y:obstacleT-player.height,onComplete:function(){
+                        keysWait=false; 
+                        isPlayer.jump=false
+                        tljump_playing = false;
+                        player_ground.y=playerB;
+                    }},0)
+                }
             } else {
-                // var lineDuration = tlJump.duration();
-
-                // tlJump.pause();
-                // tlJump.seek(lineDuration, false )
-                gsap.to(player,0,{y:player_ground.y-32})
+                // player.y=obstacleT-player.hitH;
             }
 
+
+// not within obstacle
         } else {
-            if(player.y!=player_ground.y && !tlJump.isActive()){
-               player.y=player_ground.y;
+            if(!tlJump.isActive()){
+                player.y=player_ground.y;
             }
 
+            x_moveAmount_bg=1;
+            if(isPlayer.run){
+                player.x+=2;
+            }
+            if(isPlayer.runBack){
+                player.x-=2;
+            }
         }
-    }
-
     
     
 
