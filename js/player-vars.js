@@ -1,5 +1,6 @@
-var player_groundY = 320-48-32;
-var player = {x:0,y:player_groundY,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12,health:500,jumpH:60};
+var player_ground={y:320-48-32}
+// player_ground.y = 320-48-32;
+var player = {x:0,y:player_ground.y,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12,health:500,jumpH:60};
 
 
 var isPlayer = {

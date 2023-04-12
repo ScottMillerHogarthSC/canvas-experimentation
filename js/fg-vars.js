@@ -9,6 +9,7 @@ for(i=0; i<(fg.width/fg.cellW); i++){
 }
 fgObstacles[12]=true;
 var obstacles = {x:0}
-obstacles.x=352;
-obstacles.y=240;
-obstacles.width=(32*4);
+obstacles.x=384;
+obstacles.y=(32*8);
+obstacles.w=(32*4);
+obstacles.h=32;

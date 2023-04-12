@@ -15,6 +15,12 @@ function init()
     if(window.location.search.includes("mute")){
         muted=true;
     }
+    if(window.location.search.includes("zoom")){
+        zoomIn=true;
+        if(window.location.search.split.length>0){
+            zoomSpeed=Number(window.location.search.split("zoom=")[1]);
+        }
+    }
 
 
 
