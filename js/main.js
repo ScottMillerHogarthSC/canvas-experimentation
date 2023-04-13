@@ -66,6 +66,7 @@ var isSongToEnding=false;
 var collided=false; 
 var paused=false;
 var muted = false;
+var noEnemies = false;
 var moving_backwards = false; 
 
 var tlJump = gsap.timeline({paused:true});
@@ -349,15 +350,11 @@ function checkKeys(){
     
         if (Keyboard.isDown(Keyboard.RIGHT) && Keyboard.isDown(Keyboard.LEFT)) { 
             if(moving_backwards){
-                moving_backwards = false;
-                isPlayer.runBack=false;
-                isPlayer.idle=false;
-                isPlayer.run=true;
+                
+                forwards();
             } else {
-                moving_backwards = true;
-                isPlayer.idle=false;
-                isPlayer.run=false;
-                isPlayer.runBack=true;
+
+                backwards();
             }
         }
         else if (Keyboard.isDown(Keyboard.LEFT)) { 
@@ -411,6 +408,7 @@ var jumpBtnDown=false;
 function jump() {
     isPlayer.idle=false;
     isPlayer.idleBack=false;
+    isPlayer.attack=false;
     isPlayer.jump=true;
     keysWait=true;
     jumpBtnDown=true;
@@ -431,9 +429,14 @@ function shoot(){
 }
 
 function forwards(){
+    if(moving_backwards){
+        //[todo]- turning around moves back a bit??
+        player.x=player.x+24;
+    }
+
     moving_backwards = false;
 
-
+    isPlayer.attack=false;
     isPlayer.idle=false;
     isPlayer.runBack=false;
     isPlayer.run=true;
@@ -445,6 +448,7 @@ function backwards() {
     }
     moving_backwards = true;
 
+    isPlayer.attack=false;
     isPlayer.idle=false;
     isPlayer.run=false;
     isPlayer.runBack=true;
@@ -493,8 +497,8 @@ function updateStage(){
         renderPlayerUI();
 
         
-
-        renderEnemy();
+        if(!noEnemies){
+            renderEnemy();}
 
 
         
@@ -578,7 +582,6 @@ function moveSpriteSheets(){
         if(keysWait){
             if(sprite_x.playerX>=spritesheetW.playerW) {
                 sprite_x.playerX=0;
-                // keysWait=false;
             }
         } else {
             if(sprite_x.playerX>=spritesheetW.playerW) sprite_x.playerX=0;
@@ -601,8 +604,6 @@ function moveSpriteSheets(){
             if(sprite_x.enemyX>=spritesheetW.enemyW) sprite_x.enemyX=0;
         }
 
-        // console.log("sprite_x.enemyX: "+sprite_x.enemyX)
-        
 
         if(isEnemy.exploding){
             sprite_x.explosionX+=(96);
@@ -790,7 +791,8 @@ function renderPlayer() {
 
 }
 
-var onObstacle=false;
+var onObstacle=-1;
+var curr_obs=0;
 function checkPlayerPosition() {
     
 // player is near edges of screen
@@ -841,23 +843,25 @@ function checkPlayerPosition() {
     let playerB = playerT+player.hitH;
 
     
-
-    let obstacleR = obstacle[0].x+obstacle[0].w; 
-    let obstacleL = obstacle[0].x;
-    let obstacleT = obstacle[0].y;
-    let obstacleB = obstacle[0].y+obstacle[0].h;
+    curr_obs=0;
+    let obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+    let obstacleL = obstacle[curr_obs].x;
+    let obstacleT = obstacle[curr_obs].y;
+    let obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
 
     if(obstacleR < playerL){
-        obstacleR = obstacle[1].x+obstacle[1].w; 
-        obstacleL = obstacle[1].x;
-        obstacleT = obstacle[1].y;
-        obstacleB = obstacle[1].y+obstacle[1].h;
+        curr_obs++;
+        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+        obstacleL = obstacle[curr_obs].x;
+        obstacleT = obstacle[curr_obs].y;
+        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
     }
     if(obstacleR < playerL){
-        obstacleR = obstacle[2].x+obstacle[2].w; 
-        obstacleL = obstacle[2].x;
-        obstacleT = obstacle[2].y;
-        obstacleB = obstacle[2].y+obstacle[2].h;
+        curr_obs++;
+        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+        obstacleL = obstacle[curr_obs].x;
+        obstacleT = obstacle[curr_obs].y;
+        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
     }
 
 
@@ -867,12 +871,22 @@ function checkPlayerPosition() {
 // if within obstacle but lower than its ground level:
         if(playerR > obstacleL && playerL < obstacleR && playerB > obstacleT){
             
+            if(playerR > obstacleL && playerL < obstacleL){
+                player.x=obstacleL-player.hitW;
+            }
+            if(playerL < obstacleR && playerR > obstacleR){
+                // player.x=obstacleR-player.hitXB;
+            }
             x_moveAmount_bg=0;
+
+            //[todo]- slow down enemy speed here- we're running but not moving:
+            moveFactor_enemy=.5;
 
 // if within obstacle but above it:
         } else if(playerR > obstacleL && playerL < obstacleR && playerB < obstacleT){ 
 
             x_moveAmount_bg=1;
+            moveFactor_enemy=1;
             
             if(isPlayer.run){
                 player.x+=2;
@@ -882,7 +896,7 @@ function checkPlayerPosition() {
             }
 
             // you're jumping into the obs area but not yet on it's level
-            if(tlJump.isActive() && !onObstacle) {
+            if(tlJump.isActive() && onObstacle==-1) {
             
                 tlJump.pause();
 
@@ -890,7 +904,7 @@ function checkPlayerPosition() {
                     gsap.to(player,.2,{y:obstacleT-player.height-1,ease:"power3.in",onComplete:function(){
                         keysWait=false; 
                         isPlayer.jump=false;
-                        onObstacle=true;
+                        onObstacle=curr_obs;
 
                         setupJumpTL();
                     }},0)
@@ -900,9 +914,11 @@ function checkPlayerPosition() {
 // not within obstacle
         } else {
 
+            moveFactor_enemy=1;
+
             if(!tlJump.isActive()){
                 if(playerR < obstacleL || playerL > obstacleR){
-                    onObstacle=false;
+                    onObstacle=-1;
                     player.y=player_ground.floor;
                 }
             }
@@ -964,7 +980,7 @@ function checkPlayerPosition() {
     // if enemy is being hit by shoot:
     if(isPlayer.attack) {
         if(playerR<enemyL 
-         && playerT>=enemyT){
+         && playerT+player_shoot.offsetY>=enemyT){
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
             
@@ -980,7 +996,7 @@ function checkPlayerPosition() {
 
     } else if(isPlayer.attackBack) {
         if(playerL>enemyR 
-         && playerT>=enemyT){
+         && playerT+player_shoot.offsetY>=enemyT){
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
 
@@ -1026,7 +1042,7 @@ function checkPlayerPosition() {
 }
 
 function setupJumpTL(){
-    if(onObstacle){ 
+    if(onObstacle!=-1){ 
         player_ground.y=player_ground.floor-obstacle[0].h;
     } else {
         player_ground.y=player_ground.floor;
@@ -1096,7 +1112,7 @@ function renderEnemy(whichEnemy) {
         }
         if(moving_backwards) {
 
-            enemy[whichEnemyIndex].x+=moveFactor_enemy/1.5;  
+            enemy[whichEnemyIndex].x+=moveFactor_enemy/2;  
             if(isPlayer.runBack) {
                 enemy[whichEnemyIndex].x+=moveFactor_enemy/3;  
             }

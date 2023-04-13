@@ -15,6 +15,9 @@ function init()
     if(window.location.search.includes("mute")){
         muted=true;
     }
+    if(window.location.search.includes("noEnemies")){
+        noEnemies=true;
+    }
     if(window.location.search.includes("zoom")){
         zoomIn=true;
         if(window.location.search.split.length>0){
