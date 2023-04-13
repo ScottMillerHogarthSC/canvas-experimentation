@@ -18,7 +18,9 @@ var fg_canvas = document.getElementById('fg-canvas');
 var player_canvas = document.getElementById('player-canvas');
 var enemy_canvas = document.getElementById('enemy-canvas');
 var hud_canvas = document.getElementById('hud-canvas');
-
+var score_txt = document.getElementById('score_txt');
+var died_txt = document.getElementById('died_txt');
+var restart_btn = document.getElementById("restart_btn");
 
 
 bg_canvas.width=canvas.width;
@@ -51,7 +53,7 @@ var imageAdded= 0,
     imgLoaded = 0;
 
 var full_health = 500;
-
+var score = 0;
 
 
 var nearEdge = {left:false,right:false}
@@ -73,6 +75,11 @@ var tlJump = gsap.timeline({paused:true});
 tlJump = gsap.timeline({paused:true, onStart:function(){  }, onComplete:function(){
     keysWait=false; 
     isPlayer.jump=false;
+}});
+var deathTL = gsap.timeline({paused:true, onComplete:function(){
+    // [todo] - activate reset button
+    restart_btn.addEventListener("click", restartGame);
+    restart_btn.addEventListener("touchstart", restartGame);
 }});
 
 
@@ -96,14 +103,6 @@ function initCanvasAnim(){
 
     // lamps + road
         fgsList.forEach(depictForegrounds);
-
-        // fg_img = new Image();
-        // imageAdded++;
-        // fg_img.src = fg.url;
-        // fg_img.onload = function(){
-        //     ctxFG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
-        //     imgLoaded++;
-        // }
 
     // overlay
 
@@ -171,6 +170,7 @@ const depictForegrounds = options => {
     const myOptions = Object.assign({}, options);
     return loadImage(myOptions.url).then(img => {
         imgLoaded++;
+        img.id=myOptions.id;
         fgsImgs.push(img);
     });
 };
@@ -538,47 +538,80 @@ function updateStage(){
         
         checkPlayerPosition();
 
+        updateScore();
         
     }
 }
 
+var x_moveAmount_fg = 1.15;
 function moveFg(){
     if(!moving_backwards){
-
-        for(i=0; i<fgsImgs.length; i++) {
-            fgsList[i].x=fgsList[i].x-(moveFactor*x_moveAmount_fg);
-            if(fgsList[i].x<-((fg.width*fgsImgs.length)-canvas.width)) fgsList[i].x = canvas.width;
-        }
         
+        if(fg.x<-((fg.width*(fgsList.length))-1152-canvas.width)){
+            
+            console.log('end');
 
-        for(i=0; i<obstacle.length; i++){
-            obstacle[i].x=obstacle[i].x-(moveFactor*x_moveAmount_fg);
+            // [todo] - end of foregrounds reached, play ending! 
+            collided=true;
+
+        } else {
+            x_moveAmount_bg=1;
+            fg.x=fg.x-(moveFactor*x_moveAmount_fg);
+            
+            // move obstacles
+            for(i=0; i<obstacle.length; i++){
+                obstacle[i].x=obstacle[i].x-(moveFactor*x_moveAmount_fg);
+            }
         }
+
     } else {
-        for(i=0; i<fgsImgs.length; i++) {
-            fgsList[i].x=fgsList[i].x+(moveFactor*x_moveAmount_fg);
-        }
-        
-        if(fgsList[0].x>0) {
-            //[todo] dont go back
-            // collided=true;
-            isPlayer.dead=true;
-        }
-        
+        if(fg.x>1152) {
+            playerDeath("runback");
 
-        for(i=0; i<obstacle.length; i++){
-            obstacle[i].x=obstacle[i].x+(moveFactor*x_moveAmount_fg);
+        } else {
+            fg.x=fg.x+(moveFactor*x_moveAmount_fg);
+            
+            // move obstacles
+            for(i=0; i<obstacle.length; i++){
+                obstacle[i].x=obstacle[i].x+(moveFactor*x_moveAmount_fg);
+            }    
         }
+        
+        
     }
 }
-
+var fgIndexSet=false;
 function renderFG(){
+    if(!fgIndexSet){
+        setFgIndex();
+    }
     ctxFG.clearRect(0, 0, canvas.width, canvas.height);
 
     for(i = 0; i<fgsImgs.length; i++) {
-        ctxFG.drawImage(fgsImgs[i], fgsList[i].x, fg.y, fg.width, fg.height);
+        ctxFG.drawImage(fgsImgs[fgsImgIndex[i]], (fg.x+fgsList[i].x), fg.y, fg.width, fg.height);
     }
-    ctxFG.drawImage(fgsImgs[0], (fgsList[fgsList.length-1].x+fg.width), fg.y, fg.width, fg.height);
+}
+
+function setFgIndex(){
+    fgIndexSet=true;
+    for(i=0; i<fgsImgs.length; i++){
+        if(fgsImgs[i].id == "01") {
+            fgsImgIndex[0] = i;
+        } 
+        if(fgsImgs[i].id == "02") {
+            fgsImgIndex[1] = i;
+        }
+        if(fgsImgs[i].id == "03") {
+            fgsImgIndex[2] = i;
+        }
+        if(fgsImgs[i].id == "04") {
+            fgsImgIndex[3] = i;
+        }
+        if(fgsImgs[i].id == "05") {
+            fgsImgIndex[4] = i;
+        }
+        
+    }
 }
 
 function moveSpriteSheets(){
@@ -594,9 +627,6 @@ function moveSpriteSheets(){
             if(sprite_x.playerX>=spritesheetW.playerW || sprite_x.playerX<=0) {
                 // only play this anim once!
                 collided=true;
-                gsap.to(["#overlay-death","#died"],0,{display:"block"})
-                gsap.to("#died",.2,{alpha:1})
-                gsap.to("#overlay-death",1,{alpha:1})
             }   
         } else {
             sprite_x.playerX+=player.width;
@@ -639,6 +669,7 @@ function moveSpriteSheets(){
                 sprite_x.explosionX=0;
                 
                 enemyKillCount++;
+                score+=(50*(whichEnemyIndex+1));
 
             }
         }        
@@ -874,6 +905,28 @@ function checkPlayerPosition() {
     let obstacleT = obstacle[curr_obs].y;
     let obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
 
+    
+    if(obstacleR < playerL){
+        curr_obs++;
+        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+        obstacleL = obstacle[curr_obs].x;
+        obstacleT = obstacle[curr_obs].y;
+        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
+    }
+    if(obstacleR < playerL){
+        curr_obs++;
+        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+        obstacleL = obstacle[curr_obs].x;
+        obstacleT = obstacle[curr_obs].y;
+        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
+    }
+    if(obstacleR < playerL){
+        curr_obs++;
+        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+        obstacleL = obstacle[curr_obs].x;
+        obstacleT = obstacle[curr_obs].y;
+        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
+    }
     if(obstacleR < playerL){
         curr_obs++;
         obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
@@ -993,8 +1046,7 @@ function checkPlayerPosition() {
         player.health--;
         player.health = player.health < 0 ? 0 : player.health;
         if(player.health==0) { 
-
-            playerDeath();
+            playerDeath("enemy");
         }
     } else {
 
@@ -1008,7 +1060,9 @@ function checkPlayerPosition() {
          && playerT+player_shoot.offsetY>=enemyT){
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
-            
+
+            score=score+0.05;
+
             enemy[whichEnemyIndex].health--;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
             if(enemy[whichEnemyIndex].health==0) {
@@ -1024,6 +1078,8 @@ function checkPlayerPosition() {
          && playerT+player_shoot.offsetY>=enemyT){
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
+
+            score=score+0.05; 
 
             enemy[whichEnemyIndex].health--;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
@@ -1304,25 +1360,7 @@ function killEnemy(whichEnemy){
 }
 
 
-var onlyDieOnce = false;
-function playerDeath(){
-    if(!onlyDieOnce) {
-
-        spritesheetW.playerW=player_dead.width;
-
-        if(!moving_backwards) {
-            sprite_x.playerX=0;
-            
-        }
-        isPlayer.dead=true;
-        // else sprite_x.playerX=(spritesheetW.playerW);
-        onlyDieOnce=true;
-        
-    }
-}
-
 var moveFactor = .5;
-var x_moveAmount_fg = 1.15;
 var x_moveAmount_bg = 1;
 function moveBg(){
     
@@ -1364,9 +1402,6 @@ function moveBg(){
                 buildingsList[i].x=buildingsList[i].x+(moveFactor);
             }
         }
-
-        // moved to moveFg 
-        // fg.x=fg.x+(moveFactor*x_moveAmount_fg);
     }
 
     if(bgOverlay.x<-bgOverlay.width) bgOverlay.x = 0;
@@ -1394,7 +1429,51 @@ function moveBack(){
 }
 
 
+var onlyDieOnce = false;
+function playerDeath(death_type){
+    if(!onlyDieOnce) {
 
+        spritesheetW.playerW=player_dead.width;
+
+        if(!moving_backwards) {
+            sprite_x.playerX=0;
+        }
+        isPlayer.dead=true;
+        
+        onlyDieOnce=true;
+
+        if(death_type=="enemy"){
+            died_txt.innerHTML="you fought valiantly, but you died in battle";
+        } else if(death_type=="runback"){
+            died_txt.innerHTML="you cannot run away from destiny";
+        }
+        typeText(died_txt,2,0);
+        
+
+        deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
+            .to("#died_txt",.2,{alpha:1},">")
+            .to("#overlay-death",1,{alpha:1},"<")
+            .fromTo(container, 3, {filter:"brightness(1)"}, {filter:"brightness(0.2)"},">")
+            .to(restart_btn, 0, {display:"block"},">")
+            .to(restart_btn, 1, {alpha:1},"<");
+
+        deathTL.play();
+        
+    }
+}
+
+function restartGame(){
+    deathTL.pause();
+    deathTL.seek(0);
+
+    score=0;
+    player.health=full_health;
+    isPlayer.dead=false;
+    isPlayer.idle=true;
+    collided=false;
+
+
+}
 
 function mobileBtnDoNothing(ev){
     if(ev.cancelable) {
@@ -1411,10 +1490,43 @@ function showCanvas(){
     if(zoomIn){
         gsap.to("#container",zoomSpeed,{scale:1.6 }) 
     }
+    gsap.to(score_txt,0,{display:"block",alpha:1});
 }
 
 
+function updateScore(){
 
+    score_txt.innerHTML=(Math.round(score).toWidth(8,'0')); //=> 00000100
+}
+
+Number.prototype.toWidth = function(n,chr) {
+    chr = chr || ' ';
+    var len = String(parseFloat(this)).length;
+    function multiply(str,nn){
+        var s = str;
+        while (--nn>0){
+            str+=s;
+        }
+        return str;
+    }
+    n = n<len ? 0 : Math.abs(len-n);
+    return (n>1 && n ? multiply(chr,n) : n<1 ? '' : chr)+this;
+};
+
+
+
+
+function typeText(whichEle, thisLength, charSpeed){
+    // typewriter text
+    var mySplitText = new SplitText(whichEle, {type:"words,chars"}),
+        numChars = mySplitText.chars.length,
+        characterTime = (thisLength/(numChars+6));
+        gsap.set(whichEle,{autoAlpha:1});
+        gsap.set(mySplitText.chars, {autoAlpha:0});
+        for(var i = 0; i < numChars; i++){
+            gsap.to(mySplitText.chars[i], charSpeed, {autoAlpha:1, delay:(i * characterTime),ease:Linear.easeNone});
+        }
+}
 
 /*///////////////////////  ////////////////////////////////*/
 /*/////////////////////// FULL WIDTH ////////////////////////////////*/
