@@ -95,14 +95,15 @@ function initCanvasAnim(){
         
 
     // lamps + road
+        fgsList.forEach(depictForegrounds);
 
-        fg_img = new Image();
-        imageAdded++;
-        fg_img.src = fg.url;
-        fg_img.onload = function(){
-            ctxFG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
-            imgLoaded++;
-        }
+        // fg_img = new Image();
+        // imageAdded++;
+        // fg_img.src = fg.url;
+        // fg_img.onload = function(){
+        //     ctxFG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
+        //     imgLoaded++;
+        // }
 
     // overlay
 
@@ -163,6 +164,14 @@ const depictBgs = options => {
     return loadImage(myOptions.url).then(img => {
         imgLoaded++;
         bgsImgs.push(img);
+    });
+};
+
+const depictForegrounds = options => {
+    const myOptions = Object.assign({}, options);
+    return loadImage(myOptions.url).then(img => {
+        imgLoaded++;
+        fgsImgs.push(img);
     });
 };
 
@@ -535,25 +544,41 @@ function updateStage(){
 
 function moveFg(){
     if(!moving_backwards){
-        fg.x=fg.x-(moveFactor*x_moveAmount_fg);
+
+        for(i=0; i<fgsImgs.length; i++) {
+            fgsList[i].x=fgsList[i].x-(moveFactor*x_moveAmount_fg);
+            if(fgsList[i].x<-((fg.width*fgsImgs.length)-canvas.width)) fgsList[i].x = canvas.width;
+        }
+        
+
         for(i=0; i<obstacle.length; i++){
             obstacle[i].x=obstacle[i].x-(moveFactor*x_moveAmount_fg);
         }
     } else {
-        fg.x=fg.x+(moveFactor*x_moveAmount_fg);
+        for(i=0; i<fgsImgs.length; i++) {
+            fgsList[i].x=fgsList[i].x+(moveFactor*x_moveAmount_fg);
+        }
+        
+        if(fgsList[0].x>0) {
+            //[todo] dont go back
+            // collided=true;
+            isPlayer.dead=true;
+        }
+        
+
         for(i=0; i<obstacle.length; i++){
             obstacle[i].x=obstacle[i].x+(moveFactor*x_moveAmount_fg);
         }
     }
-
 }
 
 function renderFG(){
     ctxFG.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctxFG.drawImage(fg_img, fg.x, fg.y, fg.width, fg.height);
-    ctxFG.drawImage(fg_img, (fg.x+fg.width), fg.y, fg.width, fg.height);
-    ctxFG.drawImage(fg_img, (fg.x-fg.width), fg.y, fg.width, fg.height);
+    for(i = 0; i<fgsImgs.length; i++) {
+        ctxFG.drawImage(fgsImgs[i], fgsList[i].x, fg.y, fg.width, fg.height);
+    }
+    ctxFG.drawImage(fgsImgs[0], (fgsList[fgsList.length-1].x+fg.width), fg.y, fg.width, fg.height);
 }
 
 function moveSpriteSheets(){
@@ -1321,9 +1346,7 @@ function moveBg(){
             buildingsList[i].x=buildingsList[i].x-(moveFactor);
             if(buildingsList[i].x<-((bgBuildings.width*buildingsImgs.length)-canvas.width)) buildingsList[i].x = canvas.width;
         }
-        // moved to moveFg 
-        // fg.x=fg.x-(moveFactor*x_moveAmount_fg);
-        
+
     } else if(moving_backwards){
         
         if(isPlayer.runBack){
@@ -1340,8 +1363,6 @@ function moveBg(){
             if(buildingsList[0].x<bgBuildings.width){
                 buildingsList[i].x=buildingsList[i].x+(moveFactor);
             }
-
-
         }
 
         // moved to moveFg 
@@ -1351,11 +1372,7 @@ function moveBg(){
     if(bgOverlay.x<-bgOverlay.width) bgOverlay.x = 0;
     if(bgOverlay.x>bgOverlay.width) bgOverlay.x = canvas.width;
     
-    if(fg.x<-(canvas.width*2)) fg.x = 0;
-    if(fg.x>fg.width) {
-        //[todo] dont go back
-        collided=true;
-    }
+    
 
 }
 
