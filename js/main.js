@@ -897,50 +897,20 @@ function checkPlayerPosition() {
     let playerT = player.y+player.hitY;
     let playerB = playerT+player.hitH;
 
-    
     curr_obs=0;
-    let obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+    let obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w;
     let obstacleL = obstacle[curr_obs].x;
     let obstacleT = obstacle[curr_obs].y;
     let obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
 
-    
-    if(obstacleR < playerL){
+    while (obstacleR < playerL && curr_obs<=(obstacle.length-2)){
         curr_obs++;
-        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
-        obstacleL = obstacle[curr_obs].x;
-        obstacleT = obstacle[curr_obs].y;
-        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
-    }
-    if(obstacleR < playerL){
-        curr_obs++;
-        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
-        obstacleL = obstacle[curr_obs].x;
-        obstacleT = obstacle[curr_obs].y;
-        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
-    }
-    if(obstacleR < playerL){
-        curr_obs++;
-        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
-        obstacleL = obstacle[curr_obs].x;
-        obstacleT = obstacle[curr_obs].y;
-        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
-    }
-    if(obstacleR < playerL){
-        curr_obs++;
-        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
-        obstacleL = obstacle[curr_obs].x;
-        obstacleT = obstacle[curr_obs].y;
-        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
-    }
-    if(obstacleR < playerL){
-        curr_obs++;
-        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
-        obstacleL = obstacle[curr_obs].x;
-        obstacleT = obstacle[curr_obs].y;
-        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
-    }
 
+        obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w; 
+        obstacleL = obstacle[curr_obs].x;
+        obstacleT = obstacle[curr_obs].y;
+        obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
+    }
 
 
 /////// OBSTACLES + PLATFORMS: //////////
