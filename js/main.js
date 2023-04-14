@@ -358,13 +358,7 @@ function checkKeys(){
     if(!keysWait){
     
         if (Keyboard.isDown(Keyboard.RIGHT) && Keyboard.isDown(Keyboard.LEFT)) { 
-            if(moving_backwards){
-                
-                forwards();
-            } else {
-
-                backwards();
-            }
+            return;
         }
         else if (Keyboard.isDown(Keyboard.LEFT)) { 
             backwards();
@@ -427,9 +421,12 @@ function jump() {
 }
 
 function shoot(){
+    isPlayer.attack=false;
+    isPlayer.attackBack=false;
     isPlayer.idle=false;
-    isPlayer.runBack=false;
     isPlayer.run=false;
+    isPlayer.runBack=false;
+
     if(moving_backwards) {
         isPlayer.attackBack=true;
     } else {
@@ -446,6 +443,7 @@ function forwards(){
     moving_backwards = false;
 
     isPlayer.attack=false;
+    isPlayer.attackBack=false;
     isPlayer.idle=false;
     isPlayer.runBack=false;
     isPlayer.run=true;
@@ -458,6 +456,7 @@ function backwards() {
     moving_backwards = true;
 
     isPlayer.attack=false;
+    isPlayer.attackBack=false;
     isPlayer.idle=false;
     isPlayer.run=false;
     isPlayer.runBack=true;
@@ -1103,10 +1102,18 @@ function checkPlayerPosition() {
         if(enemy[whichEnemyIndex].x<=player.x-(enemy[whichEnemyIndex].width*2)){
 
 
-            if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
-                enemy[whichEnemyIndex].x=canvas.width;
-                isEnemy.runBack=true;
-                isEnemy.run=false;
+            // if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
+            if(isEnemy.run && enemy[whichEnemyIndex].x<=0) {
+
+                // stop enemy going off screen to left:
+                enemy[whichEnemyIndex].x=0;
+
+                // enemy[whichEnemyIndex].x=canvas.width;
+                // isEnemy.runBack=true;
+                // isEnemy.run=false;
+                //[todo] - enemy off screen so far- kill them
+                // enemy[whichEnemyIndex].x=0;
+                // killEnemy();
     
             } else {
                 
@@ -1115,6 +1122,8 @@ function checkPlayerPosition() {
             
             }
         }
+
+        // enemy
         if(enemy[whichEnemyIndex].x>canvas.width){
             isEnemy.runBack=true;
             isEnemy.run=false;
@@ -1158,6 +1167,8 @@ function renderEnemy(whichEnemy) {
     if(isEnemy.killed){
         ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
 
+
+        // [todo]-delay this so theres a break between enemies!
         // re-initialise enemy for a new one:
         enemyIndexFlag=false;
         return;
@@ -1203,7 +1214,7 @@ function renderEnemy(whichEnemy) {
 
         if(isPlayer.run) {
             if(nearEdge.right){
-                enemy[whichEnemyIndex].x-=(moveFactor_enemy*1.5);  
+                enemy[whichEnemyIndex].x-=(moveFactor_enemy*1.25);  
             }
         }
         if(moving_backwards) {
