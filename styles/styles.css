@@ -89,7 +89,7 @@ body{
     padding: 5% 0px 0 0px;
     width: 98%;
 }
-#restart_btn{
+.btn_play{
     height: auto;
     top: 50%;
     padding: 2em 0;
@@ -99,7 +99,7 @@ body{
     margin-top: 4em;
     transform: translate(-50%, -50%);
 }
-#restart_btn:hover,#restart_btn:active {
+.btn_play:hover,.btn_play:active {
     color: red;
 }
 

@@ -52,7 +52,8 @@ var ctxEnemy = enemy_canvas.getContext('2d');
 var imageAdded= 0,
     imgLoaded = 0;
 
-var full_health = 500;
+var full_health = 100;
+var full_lives = 3;
 var score = 0;
 
 
@@ -74,11 +75,7 @@ var moving_backwards = false;
 var tlJump = gsap.timeline({paused:true});
 tlJump = gsap.timeline({paused:true});
 
-var deathTL = gsap.timeline({paused:true, onComplete:function(){
-    // [todo] - activate reset button
-    restart_btn.addEventListener("click", restartGame);
-    restart_btn.addEventListener("touchstart", restartGame);
-}});
+var deathTL = gsap.timeline({paused:true});
 
 
 var highlights=false;
@@ -353,7 +350,7 @@ function gamePause(){
 var keysWait = false;
 function checkKeys(){ 
 
-    if(!keysWait){
+    if(!keysWait && !isPlayer.dead){
     
         if (Keyboard.isDown(Keyboard.RIGHT) && Keyboard.isDown(Keyboard.LEFT)) { 
             return;
@@ -678,6 +675,7 @@ function moveSpriteSheets(){
 }
 
 function renderPlayerUI() {
+    ctxHud.clearRect(0, 0, canvas.width, canvas.height);
     ctxHud.beginPath();
     ctxHud.rect(10, 10, 70, 10);
     ctxHud.fillStyle = "#fff";
@@ -693,6 +691,13 @@ function renderPlayerUI() {
         ctxHud.fillStyle = "green";
     }
     ctxHud.fill();
+
+    for(i = player.lives; i > 0; i--) {
+        ctxHud.drawImage(player_idleBack_img, 0, 0,
+            player.width, player.height,
+            60+(i*15), 0, 
+            player.width/2, player.height/2);
+    }
 }
 
 
@@ -849,7 +854,7 @@ var curr_obs=0;
 function checkPlayerPosition() {
     
 // player is near edges of screen
-    if(player.x>(canvas.width-100+(player.width/2))){
+    if(player.x>(canvas.width/2)-1){
         nearEdge.right=true;
     } else {
         nearEdge.right=false;
@@ -864,8 +869,8 @@ function checkPlayerPosition() {
 
 // dont let player run off screen
 // to right:
-    if(player.x>(canvas.width-player.width)){
-        player.x=(canvas.width-player.width);
+    if(player.x>(canvas.width/2)){
+        player.x=(canvas.width/2);
     }
 // to left:
     if((player.x<=0)){
@@ -1098,10 +1103,8 @@ function checkPlayerPosition() {
                 // killEnemy();
     
             } else {
-                
                 isEnemy.runBack=false;
                 isEnemy.run=true;
-            
             }
         }
 
@@ -1428,15 +1431,50 @@ function playerDeath(death_type){
         } else if(death_type=="runback"){
             died_txt.innerHTML="you cannot run away from destiny";
         }
-        typeText(died_txt,2,0);
         
+        
+        player.lives--;
 
-        deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
-            .to("#died_txt",.2,{alpha:1},">")
-            .to("#overlay-death",1,{alpha:1},"<")
+
+
+        if(player.lives==0){
+
+            // player has no more lives:
+
+            typeText(died_txt,2,0);
+            deathTL = gsap.timeline({paused:true, onComplete:function(){
+                restart_btn.addEventListener("click", restartGame);
+                restart_btn.addEventListener("touchstart", restartGame);
+            }});
+            deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
+                .to("#died_txt",.2,{alpha:1},">")
+                .to("#overlay-death",1,{alpha:1},"<")
             .fromTo(container, 3, {filter:"brightness(1)"}, {filter:"brightness(0.2)"},">")
-            .to(restart_btn, 0, {display:"block"},">")
-            .to(restart_btn, 1, {alpha:1},"<");
+                .to(restart_btn, 0, {display:"block"},">")
+                .to(restart_btn, 1, {alpha:1},"<");
+
+
+
+        } else if(player.lives!=0){
+
+            // player died but more lives
+
+            typeText(died_txt,.7,0);
+            deathTL = gsap.timeline({paused:true, onComplete:function(){
+                continue_btn.addEventListener("click", continueGame);
+                continue_btn.addEventListener("touchstart", continueGame);
+                window.addEventListener('keydown', continueGame);
+                document.body.removeEventListener('keypress', checkKeyPress);
+            }})
+            deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
+                .to("#died_txt",.2,{alpha:1},">")
+                .to("#overlay-death",1,{alpha:1},"<")
+                .fromTo(container, 1, {filter:"brightness(1)"}, {filter:"brightness(0.5)"},"<.25")
+                .to(continue_btn, 0, {display:"block"},"<.25")
+                .to(continue_btn, .3, {alpha:1},"<");
+        }
+
+
 
         deathTL.play();
         
@@ -1449,11 +1487,53 @@ function restartGame(){
 
     score=0;
     player.health=full_health;
+    player.lives=full_lives;
+    isPlayer.dead=false;
+    isPlayer.idle=true;
+    collided=false;
+    onlyDieOnce=false;
+
+
+    // reset enemies:
+    isEnemy.exploding=false;
+    isEnemy.killed=false;
+    isEnemy.hurt=false;
+    isEnemy.hurtBack=false;
+    isEnemy.run=false;
+    isEnemy.attack=false;
+    isEnemy.attackBack=false;
+    isEnemy.runBack=true;
+    for (i = enemy.length - 1; i >= 0; i--) {
+        enemy[i].x=canvas.width;
+    }
+    enemyKillCount=0;
+
+
+    // reset all gameplay values so game resets fully
+    bgOverlay=-570;
+    for(i=0; i<buildingsList.length-1; i++){
+        buildingsList[i].x=(bgBuildings.width*i)-bgBuildings.width;
+    }
+    fg.x=0;
+    player.x=0
+    for(i=0; i<obstacle.length; i++){
+        obstacle[i].x=obstacle[i].initX;
+    }
+}
+
+function continueGame() {
+    deathTL.pause();
+    deathTL.seek(0);
+    onlyDieOnce=false;
+    player.health=full_health;
     isPlayer.dead=false;
     isPlayer.idle=true;
     collided=false;
 
-
+    continue_btn.removeEventListener("click", continueGame);
+    continue_btn.removeEventListener("touchstart", continueGame);
+    window.removeEventListener('keydown', continueGame);
+    document.body.addEventListener('keypress', checkKeyPress);
 }
 
 function mobileBtnDoNothing(ev){
