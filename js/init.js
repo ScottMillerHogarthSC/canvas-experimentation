@@ -8,21 +8,30 @@ function init()
     if(window.location.search.includes("frameRate")){
         
         frameRate=window.location.search.split("frameRate=")[1];
+        frameRate_txt.value=frameRate;
+        devTools=true;
     }
     if(window.location.search.includes("highlights")){
         highlights=true;
+        devTools=true;
     }
     if(window.location.search.includes("mute")){
         muted=true;
+        devTools=true;
     }
     if(window.location.search.includes("noEnemies")){
         noEnemies=true;
+        devTools=true;
     }
     if(window.location.search.includes("zoom")){
         zoomIn=true;
+        devTools=true;
         if(window.location.search.split.length>0){
             zoomSpeed=Number(window.location.search.split("zoom=")[1]);
         }
+    }
+    if(devTools){
+        setupDevTools();
     }
 
 

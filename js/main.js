@@ -23,6 +23,9 @@ var hud_canvas = document.getElementById('hud-canvas');
 var score_txt = document.getElementById('score_txt');
 var died_txt = document.getElementById('died_txt');
 var restart_btn = document.getElementById("restart_btn");
+//dev tools
+var frameRate_txt = document.getElementById("frameRate_txt");
+var frameRate_btn = document.getElementById("frameRate_btn");
 
 
 bg_canvas.width=canvas.width;
@@ -79,7 +82,8 @@ tlJump = gsap.timeline({paused:true});
 
 var deathTL = gsap.timeline({paused:true});
 
-
+// dev Tools
+var devTools = false;
 var highlights=false;
 var frameRate = 100;
 var zoomIn = false;
@@ -504,7 +508,10 @@ function updateStage(){
 
         
         if(!noEnemies){
-            renderEnemy();}
+            renderEnemy();
+        } else {
+            ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
+        }
 
 
         
@@ -1565,6 +1572,10 @@ function showCanvas(){
     if(zoomIn){
         gsap.to("#container",zoomSpeed,{scale:1.6 }) 
     }
+        
+    if(devTools){
+        wrap.classList.add("devTools");
+    }
     gsap.to(score_txt,0,{display:"block",alpha:1});
 }
 
@@ -1603,9 +1614,37 @@ function typeText(whichEle, thisLength, charSpeed){
         }
 }
 
+
+/*///////////////////////  ////////////////////////////////*/
+/*/////////////////////// DEV TOOLS ////////////////////////////////*/
+/*///////////////////////  ////////////////////////////////*/
+function setupDevTools() {
+    frameRate_btn.addEventListener("click", setFrameRate);
+    highlights_btn.addEventListener("click", toggleHighlights);
+    noEnemies_btn.addEventListener("click", toggleEnemies);
+}
+function setFrameRate(){
+    frameRate = frameRate_txt.value;
+    createjs.Ticker.framerate = frameRate;
+}
+function toggleHighlights() {
+    if(!highlights) {
+        highlights=true;
+    } else {
+        highlights=false;
+    }
+}
+function toggleEnemies() {
+    if(!noEnemies){
+        noEnemies=true;
+    } else {
+        noEnemies=false;
+
+    }
+}
+
 /*///////////////////////  ////////////////////////////////*/
 /*/////////////////////// FULL WIDTH ////////////////////////////////*/
-/*///////////////////////  ////////////////////////////////*/
 /*///////////////////////  ////////////////////////////////*/
 function getWindowSize(){
     windowheight = window.innerHeight;

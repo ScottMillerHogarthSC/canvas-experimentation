@@ -114,7 +114,7 @@ body{
 
 #footer {
     color: #fff;
-    display: none;
+    /*display: none;*/
     position: absolute;
     bottom: 15px;
     left: 50%;
@@ -134,4 +134,9 @@ body{
 
 
 
-
+#dev-tools,.devTools #footer-primitai  {
+    display: none;
+}
+.devTools #dev-tools {
+    display: block;
+}
