@@ -40,6 +40,7 @@ function init()
     wrap = document.getElementById("wrap");
     container = document.getElementById("container");
     audio = document.getElementById("audio");
+    audio_shoot = document.getElementById("audio-shoot");
 
     
     resizeWindow();
@@ -64,9 +65,14 @@ function init()
         if(window.location.href.includes("scottmillerhogarthsc")){
             console.log("online");
             audio.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
+
+            //[todo] - set shoot audio on web storage
+
         } else {
-            console.log("local")
-            audio.setAttribute('src','shredded-midi.mp3');
+            console.log("local");
+            audio.setAttribute('src','audio/shredded-midi.mp3');
+            audio_shoot.setAttribute('src','audio/shoot.mp3');
+            audio_shoot.volume=.4;
         }
     } 
     else {
@@ -91,6 +97,11 @@ function preloadAudio(){
     audio.addEventListener('error', failedtoLoadAudio);
 
     audio.load(); 
+
+    audio_shoot.addEventListener('canplay', loadedAudio);
+    audio_shoot.addEventListener('error', failedtoLoadAudio);
+
+    audio_shoot.load(); 
 }
 
 function failedtoLoadAudio(e){
@@ -100,17 +111,19 @@ function failedtoLoadAudio(e){
 }
 
 var audioLoaded = false;
-var isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;;
+var isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
+var isPlayingAudio_shoot;
 function loadedAudio(){
     if(!audioLoaded){
         audioLoaded = true;
 
         isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
+        isPlayingAudio_shoot = audio_shoot.currentTime > 0 && !audio_shoot.paused && !audio_shoot.ended && audio_shoot.readyState > audio_shoot.HAVE_CURRENT_DATA;
     
         audio.removeEventListener('canplay', loadedAudio);
         audio.addEventListener('error', failedtoLoadAudio);
         
-        if(muted) { audio.volume=0; }
+        if(muted) { audio.volume=0; audio_shoot.volume=0; }
     
         $(document).on('show.visibility', function() {
             if(!isPlayingAudio) audio.play();

@@ -24,9 +24,13 @@ Keyboard._onKeyDown = function (event) {
         event.preventDefault();
         this._keys[keyCode] = true;
     }
+
+    // play music! 
     if(firstpress){
         firstpress=false;
-        if(!noAudio) { audio.play(); }
+        if(!noAudio) { 
+            audio.play(); 
+        }
     }
 };
 

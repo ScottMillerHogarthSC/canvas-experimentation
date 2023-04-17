@@ -1,4 +1,4 @@
-var wrap,container,audio,noAudio=false;
+var wrap,container,audio,audio_shoot,noAudio=false;
 var body = document.body,
 html = document.documentElement;
 var pageHeight = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -321,9 +321,11 @@ function checkKeyPress(e){
     if(e.code == "KeyM") {
         if(!muted){
             audio.volume=0;
+            audio_shoot.volume=0;
             muted=true;
         } else {
             audio.volume=1;
+            audio_shoot.volume=.4;
             muted=false;
         }
     }
@@ -434,6 +436,10 @@ function shoot(){
     } else {
         isPlayer.attack=true;
     }
+    if(!noAudio){
+        audio_shoot.play();
+    }
+
 }
 
 function forwards(){
@@ -863,7 +869,7 @@ var curr_obs=0;
 function checkPlayerPosition() {
     
 // player is near edges of screen
-    if(player.x>(canvas.width/2)-1){
+    if(player.x>(canvas.width/3)-1){
         nearEdge.right=true;
     } else {
         nearEdge.right=false;
@@ -878,8 +884,8 @@ function checkPlayerPosition() {
 
 // dont let player run off screen
 // to right:
-    if(player.x>(canvas.width/2)){
-        player.x=(canvas.width/2);
+    if(player.x>(canvas.width/3)){
+        player.x=(canvas.width/3);
     }
 // to left:
     if((player.x<=0)){
