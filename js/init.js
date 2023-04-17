@@ -40,8 +40,10 @@ function init()
 
     if ('ontouchstart' in document.documentElement) {
         wrap.classList.add("mobile");
+        mobile=true;
     } else {
         wrap.classList.remove("mobile");
+        mobile=false;
     }
 
 

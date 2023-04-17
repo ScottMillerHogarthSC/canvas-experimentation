@@ -98,9 +98,18 @@ body{
     left: 50%;
     margin-top: 4em;
     transform: translate(-50%, -50%);
+    color: red;
+    /*background: linear-gradient(#f00 38%, #dbff00 64%);*/
+    /*-webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;*/
+    z-index: 900;
 }
 .btn_play:hover,.btn_play:active {
-    color: red;
+    color: #fff;
+    /*background: linear-gradient(#ffff 38%, #fff 64%);*/
+}
+.mobile .btn_play{
+    
 }
 
 #footer {

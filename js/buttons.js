@@ -50,8 +50,12 @@ function mobileBtnPressed(ev){
         ev.preventDefault();
     }
     if(this.id=="btnJump") {
-    	// createjs.Ticker.addEventListener("tick", jump);
-        jump();
+        if(!jumpBtnDown){
+            jump();
+        } else {
+            if(!moving_backwards) isPlayer.idle=true;
+            else isPlayer.idleBack=true;
+        }
         $('#btns').addClass('pressedJump');
     }
     if(this.id=="btnWheelie") {
@@ -85,13 +89,11 @@ function mobileBtnReleased(ev) {
 
     }
     if(this.id=="btnJump") {
-    	// createjs.Ticker.removeEventListener("tick", jump);
-        $('#introBtnK').removeClass('pressed');
+    	$('#introBtnK').removeClass('pressed');
         $('#btns').removeClass('pressedJump');
     }
     if(this.id=="btnWheelie") {
     	createjs.Ticker.removeEventListener("tick", shoot);
         $('#btns').removeClass('pressedWheelie');
     }
-    
 }

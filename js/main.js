@@ -4,6 +4,8 @@ html = document.documentElement;
 var pageHeight = Math.max( body.scrollHeight, body.offsetHeight, 
 html.clientHeight, html.scrollHeight, html.offsetHeight );
 
+var mobile = false;
+
 var windowwidth;
 
 var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
@@ -383,6 +385,7 @@ function checkKeys(){
             && !Keyboard.isDown(Keyboard.RIGHT) 
             && !Keyboard.isDown(Keyboard.DOWN) 
             && !Keyboard.isDown(Keyboard.UP)) {
+            
             isPlayer.runBack=false;
             isPlayer.run=false;
             isPlayer.attackBack=false;
@@ -705,7 +708,7 @@ function renderPlayerUI() {
 function renderPlayer() {
     ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
 
-    // [todo] - movingbackwards:
+    // [todo] - moving_backwards:
     
     if(!moving_backwards){
         player.hitX=0;
@@ -849,7 +852,6 @@ function renderPlayer() {
 
 }
 
-var onObstacle=-1;
 var curr_obs=0;
 function checkPlayerPosition() {
     
@@ -919,7 +921,7 @@ function checkPlayerPosition() {
 /////// OBSTACLES + PLATFORMS: //////////
 
 // if within obstacle but lower than its ground level:
-        if(playerR > obstacleL && playerL < obstacleR && playerB > obstacleT){
+        if(playerR > obstacleL && playerL < obstacleR && playerB > obstacleT && playerT < obstacleT){
             
             if(playerR > obstacleL && playerL < obstacleL){
                 player.x=obstacleL-player.hitW;
@@ -931,8 +933,15 @@ function checkPlayerPosition() {
             }
             x_moveAmount_bg=0;
 
-            //[todo]- slow down enemy speed here- we're running but not moving:
+
+            // slow down enemy speed here- we're running but not moving:
             moveFactor_enemy=.5;
+
+            // but if we running backwards into obj enemy speed needs to be normal:
+            if(moving_backwards && (isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack)){
+                moveFactor_enemy=4;
+            }
+            
 
 // if within obstacle but above it:
         } else if(playerR > obstacleL && playerL < obstacleR && playerB < obstacleT){ 
@@ -959,7 +968,6 @@ function checkPlayerPosition() {
 
             if(!tlJump.isActive()){
                 if(playerR < obstacleL || playerL > obstacleR){
-                    onObstacle=-1;
                     player_ground.y=player_ground.floor;
                 }
             }
@@ -978,21 +986,19 @@ function checkPlayerPosition() {
             isPlayer.jump=true;
             keysWait=true; 
 
-            // .addLabel('down', ">")
-            // gsap.to(player,0.263,{y:function(){ return (player_ground.y-player.height) },overwrite:true,ease:"sine.in"});
-            // console.log(player_ground.y-playerB);
             player.y++;
             player.y++;
-
-            // if(player_ground.y-playerB<player.jumpH){
-                player.y++;
-                player.y++;
-            // }
+            player.y++;
+            player.y++;
+            
         } else {
             keysWait=false; 
             isPlayer.jump=false;
         }
     
+        if(playerB>player_ground.y){
+            player.y=player_ground.y-player.hitH-player.hitY;
+        }
     // console.log(curr_obs);
 
 /////// ENEMY COLLISIONS: //////////
@@ -1423,17 +1429,21 @@ function playerDeath(death_type){
             sprite_x.playerX=0;
         }
         isPlayer.dead=true;
-        
         onlyDieOnce=true;
+        player.lives--;
+
 
         if(death_type=="enemy"){
-            died_txt.innerHTML="you fought valiantly, but you died in battle";
+            if(player.lives>0){
+                died_txt.innerHTML="you have fallen, but the quest goes on";
+            } else {
+                died_txt.innerHTML="you fought valiantly, but you died in battle";
+            }
         } else if(death_type=="runback"){
-            died_txt.innerHTML="you cannot run away from destiny";
+            died_txt.innerHTML="you cannot run away from your destiny";
         }
         
         
-        player.lives--;
 
 
 
@@ -1451,7 +1461,9 @@ function playerDeath(death_type){
                 .to("#overlay-death",1,{alpha:1},"<")
             .fromTo(container, 3, {filter:"brightness(1)"}, {filter:"brightness(0.2)"},">")
                 .to(restart_btn, 0, {display:"block"},">")
-                .to(restart_btn, 1, {alpha:1},"<");
+                .to(restart_btn, 1, {alpha:1},"<")
+                .to(["#start-select"],0,{display:"block"},"<")
+                .to(["#start-select"],.2,{alpha:1},"<");
 
 
 
@@ -1471,7 +1483,9 @@ function playerDeath(death_type){
                 .to("#overlay-death",1,{alpha:1},"<")
                 .fromTo(container, 1, {filter:"brightness(1)"}, {filter:"brightness(0.5)"},"<.25")
                 .to(continue_btn, 0, {display:"block"},"<.25")
-                .to(continue_btn, .3, {alpha:1},"<");
+                .to(continue_btn, .3, {alpha:1},"<")
+                .to(["#start-select"],0,{display:"block"},"<")
+                .to(["#start-select"],.2,{alpha:1},"<"); 
         }
 
 
