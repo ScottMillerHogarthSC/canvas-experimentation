@@ -1,4 +1,4 @@
-var wrap,container,audio,noAudio=false;
+var wrap,container,footer,audio,noAudio=false;
 var body = document.body,
 html = document.documentElement;
 var pageHeight = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -1033,6 +1033,7 @@ function checkPlayerPosition() {
     }
 
     if(!isEnemy.killed 
+        && !isPlayer.invincible
         && playerL < enemyL + enemy[whichEnemyIndex].hitW
         && playerL + player.hitW > enemyL
         && playerT < enemyT + enemy[whichEnemyIndex].hitH
@@ -1548,13 +1549,30 @@ function continueGame() {
     onlyDieOnce=false;
     player.health=full_health;
     isPlayer.dead=false;
-    isPlayer.idle=true;
+    isPlayer.idleBack=true;
     collided=false;
+    isPlayer.invincible=true;
 
     continue_btn.removeEventListener("click", continueGame);
     continue_btn.removeEventListener("touchstart", continueGame);
     window.removeEventListener('keydown', continueGame);
     document.body.addEventListener('keypress', checkKeyPress);
+
+    var tlFlashPlayer=gsap.timeline({onComplete:function(){
+        isPlayer.invincible=false;
+    }});
+    tlFlashPlayer.to(player_canvas,.1,{alpha:.4},0)
+                 .to(player_canvas,.1,{alpha:1},">.15")
+                 .to(player_canvas,.1,{alpha:.4},">.15")
+                 .to(player_canvas,.1,{alpha:1},">.15")
+                 .to(player_canvas,.1,{alpha:.4},">.15")
+                 .to(player_canvas,.1,{alpha:1},">.15")
+                 .to(player_canvas,.1,{alpha:.4},">.15")
+                 .to(player_canvas,.1,{alpha:1},">.15")
+                 .to(player_canvas,.1,{alpha:.4},">.15")
+                 .to(player_canvas,.1,{alpha:1},">.15")
+                 .to(player_canvas,.1,{alpha:.4},">.15")
+                 .to(player_canvas,.1,{alpha:1},">.15")
 }
 
 function mobileBtnDoNothing(ev){
@@ -1567,6 +1585,7 @@ var canvasShowing=false;
 function showCanvas(){
     document.getElementById("loadingContent").style.display="none";
     container.style.display = "block";
+    footer.style.display = "block";
     canvasShowing=true;
 
     if(zoomIn){

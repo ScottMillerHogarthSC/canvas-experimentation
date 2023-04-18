@@ -11,7 +11,8 @@ var isPlayer = {
     attackBack:false,
     hurt:false,
     jump:false,
-    dead: false
+    dead: false,
+    invincible: false
 }
 
 

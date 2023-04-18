@@ -5,6 +5,9 @@ function init()
     console.log("init");
 
     // querystr overrides:
+    if(window.location.search.includes("devTools")){
+        devTools=true;
+    }
     if(window.location.search.includes("frameRate")){
         
         frameRate=window.location.search.split("frameRate=")[1];
@@ -39,6 +42,7 @@ function init()
     // main content
     wrap = document.getElementById("wrap");
     container = document.getElementById("container");
+    footer = document.getElementById("footer");
     audio = document.getElementById("audio");
 
     
