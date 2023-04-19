@@ -90,6 +90,12 @@ body{
     color: #fff;
     text-align: center;
 }
+.mobile #died_txt{
+    padding: 0 20%;
+    margin-top: -5%;
+    line-height: 1.5em;
+    box-sizing: border-box;
+}
 #score_txt{
     font-size: .45em;
     top: 50%;

@@ -45,6 +45,33 @@ function bindButtons(){
     btnWheelie.addEventListener("mouseup", mobileBtnReleased);
 }
 
+function bindRestartButtons(){
+    restart_btn.addEventListener("click", restartGame);
+    restart_btn_mobile.addEventListener("touchend", restartGame);
+}
+
+function unbindRestartButtons(){
+    restart_btn.removeEventListener("click", restartGame);
+    restart_btn_mobile.removeEventListener("touchend", restartGame);
+}
+
+function bindContinueButtons(){
+    continue_btn.addEventListener("click", continueGame);
+    continue_btn_mobile.addEventListener("touchend", continueGame);
+    window.addEventListener('keydown', continueGame);
+    document.body.removeEventListener('keypress', checkKeyPress);
+
+}
+
+function unbindContinueButtons(){
+    continue_btn.removeEventListener("click", continueGame);
+    continue_btn_mobile.removeEventListener("touchend", continueGame);
+    window.removeEventListener('keydown', continueGame);
+    document.body.removeEventListener('keypress', checkKeyPress);
+
+    document.body.addEventListener('keypress', checkKeyPress);
+}
+
 function mobileBtnPressed(ev){
     if(ev.cancelable) {
         ev.preventDefault();

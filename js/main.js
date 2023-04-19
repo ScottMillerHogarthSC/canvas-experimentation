@@ -59,7 +59,7 @@ var imageAdded= 0,
 
 var full_health = 100;
 var full_lives = 3;
-var score = 0;
+var score = {curr:0};
 
 
 var nearEdge = {left:false,right:false}
@@ -679,7 +679,7 @@ function moveSpriteSheets(){
                 sprite_x.explosionX=0;
                 
                 enemyKillCount++;
-                score+=(50*(whichEnemyIndex+1));
+                gsap.to(score,1,{curr:"+="+enemy[whichEnemyIndex].killValue});
 
             }
         }        
@@ -1065,7 +1065,7 @@ function checkPlayerPosition() {
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
 
-            score=score+0.05;
+            score.curr=score.curr+0.05;
 
             enemy[whichEnemyIndex].health--;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
@@ -1083,7 +1083,7 @@ function checkPlayerPosition() {
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
 
-            score=score+0.05; 
+            score.curr=score.curr+0.05; 
 
             enemy[whichEnemyIndex].health--;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
@@ -1472,16 +1472,14 @@ function playerDeath(death_type){
             // player has no more lives:
 
             typeText(died_txt,2,0);
-            deathTL = gsap.timeline({paused:true, onComplete:function(){
-                restart_btn.addEventListener("click", restartGame);
-                restart_btn.addEventListener("touchstart", restartGame);
-            }});
+            deathTL = gsap.timeline({paused:true, onComplete:bindRestartButtons});
+
             deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
                 .to("#died_txt",.2,{alpha:1},">")
                 .to("#overlay-death",1,{alpha:1},"<")
             .fromTo(container, 3, {filter:"brightness(1)"}, {filter:"brightness(0.2)"},">")
-                .to(restart_btn, 0, {display:"block"},">")
-                .to(restart_btn, 1, {alpha:1},"<")
+                .to([restart_btn,restart_btn_mobile], 0, {display:"block"},">")
+                .to([restart_btn,restart_btn_mobile], 1, {alpha:1},"<")
                 .to(["#start-select"],0,{display:"block"},"<")
                 .to(["#start-select"],.2,{alpha:1},"<");
 
@@ -1492,18 +1490,14 @@ function playerDeath(death_type){
             // player died but more lives
 
             typeText(died_txt,.7,0);
-            deathTL = gsap.timeline({paused:true, onComplete:function(){
-                continue_btn.addEventListener("click", continueGame);
-                continue_btn.addEventListener("touchstart", continueGame);
-                window.addEventListener('keydown', continueGame);
-                document.body.removeEventListener('keypress', checkKeyPress);
-            }})
+            deathTL = gsap.timeline({paused:true, onComplete:bindContinueButtons})
+
             deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
                 .to("#died_txt",.2,{alpha:1},">")
                 .to("#overlay-death",1,{alpha:1},"<")
                 .fromTo(container, 1, {filter:"brightness(1)"}, {filter:"brightness(0.5)"},"<.25")
-                .to(continue_btn, 0, {display:"block"},"<.25")
-                .to(continue_btn, .3, {alpha:1},"<")
+                .to([continue_btn,continue_btn_mobile], 0, {display:"block"},"<.25")
+                .to([continue_btn,continue_btn_mobile], .3, {alpha:1},"<")
                 .to(["#start-select"],0,{display:"block"},"<")
                 .to(["#start-select"],.2,{alpha:1},"<"); 
         }
@@ -1516,10 +1510,13 @@ function playerDeath(death_type){
 }
 
 function restartGame(){
+
+    unbindRestartButtons();
+
     deathTL.pause();
     deathTL.seek(0);
 
-    score=0;
+    score.curr=0;
     player.health=full_health;
     player.lives=full_lives;
     isPlayer.dead=false;
@@ -1556,6 +1553,8 @@ function restartGame(){
 }
 
 function continueGame() {
+    unbindContinueButtons();
+
     deathTL.pause();
     deathTL.seek(0);
     onlyDieOnce=false;
@@ -1565,11 +1564,7 @@ function continueGame() {
     collided=false;
     isPlayer.invincible=true;
 
-    continue_btn.removeEventListener("click", continueGame);
-    continue_btn.removeEventListener("touchstart", continueGame);
-    window.removeEventListener('keydown', continueGame);
-    document.body.addEventListener('keypress', checkKeyPress);
-
+    
     var tlFlashPlayer=gsap.timeline({onComplete:function(){
         isPlayer.invincible=false;
     }});
@@ -1613,7 +1608,7 @@ function showCanvas(){
 
 function updateScore(){
 
-    score_txt.innerHTML=(Math.round(score).toWidth(8,'0')); //=> 00000100
+    score_txt.innerHTML=(Math.round(score.curr).toWidth(8,'0')); //=> 00000100
 }
 
 Number.prototype.toWidth = function(n,chr) {
