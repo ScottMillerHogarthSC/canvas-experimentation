@@ -93,7 +93,7 @@ function init()
 
     // start();
 }
-
+var audiosToLoad=0;
 function preloadAudio(){
     console.log("preloadAudio");
 
@@ -102,24 +102,32 @@ function preloadAudio(){
 
     audio.load(); 
 
+    audiosToLoad++;
+
     audio_shoot.addEventListener('canplay', loadedAudio);
     audio_shoot.addEventListener('error', failedtoLoadAudio);
 
     audio_shoot.load(); 
+
+    audiosToLoad++;
 }
 
+var audioFailcount=0;
 function failedtoLoadAudio(e){
-    console.log("COULD NOT LOAD AUDIO");
-    noAudio=true;
-    start();
+    audioFailcount++;
+    console.log("COULD NOT LOAD AUDIO: "+audioFailcount+ " of "+audiosToLoad);
+    if(audioFailcount==audiosToLoad){
+        noAudio=true;
+        start();
+    }
 }
 
-var audioLoaded = false;
+var audiosLoaded = 0;
 var isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
 var isPlayingAudio_shoot;
 function loadedAudio(){
-    if(!audioLoaded){
-        audioLoaded = true;
+    audiosLoaded++;
+    if(audiosLoaded==audiosToLoad){
 
         isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
         isPlayingAudio_shoot = audio_shoot.currentTime > 0 && !audio_shoot.paused && !audio_shoot.ended && audio_shoot.readyState > audio_shoot.HAVE_CURRENT_DATA;
