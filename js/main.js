@@ -869,7 +869,7 @@ var curr_obs=0;
 function checkPlayerPosition() {
     
 // player is near edges of screen
-    if(player.x>(canvas.width/3)-1){
+    if(player.x>((canvas.width/2)-(player.width/2))-1){
         nearEdge.right=true;
     } else {
         nearEdge.right=false;
@@ -884,8 +884,8 @@ function checkPlayerPosition() {
 
 // dont let player run off screen
 // to right:
-    if(player.x>(canvas.width/3)){
-        player.x=(canvas.width/3);
+    if(player.x>(canvas.width/2)-(player.width/2)){
+        player.x=(canvas.width/2)-(player.width/2);
     }
 // to left:
     if((player.x<=0)){
@@ -1372,7 +1372,13 @@ function moveBg(){
         if(isPlayer.run){
             moveFactor = x_moveAmount_bg;
             if(nearEdge.right) {
-                moveFactor = x_moveAmount_bg*1.5;
+
+                // [todo] - SPEED CHANGED TO AVOID SLOW DOWN WHEN AT MIDDLE POINT 
+                // moveFactor = x_moveAmount_bg*1.5;
+
+
+                moveFactor = x_moveAmount_bg*2;
+
             }
         } else {moveFactor = x_moveAmount_bg*.5;}
 
