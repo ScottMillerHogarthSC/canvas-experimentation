@@ -57,7 +57,9 @@ body{
 .abs {
     position: absolute;
 }
-
+#bg-canvas {
+    filter: brightness(0.5);
+}
 #bgOverlay-canvas {
     opacity: 0.4;
     mix-blend-mode: color;
@@ -70,9 +72,12 @@ body{
     position: absolute;
     opacity: 0;
 }
-#overlay-bg {
+#overlay-bg,#overlay-death {
     background-color: rgba(255,120,140,0.5);
     mix-blend-mode: saturation;
+    max-height: 320px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 #overlay-death {
     mix-blend-mode: color;
@@ -80,7 +85,7 @@ body{
 }
 #text-overlay {
     position: absolute;
-    width: 100%;
+    width: 80%;
     max-width: 576px;
     top:50%;
     left: 50%;
@@ -89,12 +94,14 @@ body{
 .txt {
     color: #fff;
     text-align: center;
+    font-size: 0.8vw;
 }
-.mobile #died_txt{
-    padding: 0 20%;
-    margin-top: -5%;
-    line-height: 1.5em;
-    box-sizing: border-box;
+#died_txt {
+    min-height: 10vh;
+    line-height: 10vh;
+    background-color: #000;
+    margin-top: -10vh;
+    font-size: 60%;
 }
 #score_txt{
     font-size: .45em;
@@ -109,24 +116,67 @@ body{
 .btn_play{
     height: auto;
     top: 50%;
-    padding: 2em 0;
+    padding: 0 32px;
+    min-height: 32px;
     cursor: pointer;
     width: auto;
     left: 50%;
-    margin-top: 4em;
+    margin-top: 6em;
     transform: translate(-50%, -50%);
-    color: red;
+    border-radius: 0;
+    /*color: red;*/
     /*background: linear-gradient(#f00 38%, #dbff00 64%);*/
     /*-webkit-background-clip: text;
     -webkit-text-fill-color: transparent;*/
     z-index: 900;
+    background-image: url(../images/Text/bg.png);
 }
-.btn_play:hover,.btn_play:active {
+.btn_play::before{
+    content: "";
+    background-image: url(../images/Text/bgL.png);
+    height: 32px;
+    width: 32px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.btn_play::after{
+    content: "";
+    background-image: url(../images/Text/bgR.png);
+    height: 32px;
+    width: 32px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+#restart_btn{
+    color:red;
+}
+button,#dev-tools input{
+    font-family: 'Press Start 2P';
+    background-color: rgba(255,255,0,.2);
     color: #fff;
-    /*background: linear-gradient(#ffff 38%, #fff 64%);*/
+    border:none;
+    font-size: 1vw;
+    padding: 1vw;
+    border-radius: 10px;
 }
-.mobile .btn_play{
-    
+button:hover{
+    color: yellow;
+}
+button:active{
+    color: yellow;
+    transform: translate(-1px,2px);
+}
+button.btn_play:active{
+    transform: translate(-51%, -45%)
+}
+button {
+    cursor: pointer;
+    outline: none;
+}
+.mobile .btn_play,.mobile #died_txt {
+    font-size: 1.3vw;
 }
 
 #footer {
@@ -139,6 +189,8 @@ body{
     font-size: 0.8em;
     width: 100%;
     text-align: center;
+
+    z-index: 101;
 }
 #footer a {
     color: #fff;
@@ -156,4 +208,5 @@ body{
 }
 .devTools #dev-tools {
     display: block;
+    z-index: 900;
 }

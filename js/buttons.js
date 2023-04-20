@@ -45,17 +45,60 @@ function bindButtons(){
     btnWheelie.addEventListener("mouseup", mobileBtnReleased);
 }
 
+function unbindButtons(){
+    btnMoveUp.removeEventListener("touchstart", mobileBtnPressed);
+    btnMoveForwards.removeEventListener("touchstart", mobileBtnPressed);
+    btnMoveBackwards.removeEventListener("touchstart", mobileBtnPressed);
+    btnMoveDown.removeEventListener("touchstart", mobileBtnPressed);
+    btnJump.removeEventListener("touchstart", mobileBtnPressed);
+    btnWheelie.removeEventListener("touchstart", mobileBtnPressed);
+
+    btnMoveUp.removeEventListener("mousedown", mobileBtnPressed);
+    btnMoveForwards.removeEventListener("mousedown", mobileBtnPressed);
+    btnMoveBackwards.removeEventListener("mousedown", mobileBtnPressed);
+    btnMoveDown.removeEventListener("mousedown", mobileBtnPressed);
+    btnJump.removeEventListener("mousedown", mobileBtnPressed);
+    btnWheelie.removeEventListener("mousedown", mobileBtnPressed);
+
+    btnStart.removeEventListener('touchend', gamePause);
+
+
+// mobile buttons released:
+
+    btnMoveUp.removeEventListener("touchend", mobileBtnReleased);
+    btnMoveForwards.removeEventListener("touchend", mobileBtnReleased);
+    btnMoveBackwards.removeEventListener("touchend", mobileBtnReleased);
+    btnMoveDown.removeEventListener("touchend", mobileBtnReleased);
+    btnJump.removeEventListener("touchend", mobileBtnReleased);
+    btnWheelie.removeEventListener("touchend", mobileBtnReleased);
+
+    btnMoveUp.removeEventListener("mouseup", mobileBtnReleased);
+    btnMoveForwards.removeEventListener("mouseup", mobileBtnReleased);
+    btnMoveBackwards.removeEventListener("mouseup", mobileBtnReleased);
+    btnMoveDown.removeEventListener("mouseup", mobileBtnReleased);
+    btnJump.removeEventListener("mouseup", mobileBtnReleased);
+    btnWheelie.removeEventListener("mouseup", mobileBtnReleased);
+}
+
 function bindRestartButtons(){
+    unbindButtons();
+
+
     restart_btn.addEventListener("click", restartGame);
     restart_btn_mobile.addEventListener("touchend", restartGame);
+    btnStart.addEventListener("touchend", restartGame);
 }
 
 function unbindRestartButtons(){
     restart_btn.removeEventListener("click", restartGame);
     restart_btn_mobile.removeEventListener("touchend", restartGame);
+    btnStart.removeEventListener("touchend", restartGame);
 }
 
 function bindContinueButtons(){
+    unbindButtons();
+    btnStart.removeEventListener('touchend', gamePause);
+
     continue_btn.addEventListener("click", continueGame);
     continue_btn_mobile.addEventListener("touchend", continueGame);
     window.addEventListener('keydown', continueGame);

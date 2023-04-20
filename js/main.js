@@ -867,6 +867,8 @@ function renderPlayer() {
 
 var curr_obs=0;
 function checkPlayerPosition() {
+
+    
     
 // player is near edges of screen
     if(player.x>((canvas.width/2)-(player.width/2))-1){
@@ -906,6 +908,48 @@ function checkPlayerPosition() {
         
     }
 
+    /////// ENEMY COLLISIONS: //////////
+
+    var enemyL = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitX;
+    if(isEnemy.runBack) { enemyL = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB; }
+    var enemyR = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitW;
+    var enemyT = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY;
+    var enemyB = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitH;
+    var enemyH = enemy[whichEnemyIndex].hitH;
+
+    if(highlights){
+    // [todo] enemy hit area
+        ctxEnemy.beginPath();
+        ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
+        ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
+        ctxEnemy.fill();
+    }
+
+
+
+
+/////// ENEMY HITS OBSTACLE /////////
+    
+    if(isEnemy.run){
+        for(i=0; i<obstacle.length-1; i++){
+            let e_obstacleR = obstacle[i].x+obstacle[i].w; 
+            let e_obstacleL = obstacle[i].x;
+
+            if(e_obstacleL < enemyR){
+                isEnemy.runBack=true;
+                isEnemy.run=false;
+
+                // console.log('enemy block collide')
+            }
+        }
+
+            // if(obstacleL < enemyR && enemyL < obstacleR && isEnemy.run){
+            //     isEnemy.run=false;
+            //     isEnemy.runBack=true;
+            // }
+    }    
+    
+
 
 // DEFINE PLAYER AREA
 
@@ -914,6 +958,14 @@ function checkPlayerPosition() {
     if(moving_backwards) { playerL = player.x+player.hitXB; }
     let playerT = player.y+player.hitY;
     let playerB = playerT+player.hitH;
+
+    if(highlights){
+    // [todo] player hit area
+        ctxPlayer.beginPath();
+        ctxPlayer.rect(playerL, playerT, player.hitW, player.hitH);
+        ctxPlayer.fillStyle = "rgba(0,255,0,0.5)";
+        ctxPlayer.fill();
+    }
 
     curr_obs=0;
     let obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w;
@@ -1014,30 +1066,8 @@ function checkPlayerPosition() {
         }
     // console.log(curr_obs);
 
-/////// ENEMY COLLISIONS: //////////
 
-    var enemyL = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitX;
-    if(isEnemy.runBack) { enemyL = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitXB; }
-    var enemyR = enemy[whichEnemyIndex].x+enemy[whichEnemyIndex].hitW;
-    var enemyT = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY;
-    var enemyB = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitH;
-    var enemyH = enemy[whichEnemyIndex].hitH;
-
-
-    if(highlights){
-    // [todo] enemy hit area
-        ctxEnemy.beginPath();
-        ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
-        ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
-        ctxEnemy.fill();
-
-    // [todo] player hit area
-        ctxPlayer.beginPath();
-        ctxPlayer.rect(playerL, playerT, player.hitW, player.hitH);
-        ctxPlayer.fillStyle = "rgba(0,255,0,0.5)";
-        ctxPlayer.fill();
-    }
-
+/////// ENEMY HITS PLAYER /////////
     if(!isEnemy.killed 
         && !isPlayer.invincible
         && playerL < enemyL + enemy[whichEnemyIndex].hitW
@@ -1057,6 +1087,9 @@ function checkPlayerPosition() {
         isPlayer.hurt=false;
     }
 
+
+        
+    
 
 /////// PLAYER SHOOT HITS: //////////
     if(isPlayer.attack) {
@@ -1105,15 +1138,10 @@ function checkPlayerPosition() {
     if(!isEnemy.killed && !isEnemy.attack){
         
 
-         // [todo] - enemy turns to you and attack
-        if(enemy[whichEnemyIndex].x<=player.x-(enemy[whichEnemyIndex].width*2)){
-
-
-            // if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
-            if(isEnemy.run && enemy[whichEnemyIndex].x<=0) {
+        if(isEnemy.run && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].hitW+3)) {
 
                 // stop enemy going off screen to left:
-                enemy[whichEnemyIndex].x=0;
+                enemy[whichEnemyIndex].x=-(enemy[whichEnemyIndex].hitW+3);
 
                 // enemy[whichEnemyIndex].x=canvas.width;
                 // isEnemy.runBack=true;
@@ -1121,11 +1149,13 @@ function checkPlayerPosition() {
                 //[todo] - enemy off screen so far- kill them
                 // enemy[whichEnemyIndex].x=0;
                 // killEnemy();
-    
-            } else {
+        }
+         else if(isEnemy.runBack && enemy[whichEnemyIndex].x<0){
+            // if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
+             // else {
                 isEnemy.runBack=false;
                 isEnemy.run=true;
-            }
+            // }
         }
 
         // enemy
@@ -1477,7 +1507,7 @@ function playerDeath(death_type){
             deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
                 .to("#died_txt",.2,{alpha:1},">")
                 .to("#overlay-death",1,{alpha:1},"<")
-            .fromTo(container, 3, {filter:"brightness(1)"}, {filter:"brightness(0.2)"},">")
+            .fromTo(".game-canvas", 3, {filter:"brightness(1)"}, {filter:"brightness(0.2)"},">")
                 .to([restart_btn,restart_btn_mobile], 0, {display:"block"},">")
                 .to([restart_btn,restart_btn_mobile], 1, {alpha:1},"<")
                 .to(["#start-select"],0,{display:"block"},"<")
@@ -1495,7 +1525,7 @@ function playerDeath(death_type){
             deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
                 .to("#died_txt",.2,{alpha:1},">")
                 .to("#overlay-death",1,{alpha:1},"<")
-                .fromTo(container, 1, {filter:"brightness(1)"}, {filter:"brightness(0.5)"},"<.25")
+                .fromTo(".game-canvas", 1, {filter:"brightness(1)"}, {filter:"brightness(0.5)"},"<.25")
                 .to([continue_btn,continue_btn_mobile], 0, {display:"block"},"<.25")
                 .to([continue_btn,continue_btn_mobile], .3, {alpha:1},"<")
                 .to(["#start-select"],0,{display:"block"},"<")
@@ -1512,6 +1542,7 @@ function playerDeath(death_type){
 function restartGame(){
 
     unbindRestartButtons();
+    bindButtons();
 
     deathTL.pause();
     deathTL.seek(0);
@@ -1554,6 +1585,7 @@ function restartGame(){
 
 function continueGame() {
     unbindContinueButtons();
+    bindButtons();
 
     deathTL.pause();
     deathTL.seek(0);
@@ -1648,6 +1680,8 @@ function setupDevTools() {
     frameRate_btn.addEventListener("click", setFrameRate);
     highlights_btn.addEventListener("click", toggleHighlights);
     noEnemies_btn.addEventListener("click", toggleEnemies);
+    zoomIn_btn.addEventListener("click", zoomInContainer);
+    die_btn.addEventListener("click", playerDeath);
 }
 function setFrameRate(){
     frameRate = frameRate_txt.value;
@@ -1666,6 +1700,15 @@ function toggleEnemies() {
     } else {
         noEnemies=false;
 
+    }
+}
+function zoomInContainer(){
+    if(!zoomIn){
+        zoomIn=true;
+        gsap.to("#container",zoomSpeed,{scale:1.6}) 
+    } else {
+        zoomIn=false;
+        gsap.to("#container",zoomSpeed,{scale:1}) 
     }
 }
 

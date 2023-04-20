@@ -28,6 +28,9 @@
     outline: none;
     cursor: pointer;
 
+    transform: scale(.77);
+    transform-origin: right bottom;
+
 }
 #btnsMove {
     bottom: 10px;
@@ -43,6 +46,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    transform-origin: left bottom;
 }
 #btnsMove.backwards{
     background-position-y: 52%;

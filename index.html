@@ -168,23 +168,26 @@
 
     <div id="wrap" class="paused">
         <div id="container">
-            <canvas id="bg-canvas"></canvas>
-            <canvas id="fg-canvas"></canvas>
-            <canvas id="bgOverlay-canvas"></canvas>
-            <canvas id="enemy-canvas"></canvas>
-            <canvas id="player-canvas"></canvas>
-            <canvas id="hud-canvas"></canvas>
-            <div id="score_txt" class="txt overlays">0</div>
-        </div>
+            <canvas id="bg-canvas" class="game-canvas"></canvas>
+            <canvas id="fg-canvas" class="game-canvas"></canvas>
+            <canvas id="bgOverlay-canvas" class="game-canvas"></canvas>
+            <canvas id="enemy-canvas" class="game-canvas"></canvas>
+            <canvas id="player-canvas" class="game-canvas"></canvas>
+            <canvas id="hud-canvas" class="game-canvas"></canvas>
 
-        <div id="text-overlay">
+            <div id="score_txt" class="txt overlays">0</div>
             <div id="overlay-bg" class="overlays"></div>
             <div id="overlay-death" class="overlays"></div>
-            <div id="paused" class="txt overlays">paused</div>
-            <div id="died_txt" class="txt overlays">you died</div>
-            <div id="continue_btn" class="txt overlays btn_play">continue?</div>
-            <div id="restart_btn" class="txt overlays btn_play">play again?</div>
+
+            <div id="text-overlay">
+                <div id="paused" class="txt overlays">paused</div>
+                <div id="died_txt" class="txt overlays">you died</div>
+                <button id="continue_btn" class="txt overlays btn_play">continue?</button>
+                <button id="restart_btn" class="txt overlays btn_play">play again?</button>
+            </div>
         </div>
+
+       
 
         <div id="mobileControls">
             <div id="mobilePause"></div>
@@ -203,8 +206,8 @@
                 <button id="btnJump" class="mobileControl" />
                 <button id="btnWheelie" class="mobileControl" />
             </div>
-            <div id="continue_btn_mobile" class="txt overlays btn_play">continue?</div>
-            <div id="restart_btn_mobile" class="txt overlays btn_play">play again?</div>
+            <button id="continue_btn_mobile" class="txt overlays btn_play">continue?</button>
+            <button id="restart_btn_mobile" class="txt overlays btn_play">play again?</button>
         </div>
     
 
@@ -214,10 +217,14 @@
                 &copy;2023 primitai - 
                 <a href="http://www.primitai.com" target="_blank">primitai.com</a></div>
 
-            <div id="dev-tools" style="display: none">
+            <div id="dev-tools">
+                <button id="die_btn">die</button>
+                |
                 <button id="noEnemies_btn">enemeies</button>
                 | 
                 <button id="highlights_btn">highlights</button>
+                |
+                <button id="zoomIn_btn">zoom</button>
                 | 
                 <button id="frameRate_btn">frameRate</button>
                 <input type="text" name="frameRate_txt" id="frameRate_txt" value="100" />
