@@ -69,6 +69,7 @@ function init()
         if(window.location.href.includes("scottmillerhogarthsc")){
             console.log("online");
             audio.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
+            audio_shoot.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shoot.mp3');
 
             //[todo] - set shoot audio on web storage
 
@@ -76,8 +77,8 @@ function init()
             console.log("local");
             audio.setAttribute('src','audio/shredded-midi.mp3');
             audio_shoot.setAttribute('src','audio/shoot.mp3');
-            audio_shoot.volume=.4;
         }
+        audio_shoot.volume=.4;
     } 
     else {
         console.log("browser doesnt support audio");
