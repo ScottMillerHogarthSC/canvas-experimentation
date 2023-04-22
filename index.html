@@ -47,7 +47,7 @@
 
         // array of all the external js files we want to politely load
 
-        var arrExtJs = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js','https://code.createjs.com/1.0.0/createjs.min.js','js/splittext.min.js','js/jquery-visibility.js','js/keys.js','js/buttons.js','js/init.js','js/player-vars.js','js/enemy-vars.js','js/fg-vars.js','js/bg-vars.js','js/main.js'];
+        var arrExtJs = ['https://cdnjs.cloudflare.com/ajax/libs/gsap/3.4.2/gsap.min.js','https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js','https://code.createjs.com/1.0.0/createjs.min.js','js/splittext.min.js','js/jquery-visibility.js','js/keys.js','js/buttons.js','js/init.js','js/audio.js','js/player-vars.js','js/enemy-vars.js','js/fg-vars.js','js/bg-vars.js','js/main.js'];
 
         
 
@@ -180,8 +180,8 @@
             <div id="overlay-death" class="overlays"></div>
 
             <div id="text-overlay">
-                <div id="paused" class="txt overlays">paused</div>
-                <div id="died_txt" class="txt overlays">you died</div>
+                <div id="paused_txt" class="txt txt_popup overlays">paused</div>
+                <div id="died_txt" class="txt txt_popup overlays">you died</div>
                 <button id="continue_btn" class="txt overlays btn_play">continue?</button>
                 <button id="restart_btn" class="txt overlays btn_play">play again?</button>
             </div>

@@ -7,7 +7,7 @@ var fgsList = [
 {id:"02", url:"images/Foreground/fg0.png", x:0,y:0},
 {id:"03", url:"images/Foreground/fg1.png", x:fg.width,y:0},
 {id:"04", url:"images/Foreground/fg2.png", x:fg.width*2,y:0},
-{id:"05", url:"images/Foreground/fg0.png", x:fg.width*3,y:0}
+{id:"05", url:"images/Foreground/fg3.png", x:fg.width*3,y:0}
 // {url:"images/Foreground/fg1.png", x:fg.width*4,y:0},
 // {url:"images/Foreground/fg0.png", x:fg.width*5,y:0},
 // {url:"images/Foreground/fg0.png", x:fg.width*6,y:0},

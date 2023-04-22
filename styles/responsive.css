@@ -11,11 +11,13 @@
     .mobile #mobileControls {
         display: block;
     }*/
-    
+
 
 }
-@media screen and (min-height: 475px) {
-    
+@media screen and (max-height: 475px) {
+    .mobile #footer {
+    	bottom: 0;
+    }
 }
 @media screen and (min-height: 550px) {
     

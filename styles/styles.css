@@ -24,6 +24,14 @@ body{
     /*font-weight: bold;*/
     overflow: hidden;
 }
+
+@font-face {
+    font-family: 'FutureMillennium';
+    src: url('../fonts/FutureMillennium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 #container {
     top: 50%;
     left: 50%;
@@ -94,14 +102,18 @@ body{
 .txt {
     color: #fff;
     text-align: center;
-    font-size: 0.8vw;
+    font-size: 100%;
+    font-family: 'FutureMillennium';
 }
-#died_txt {
+.txt_popup {
     min-height: 10vh;
     line-height: 10vh;
     background-color: #000;
-    margin-top: -10vh;
-    font-size: 60%;
+    margin-top: -10vh;   
+}
+#paused_txt {
+    width: 50%;
+    left: 25%;
 }
 #score_txt{
     font-size: .45em;
@@ -121,7 +133,7 @@ body{
     cursor: pointer;
     width: auto;
     left: 50%;
-    margin-top: 6em;
+    margin-top: 3em;
     transform: translate(-50%, -50%);
     border-radius: 0;
     /*color: red;*/
@@ -152,6 +164,10 @@ body{
 #restart_btn{
     color:red;
 }
+button#restart_btn:hover{
+    color: yellow;
+    transition: color 3s linear;
+}
 button,#dev-tools input{
     font-family: 'Press Start 2P';
     background-color: rgba(255,255,0,.2);
@@ -176,7 +192,7 @@ button {
     outline: none;
 }
 .mobile .btn_play,.mobile #died_txt {
-    font-size: 1.3vw;
+    /*font-size: 1.3vw;*/
 }
 
 #footer {

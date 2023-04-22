@@ -340,8 +340,8 @@ function gamePause(){
     
     if(!paused && !isPlayer.dead){
         paused=true;
-        gsap.to(["#paused","#overlay-bg","#start-select"],0,{display:"block"})
-        gsap.to(["#paused","#start-select"],.2,{alpha:1})
+        gsap.to(["#paused_txt","#overlay-bg","#start-select"],0,{display:"block"})
+        gsap.to(["#paused_txt","#start-select"],.2,{alpha:1})
         gsap.to("#overlay-bg",1,{alpha:1})
 
         audio.pause();
@@ -349,7 +349,7 @@ function gamePause(){
 
         paused=false;
         gsap.to(["#start-select"],0,{alpha:0})
-        gsap.to(["#paused","#overlay-bg"],0,{alpha:0,display:"none"})
+        gsap.to(["#paused_txt","#overlay-bg"],0,{alpha:0,display:"none"})
 
         if(!isPlayingAudio) audio.play();
     }
@@ -931,17 +931,17 @@ function checkPlayerPosition() {
 /////// ENEMY HITS OBSTACLE /////////
     
     if(isEnemy.run){
-        for(i=0; i<obstacle.length-1; i++){
-            let e_obstacleR = obstacle[i].x+obstacle[i].w; 
-            let e_obstacleL = obstacle[i].x;
+        // for(i=0; i<obstacle.length-1; i++){
+        //     let e_obstacleR = obstacle[i].x+obstacle[i].w; 
+        //     let e_obstacleL = obstacle[i].x;
 
-            if(e_obstacleL < enemyR){
-                isEnemy.runBack=true;
-                isEnemy.run=false;
+        //     if(e_obstacleL < enemyR){
+        //         isEnemy.runBack=true;
+        //         isEnemy.run=false;
 
-                // console.log('enemy block collide')
-            }
-        }
+        //         // console.log('enemy block collide')
+        //     }
+        // }
 
             // if(obstacleL < enemyR && enemyL < obstacleR && isEnemy.run){
             //     isEnemy.run=false;
@@ -1138,10 +1138,10 @@ function checkPlayerPosition() {
     if(!isEnemy.killed && !isEnemy.attack){
         
 
-        if(isEnemy.run && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].hitW+3)) {
+        if((isEnemy.run || isEnemy.attack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width+3)) {
 
                 // stop enemy going off screen to left:
-                enemy[whichEnemyIndex].x=-(enemy[whichEnemyIndex].hitW+3);
+                enemy[whichEnemyIndex].x=-(enemy[whichEnemyIndex].width);
 
                 // enemy[whichEnemyIndex].x=canvas.width;
                 // isEnemy.runBack=true;
@@ -1150,7 +1150,7 @@ function checkPlayerPosition() {
                 // enemy[whichEnemyIndex].x=0;
                 // killEnemy();
         }
-         else if(isEnemy.runBack && enemy[whichEnemyIndex].x<0){
+         else if((isEnemy.runBack || isEnemy.attackBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
             // if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
              // else {
                 isEnemy.runBack=false;
@@ -1172,6 +1172,47 @@ function setupJumpTL(){
         .to(player,{y:"-="+player.jumpH,ease:"power3.out", duration:0.338},"up");
 }
 
+var tlEnemyVars = gsap.timeline({paused:true,onComplete:enemyTLplayed});
+function setupEnemyTimeLine() {
+    tlEnemyVars.addLabel("reset",0)
+        .to(isEnemy,0,{runBack:true,run:false,attack:false,attackBack:false,hurt:false,hurtBack:false,killed:false,exploding:false},"reset")
+        .addLabel("start",1)
+        .addLabel("attack","start+=2")
+        .call(enemyAttack,[true],"attack")
+        .addLabel("stop-attack",">1")
+        .call(enemyAttack,[false],"stop-attack")
+
+
+    tlEnemyVars.restart();
+}
+
+function enemyAttack(isAttack){
+    if(isAttack){
+        if(!isEnemy.killed && !isEnemy.hurt && !isEnemy.hurtBack){
+            if(isEnemy.runBack){
+                isEnemy.attackBack=true;
+            } else {
+                isEnemy.attack=true;
+            }
+        }
+    } else {
+        if(isEnemy.attackBack){
+            isEnemy.attackBack=false;
+            isEnemy.runBack=true;
+        } 
+        if(isEnemy.attack){
+            isEnemy.attack=false;
+            isEnemy.run=true;
+        }
+    }
+
+}
+
+function enemyTLplayed(){
+    console.log("enemyTLplayed");
+    tlEnemyVars.seek("start");
+    tlEnemyVars.play();
+}
     
 var moveFactor_enemy = 1;
 var whichEnemyIndex=0;
@@ -1183,6 +1224,10 @@ function renderEnemy(whichEnemy) {
 
         // only do this once:
         setEnemyIndex();
+
+
+        
+        setupEnemyTimeLine();
 
     }
 
@@ -1327,24 +1372,32 @@ function drawEnemy(img, spx, ind){
 }
 
 var enemyIndexFlag = false;
-function setEnemyIndex(whichEnemy){
+var whichEnemy="";
+function setEnemyIndex(chosenEnemy){
 
     enemyIndexFlag=true;
     enemyImgIndex = {walkBack:0, hurtBack:0, walk:0, hurt:0, attack:0, attackBack:0}
 
-    if(whichEnemy==undefined){
+
+    // if chosenEnemy -not yet in use - could be used to force certain enemy:
+    if(chosenEnemy==undefined){
         if(enemyKillCount>=enemy.length) { enemyKillCount=0; }
         whichEnemyIndex=enemyKillCount;
         
         if(whichEnemyIndex==0) { whichEnemy="CyberBike"; }
         if(whichEnemyIndex==1) { whichEnemy="BattleCar"; }
 
-// set index manually if passed in to this func:
-    } else if(whichEnemy=="BattleCar") { 
+    // set index manually if passed in to this func:
+
+    } else if(chosenEnemy=="BattleCar") { 
+        whichEnemy=="BattleCar";
         whichEnemyIndex = 1;
-    } else if(whichEnemy=="CyberBike") { 
+    } else if(chosenEnemy=="CyberBike") { 
         whichEnemyIndex = 0;
+        whichEnemy=="CyberBike";
     }
+
+    
 
 
 
@@ -1377,15 +1430,7 @@ function setEnemyIndex(whichEnemy){
     enemy[whichEnemyIndex].health=enemy[whichEnemyIndex].fullhealth;
     enemy[whichEnemyIndex].x=canvas.width;
 
-    isEnemy.runBack=true;
-
-    isEnemy.run=false;
-    isEnemy.attack=false;
-    isEnemy.attackBack=false;
-    isEnemy.hurt=false;
-    isEnemy.hurtBack=false;
-    isEnemy.killed=false;
-    isEnemy.exploding=false;
+    
     sprite_x.enemyX=0;
 }
 
