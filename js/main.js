@@ -325,7 +325,7 @@ function checkKeyPress(e){
             muted=true;
         } else {
             audio.volume=1;
-            audio_shoot.volume=.4;
+            audio_shoot.volume=1;
             muted=false;
         }
     }
@@ -340,16 +340,20 @@ function gamePause(){
     
     if(!paused && !isPlayer.dead){
         paused=true;
-        gsap.to(["#paused_txt","#overlay-bg","#start-select"],0,{display:"block"})
-        gsap.to(["#paused_txt","#start-select"],.2,{alpha:1})
-        gsap.to("#overlay-bg",1,{alpha:1})
+        gsap.to(["#paused_txt","#overlay-bg","#start-select"],0,{display:"block"});
+        gsap.to(["#paused_txt","#start-select"],.2,{alpha:1});
+        gsap.to("#overlay-bg",1,{alpha:1});
+
+        tlEnemyVars.pause();
 
         audio.pause();
     } else {
 
         paused=false;
-        gsap.to(["#start-select"],0,{alpha:0})
-        gsap.to(["#paused_txt","#overlay-bg"],0,{alpha:0,display:"none"})
+        gsap.to(["#start-select"],0,{alpha:0});
+        gsap.to(["#paused_txt","#overlay-bg"],0,{alpha:0,display:"none"});
+
+        tlEnemyVars.play();
 
         if(!isPlayingAudio) audio.play();
     }
@@ -1174,7 +1178,7 @@ function checkPlayerPosition() {
         }
 
     } else if(isEnemy.attackBack) {
-        
+         
         if(playerR<enemyL && enemyL-playerR<=enemy[whichEnemyIndex].shootRange
          && playerT+player_shoot.offsetY>=enemyT
          && !isPlayer.invincible){
@@ -1246,14 +1250,17 @@ function enemyAttack(){
         } else {
             isEnemy.attack=true;
         }
+        if(!noAudio){
+            // [todo]- need to have different SFX sound per enemyIndex:
+            if(whichEnemy=="BattleCar"){
+                audio_shoot.play();
+            }
+        }
     }
 }
 
 function enemyTLplayed(){
     console.log("enemyTLplayed");
-
-    // tlEnemyVars.seek("start");
-    // tlEnemyVars.play();
 }
     
 var moveFactor_enemy = 1;
@@ -1631,6 +1638,7 @@ function restartGame(){
     unbindRestartButtons();
     bindButtons();
 
+    tlEnemyVars.restart();
     deathTL.pause();
     deathTL.seek(0);
 
@@ -1674,6 +1682,7 @@ function continueGame() {
     unbindContinueButtons();
     bindButtons();
 
+    tlEnemyVars.restart();
     deathTL.pause();
     deathTL.seek(0);
     onlyDieOnce=false;
