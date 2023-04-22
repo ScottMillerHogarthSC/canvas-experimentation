@@ -1086,7 +1086,7 @@ function checkPlayerPosition() {
         }
     // console.log(curr_obs);
 
-
+    isPlayer.hurt=false;
 /////// ENEMY HITS PLAYER /////////
     if(!isEnemy.killed 
         && !isPlayer.invincible
@@ -1096,15 +1096,14 @@ function checkPlayerPosition() {
         && playerT + player.hitH > enemyT ){
 
         // colliding! 
+        
         isPlayer.hurt=true;
         player.health--;
         player.health = player.health < 0 ? 0 : player.health;
         if(player.health==0) { 
             playerDeath("enemy");
         }
-    } else {
-
-        // isPlayer.hurt=false;
+        return
     }
 
 
@@ -1159,11 +1158,11 @@ function checkPlayerPosition() {
 ///// ENEMY SHOOTING HITS PLAYER //////////
 
     if(isEnemy.attack) {
-        if(playerR>enemyL && enemyL-playerR<enemy.shootRange
+
+        if(playerL>enemyR && playerL-enemyR<enemy[whichEnemyIndex].shootRange
          && playerT+player_shoot.offsetY>=enemyT
          && !isPlayer.invincible){
-            if(!moving_backwards) isPlayer.hurt=true;
-            else isPlayer.hurtBack=true;
+            isPlayer.hurt=true;
 
             player.health=player.health-0.2;
             player.health = player.health < 0 ? 0 : player.health;
@@ -1172,15 +1171,14 @@ function checkPlayerPosition() {
             }
         } else {
             isPlayer.hurt=false;
-            isPlayer.hurtBack=false;
         }
 
     } else if(isEnemy.attackBack) {
-        if(playerL<enemyR && playerL-enemyR<enemy.shootRange
+        
+        if(playerR<enemyL && enemyL-playerR<=enemy[whichEnemyIndex].shootRange
          && playerT+player_shoot.offsetY>=enemyT
          && !isPlayer.invincible){
-            if(!moving_backwards) isPlayer.hurt=true;
-            else isPlayer.hurtBack=true;
+            isPlayer.hurt=true;
 
             player.health=player.health-0.2
             player.health = player.health < 0 ? 0 : player.health;
@@ -1189,11 +1187,7 @@ function checkPlayerPosition() {
             }
         } else {
             isPlayer.hurt=false;
-            isPlayer.hurtBack=false;
         }
-    } else {
-        isPlayer.hurt=false;
-        isPlayer.hurtBack=false;
     }
 
     
