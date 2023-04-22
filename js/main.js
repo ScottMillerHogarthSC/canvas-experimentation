@@ -665,7 +665,7 @@ function moveSpriteSheets(){
                 
                 attackCount++;
 
-                if(attackCount>=2){
+                if(attackCount>=enemy[whichEnemyIndex].shootAmount){
                     attackCount=0;
                     isEnemy.attack=false;
                     isEnemy.run=true;
@@ -680,7 +680,7 @@ function moveSpriteSheets(){
 
                 attackCount++;
 
-                if(attackCount>=2){
+                if(attackCount>=enemy[whichEnemyIndex].shootAmount){
                     attackCount=0;
                     isEnemy.attackBack=false;
                     isEnemy.runBack=true;
