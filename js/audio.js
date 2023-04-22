@@ -5,6 +5,7 @@ function initAudio(){
             console.log("online");
             audio.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
             audio_shoot.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shoot.mp3');
+            audio_blaster.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/blaster.mp3');
 
             //[todo] - set shoot audio on web storage
 
@@ -12,6 +13,7 @@ function initAudio(){
             console.log("local");
             audio.setAttribute('src','audio/shredded-midi.mp3');
             audio_shoot.setAttribute('src','audio/shoot.mp3');
+            audio_blaster.setAttribute('src','audio/blaster.mp3');
         }
         // audio_shoot.volume=.4;
     } 

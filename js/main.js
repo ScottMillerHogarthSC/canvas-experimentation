@@ -1255,6 +1255,9 @@ function enemyAttack(){
             if(whichEnemy=="BattleCar"){
                 audio_shoot.play();
             }
+            if(whichEnemy=="CyberBike"){
+                audio_blaster.play();
+            }
         }
     }
 }

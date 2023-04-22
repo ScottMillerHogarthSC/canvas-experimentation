@@ -46,6 +46,9 @@ function init()
     footer = document.getElementById("footer");
     audio = document.getElementById("audio");
     audio_shoot = document.getElementById("audio-shoot");
+    audio_blaster = document.getElementById("audio-blaster");
+    
+
 
     
     resizeWindow();
