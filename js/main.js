@@ -623,7 +623,7 @@ function setFgIndex(){
         
     }
 }
-
+var attackCount=0;
 function moveSpriteSheets(){
     counter++;
     if(counter>999) counter=0;
@@ -657,11 +657,31 @@ function moveSpriteSheets(){
         if(isEnemy.attack){
             sprite_x.enemyX+=enemy[whichEnemyIndex].width;
             if(sprite_x.enemyX>=spritesheetW.enemyW) {
-                isEnemy.attack=false;
-                isEnemy.run=true;
-                startedAttack=false;
-
                 sprite_x.enemyX=0;
+                
+                attackCount++;
+
+                if(attackCount>=2){
+                    attackCount=0;
+                    isEnemy.attack=false;
+                    isEnemy.run=true;
+                    startedAttack=false;
+                }
+                
+            }
+        } else if(isEnemy.attackBack){
+            sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+            if(sprite_x.enemyX>=spritesheetW.enemyW) {
+                sprite_x.enemyX=0;
+
+                attackCount++;
+
+                if(attackCount>=2){
+                    attackCount=0;
+                    isEnemy.attackBack=false;
+                    isEnemy.runBack=true;
+                    startedAttack=false;
+                }
             }
         } 
         else {
@@ -1084,7 +1104,7 @@ function checkPlayerPosition() {
         }
     } else {
 
-        isPlayer.hurt=false;
+        // isPlayer.hurt=false;
     }
 
 
@@ -1093,10 +1113,12 @@ function checkPlayerPosition() {
 
 /////// PLAYER SHOOT HITS: //////////
     if(isPlayer.attack) {
-        if(playerR<enemyL 
+        if(playerR<enemyL && enemyL-playerR<player.shootRange
          && playerT+player_shoot.offsetY>=enemyT){
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
+
+
 
             score.curr=score.curr+0.05;
 
@@ -1132,30 +1154,67 @@ function checkPlayerPosition() {
         isEnemy.hurtBack=false; 
     }
 
+
+
+///// ENEMY SHOOTING HITS PLAYER //////////
+
+    if(isEnemy.attack) {
+        if(playerR>enemyL && enemyL-playerR<enemy.shootRange
+         && playerT+player_shoot.offsetY>=enemyT
+         && !isPlayer.invincible){
+            if(!moving_backwards) isPlayer.hurt=true;
+            else isPlayer.hurtBack=true;
+
+            player.health=player.health-0.2;
+            player.health = player.health < 0 ? 0 : player.health;
+            if(player.health==0) { 
+                playerDeath("shoot");
+            }
+        } else {
+            isPlayer.hurt=false;
+            isPlayer.hurtBack=false;
+        }
+
+    } else if(isEnemy.attackBack) {
+        if(playerL<enemyR && playerL-enemyR<enemy.shootRange
+         && playerT+player_shoot.offsetY>=enemyT
+         && !isPlayer.invincible){
+            if(!moving_backwards) isPlayer.hurt=true;
+            else isPlayer.hurtBack=true;
+
+            player.health=player.health-0.2
+            player.health = player.health < 0 ? 0 : player.health;
+            if(player.health==0) { 
+                playerDeath("shoot");
+            }
+        } else {
+            isPlayer.hurt=false;
+            isPlayer.hurtBack=false;
+        }
+    } else {
+        isPlayer.hurt=false;
+        isPlayer.hurtBack=false;
+    }
+
     
 
 /////// ENEMY REPEAT OR OFF SCREEN / TURN BACK: //////////
-    if(!isEnemy.killed && !isEnemy.attack){
+    if(!isEnemy.killed){
         
+        if((isEnemy.run || isEnemy.attack || isEnemy.hurt) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width+3)) {
 
-        if((isEnemy.run || isEnemy.attack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width+3)) {
+            // stop enemy going off screen to left:
+            enemy[whichEnemyIndex].x=-(enemy[whichEnemyIndex].width);
 
-                // stop enemy going off screen to left:
-                enemy[whichEnemyIndex].x=-(enemy[whichEnemyIndex].width);
-
-                // enemy[whichEnemyIndex].x=canvas.width;
-                // isEnemy.runBack=true;
-                // isEnemy.run=false;
-                //[todo] - enemy off screen so far- kill them
-                // enemy[whichEnemyIndex].x=0;
-                // killEnemy();
         }
-         else if((isEnemy.runBack || isEnemy.attackBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
-            // if(isEnemy.run && enemy[whichEnemyIndex].x<=-((enemy[whichEnemyIndex].width*2)+1)) {
-             // else {
+         else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
+            if(isEnemy.hurtBack){
+                isEnemy.hurtBack=false;
+                isEnemy.hurt=true;
+            } else {
                 isEnemy.runBack=false;
                 isEnemy.run=true;
-            // }
+            }
         }
 
         // enemy
@@ -1172,46 +1231,35 @@ function setupJumpTL(){
         .to(player,{y:"-="+player.jumpH,ease:"power3.out", duration:0.338},"up");
 }
 
-var tlEnemyVars = gsap.timeline({paused:true,onComplete:enemyTLplayed});
+var tlEnemyVars = gsap.timeline({paused:true,onComplete:enemyTLplayed,repeatDelay:4,repeat:-1});
 function setupEnemyTimeLine() {
     tlEnemyVars.addLabel("reset",0)
         .to(isEnemy,0,{runBack:true,run:false,attack:false,attackBack:false,hurt:false,hurtBack:false,killed:false,exploding:false},"reset")
         .addLabel("start",1)
         .addLabel("attack","start+=2")
-        .call(enemyAttack,[true],"attack")
-        .addLabel("stop-attack",">1")
-        .call(enemyAttack,[false],"stop-attack")
+        .call(enemyAttack,[],"attack")
+        // .addLabel("stop-attack",">1")
+        // .call(enemyAttack,[false],"stop-attack")
 
 
     tlEnemyVars.restart();
 }
 
-function enemyAttack(isAttack){
-    if(isAttack){
-        if(!isEnemy.killed && !isEnemy.hurt && !isEnemy.hurtBack){
-            if(isEnemy.runBack){
-                isEnemy.attackBack=true;
-            } else {
-                isEnemy.attack=true;
-            }
-        }
-    } else {
-        if(isEnemy.attackBack){
-            isEnemy.attackBack=false;
-            isEnemy.runBack=true;
-        } 
-        if(isEnemy.attack){
-            isEnemy.attack=false;
-            isEnemy.run=true;
+function enemyAttack(){
+    if(!isEnemy.killed && !isEnemy.hurt && !isEnemy.hurtBack){
+        if(isEnemy.runBack){
+            isEnemy.attackBack=true;
+        } else {
+            isEnemy.attack=true;
         }
     }
-
 }
 
 function enemyTLplayed(){
     console.log("enemyTLplayed");
-    tlEnemyVars.seek("start");
-    tlEnemyVars.play();
+
+    // tlEnemyVars.seek("start");
+    // tlEnemyVars.play();
 }
     
 var moveFactor_enemy = 1;

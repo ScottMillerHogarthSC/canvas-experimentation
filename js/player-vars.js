@@ -1,5 +1,5 @@
 var player_ground={y:288,floor:288}
-var player = {x:0,y:0,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12,health:100,jumpH:60,lives:3};
+var player = {x:0,y:0,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12,health:100,jumpH:60,lives:3,shootRange:150};
 player.y=player_ground.y-player.height; 
 
 var isPlayer = {
