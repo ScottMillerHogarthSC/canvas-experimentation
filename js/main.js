@@ -1,4 +1,6 @@
-var wrap,container,audio,audio_shoot,noAudio=false;
+var wrap,container,
+audio,audio_shoot,audio_blaster,audio_explosion,
+noAudio=false;
 var body = document.body,
 html = document.documentElement;
 var pageHeight = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -563,7 +565,7 @@ function moveFg(){
         
         if(fg.x<-((fg.width*(fgsList.length))-1152-canvas.width)){
             
-            console.log('end');
+            alert('end');
 
             // [todo] - end of foregrounds reached, play ending! 
             collided=true;
@@ -623,6 +625,21 @@ function setFgIndex(){
         }
         if(fgsImgs[i].id == "05") {
             fgsImgIndex[4] = i;
+        }
+        if(fgsImgs[i].id == "06") {
+            fgsImgIndex[5] = i;
+        }
+        if(fgsImgs[i].id == "07") {
+            fgsImgIndex[6] = i;
+        }
+        if(fgsImgs[i].id == "08") {
+            fgsImgIndex[7] = i;
+        }
+        if(fgsImgs[i].id == "09") {
+            fgsImgIndex[8] = i;
+        }
+        if(fgsImgs[i].id == "01") {
+            fgsImgIndex[9] = i;
         }
         
     }
@@ -1254,6 +1271,7 @@ function enemyAttack(){
             // [todo]- need to have different SFX sound per enemyIndex:
             if(whichEnemy=="BattleCar"){
                 audio_shoot.play();
+
             }
             if(whichEnemy=="CyberBike"){
                 audio_blaster.play();
@@ -1295,6 +1313,8 @@ function renderEnemy(whichEnemy) {
     }
 
     if(isEnemy.exploding){
+        audio_explosion.play();
+
         ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
         // play explosion!
         spritesheetW.explosionW=explosion.width;

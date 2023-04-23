@@ -44,9 +44,12 @@ function init()
     wrap = document.getElementById("wrap");
     container = document.getElementById("container");
     footer = document.getElementById("footer");
+
+    //[audio]
     audio = document.getElementById("audio");
     audio_shoot = document.getElementById("audio-shoot");
     audio_blaster = document.getElementById("audio-blaster");
+    audio_explosion = document.getElementById("audio-explosion");
     
 
 
