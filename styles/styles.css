@@ -116,7 +116,6 @@ body{
     left: 25%;
 }
 #score_txt{
-    font-size: .45em;
     top: 50%;
     transform: translateY(-50%);
     max-height: 324px;

@@ -971,7 +971,7 @@ function checkPlayerPosition() {
 
 /////// ENEMY HITS OBSTACLE /////////
     
-    if(isEnemy.run){
+    // if(isEnemy.run){
         // for(i=0; i<obstacle.length-1; i++){
         //     let e_obstacleR = obstacle[i].x+obstacle[i].w; 
         //     let e_obstacleL = obstacle[i].x;
@@ -988,7 +988,7 @@ function checkPlayerPosition() {
             //     isEnemy.run=false;
             //     isEnemy.runBack=true;
             // }
-    }    
+    // }    
     
 
 
@@ -1045,7 +1045,9 @@ function checkPlayerPosition() {
 
             // but if we running backwards into obj enemy speed needs to be normal:
             if(moving_backwards && (isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack)){
-                moveFactor_enemy=4;
+                if(isPlayer.runBack){
+                    moveFactor_enemy=4;
+                }
             }
             
 
@@ -1072,11 +1074,11 @@ function checkPlayerPosition() {
 
             moveFactor_enemy=1;
 
-            if(!tlJump.isActive()){
+            // if(!tlJump.isActive()){
                 if(playerR < obstacleL || playerL > obstacleR){
                     player_ground.y=player_ground.floor;
                 }
-            }
+            // }
 
 
             x_moveAmount_bg=1;
@@ -1153,7 +1155,8 @@ function checkPlayerPosition() {
         }
 
     } else if(isPlayer.attackBack) {
-        if(playerL>enemyR 
+        // console.log(enemyR-playerL);
+        if(playerL>enemyR && enemyR-playerL>-player.shootRange
          && playerT+player_shoot.offsetY>=enemyT){
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
@@ -1219,10 +1222,15 @@ function checkPlayerPosition() {
         if((isEnemy.run || isEnemy.attack || isEnemy.hurt) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width+3)) {
 
             // stop enemy going off screen to left:
-            enemy[whichEnemyIndex].x=-(enemy[whichEnemyIndex].width);
+            enemy[whichEnemyIndex].x=canvas.width;
+            if(isEnemy.hurtBack){
+                isEnemy.hurtBack=false;
+            }
+            isEnemy.runBack=true
 
         }
-         else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
+         else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<0){
+         // else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
             if(isEnemy.hurtBack){
                 isEnemy.hurtBack=false;
                 isEnemy.hurt=true;
@@ -1248,17 +1256,24 @@ function setupJumpTL(){
 
 var tlEnemyVars = gsap.timeline({paused:true,onComplete:enemyTLplayed,repeatDelay:4,repeat:-1});
 function setupEnemyTimeLine() {
-    tlEnemyVars.addLabel("reset",0)
-        .to(isEnemy,0,{runBack:true,run:false,attack:false,attackBack:false,hurt:false,hurtBack:false,killed:false,exploding:false},"reset")
-        .addLabel("start",1)
+
+    tlEnemyVars.addLabel("reset",0);
+
+    if(isEnemy.runBack){
+        tlEnemyVars.to(isEnemy,0,{runBack:true,run:false,attack:false,attackBack:false,hurt:false,hurtBack:false,killed:false,exploding:false},"reset")
+    } else {
+        tlEnemyVars.to(isEnemy,0,{runBack:false,run:true,attack:false,attackBack:false,hurt:false,hurtBack:false,killed:false,exploding:false},"reset")
+    }
+
+    
+    tlEnemyVars.addLabel("start",1)
         .addLabel("attack","start+=2")
-        .call(enemyAttack,[],"attack")
-        // .addLabel("stop-attack",">1")
-        // .call(enemyAttack,[false],"stop-attack")
+        .call(enemyAttack,[],"attack");
 
 
     tlEnemyVars.restart();
 }
+
 
 function enemyAttack(){
     if(!isEnemy.killed && !isEnemy.hurt && !isEnemy.hurtBack){
@@ -1601,6 +1616,12 @@ function playerDeath(death_type){
 
 
         if(death_type=="enemy"){
+            if(player.lives>0){
+                died_txt.innerHTML="you have fallen, but the quest goes on";
+            } else {
+                died_txt.innerHTML="you fought valiantly, but you died in battle";
+            }
+        } else if(death_type=="shoot"){
             if(player.lives>0){
                 died_txt.innerHTML="you have fallen, but the quest goes on";
             } else {
