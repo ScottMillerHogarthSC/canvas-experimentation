@@ -1,6 +1,4 @@
-var wrap,container,
-audio,audio_shoot,audio_blaster,audio_explosion,
-noAudio=false;
+var wrap,container;
 var body = document.body,
 html = document.documentElement;
 var pageHeight = Math.max( body.scrollHeight, body.offsetHeight, 
@@ -316,28 +314,6 @@ function init_renderPlayer() {
         }
 }
 
-
-function checkKeyPress(e){
-    // console.log(e.code);
-
-    if(e.code == "KeyM") {
-        if(!muted){
-            audio.volume=0;
-            audio_shoot.volume=0;
-            muted=true;
-        } else {
-            audio.volume=1;
-            audio_shoot.volume=1;
-            muted=false;
-        }
-    }
-    else if(e.code == "Space") {
-        gamePause();
-    } else {
-        gamePause();
-    }
-}
-
 function gamePause(){
     
     if(!paused && !isPlayer.dead){
@@ -357,14 +333,14 @@ function gamePause(){
 
         tlEnemyVars.play();
 
-        if(!isPlayingAudio) audio.play();
+        if(!isPlayingAudio && !muted) audio.play();
     }
 }
 
 var keysWait = false;
 function checkKeys(){ 
 
-    if(!keysWait && !isPlayer.dead){
+    if(!keysWait && !isPlayer.dead && !paused){
     
         if (Keyboard.isDown(Keyboard.RIGHT) && Keyboard.isDown(Keyboard.LEFT)) { 
             return;
@@ -443,7 +419,7 @@ function shoot(){
         isPlayer.attack=true;
     }
     if(!noAudio){
-        audio_shoot.play();
+        playSFX(audio_shoot);
     }
 
 }
@@ -1119,6 +1095,7 @@ function checkPlayerPosition() {
         && playerT + player.hitH > enemyT ){
 
         // colliding! 
+        playSFX(audio_playerhurt);
         
         isPlayer.hurt=true;
         player.health--;
@@ -1186,6 +1163,9 @@ function checkPlayerPosition() {
         if(playerL>enemyR && playerL-enemyR<enemy[whichEnemyIndex].shootRange
          && playerT+player_shoot.offsetY>=enemyT
          && !isPlayer.invincible){
+
+            playSFX(audio_playerhurt);
+
             isPlayer.hurt=true;
 
             player.health=player.health-0.2;
@@ -1285,18 +1265,17 @@ function enemyAttack(){
         if(!noAudio){
             // [todo]- need to have different SFX sound per enemyIndex:
             if(whichEnemy=="BattleCar"){
-                audio_shoot.play();
-
+                playSFX(audio_shoot);
             }
             if(whichEnemy=="CyberBike"){
-                audio_blaster.play();
+                playSFX(audio_blaster);
             }
         }
     }
 }
 
 function enemyTLplayed(){
-    console.log("enemyTLplayed");
+    // console.log("enemyTLplayed");
 }
     
 var moveFactor_enemy = 1;
@@ -1328,7 +1307,8 @@ function renderEnemy(whichEnemy) {
     }
 
     if(isEnemy.exploding){
-        audio_explosion.play();
+    
+        playSFX(audio_explosion);
 
         ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
         // play explosion!
@@ -1605,6 +1585,8 @@ var onlyDieOnce = false;
 function playerDeath(death_type){
     if(!onlyDieOnce) {
 
+        playSFX(audio_playerdead,true);
+
         spritesheetW.playerW=player_dead.width;
 
         if(!moving_backwards) {
@@ -1614,6 +1596,7 @@ function playerDeath(death_type){
         onlyDieOnce=true;
         player.lives--;
 
+        tlEnemyVars.pause();
 
         if(death_type=="enemy"){
             if(player.lives>0){
@@ -1735,6 +1718,8 @@ function continueGame() {
     isPlayer.idleBack=true;
     collided=false;
     isPlayer.invincible=true;
+
+    audio_playerhurt.volume=1;
 
     
     var tlFlashPlayer=gsap.timeline({onComplete:function(){

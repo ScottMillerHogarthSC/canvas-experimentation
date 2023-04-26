@@ -55,3 +55,17 @@ Keyboard.isUp = function (keyCode) {
     }
     return this._keys[keyCode];
 };
+
+
+function checkKeyPress(e){
+    // console.log(e.code);
+
+    if(e.code == "KeyM") {
+        toggleMuteAudio();
+    }
+    else if(e.code == "Space") {
+        gamePause();
+    } else {
+        gamePause();
+    }
+}

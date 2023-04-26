@@ -26,6 +26,11 @@
             extCSS2.setAttribute("type", "text/css");
             extCSS2.setAttribute("href", "styles/controls.css");
 
+            var extCSS3 = document.createElement("link");
+            extCSS3.setAttribute("rel", "stylesheet");
+            extCSS3.setAttribute("type", "text/css");
+            extCSS3.setAttribute("href", "styles/crt.css");
+
             extCSS1.onload = function() {
                 cssLoadedHandler();
             }
@@ -33,6 +38,7 @@
             document.getElementsByTagName("head")[0].appendChild(extCSS);
             document.getElementsByTagName("head")[0].appendChild(extCSS1);
             document.getElementsByTagName("head")[0].appendChild(extCSS2);
+            document.getElementsByTagName("head")[0].appendChild(extCSS3);
         }
 
         /**
@@ -166,7 +172,8 @@
     <audio id="audio-shoot"></audio>
     <audio id="audio-blaster"></audio>
     <audio id="audio-explosion"></audio>
-
+    <audio id="audio-playerhurt"></audio>
+    <audio id="audio-playerdead"></audio>
 
     <div id="wrap" class="paused">
         <div id="container">

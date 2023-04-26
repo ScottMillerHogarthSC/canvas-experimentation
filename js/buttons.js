@@ -10,6 +10,9 @@ var btnMoveUp, btnMoveForwards, btnMoveBackwards, btnMoveDown, btnJump, btnOptio
     btnStart = document.getElementById("btnStart");
 
 function bindButtons(){
+    Keyboard.listenForEvents([Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
+
+    document.body.addEventListener('keypress', checkKeyPress);
     
     btnMoveUp.addEventListener("touchstart", mobileBtnPressed);
     btnMoveForwards.addEventListener("touchstart", mobileBtnPressed);
@@ -46,6 +49,10 @@ function bindButtons(){
 }
 
 function unbindButtons(){
+    // Keyboard.listenForEvents([Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
+
+    document.body.removeEventListener('keypress', checkKeyPress);
+
     btnMoveUp.removeEventListener("touchstart", mobileBtnPressed);
     btnMoveForwards.removeEventListener("touchstart", mobileBtnPressed);
     btnMoveBackwards.removeEventListener("touchstart", mobileBtnPressed);
@@ -83,7 +90,6 @@ function unbindButtons(){
 function bindRestartButtons(){
     unbindButtons();
 
-
     restart_btn.addEventListener("click", restartGame);
     restart_btn_mobile.addEventListener("touchend", restartGame);
     btnStart.addEventListener("touchend", restartGame);
@@ -97,22 +103,16 @@ function unbindRestartButtons(){
 
 function bindContinueButtons(){
     unbindButtons();
-    btnStart.removeEventListener('touchend', gamePause);
 
     continue_btn.addEventListener("click", continueGame);
     continue_btn_mobile.addEventListener("touchend", continueGame);
     window.addEventListener('keydown', continueGame);
-    document.body.removeEventListener('keypress', checkKeyPress);
-
 }
 
 function unbindContinueButtons(){
     continue_btn.removeEventListener("click", continueGame);
     continue_btn_mobile.removeEventListener("touchend", continueGame);
     window.removeEventListener('keydown', continueGame);
-    document.body.removeEventListener('keypress', checkKeyPress);
-
-    document.body.addEventListener('keypress', checkKeyPress);
 }
 
 function mobileBtnPressed(ev){

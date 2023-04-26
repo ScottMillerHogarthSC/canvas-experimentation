@@ -45,14 +45,7 @@ function init()
     container = document.getElementById("container");
     footer = document.getElementById("footer");
 
-    //[audio]
-    audio = document.getElementById("audio");
-    audio_shoot = document.getElementById("audio-shoot");
-    audio_blaster = document.getElementById("audio-blaster");
-    audio_explosion = document.getElementById("audio-explosion");
     
-
-
     
     resizeWindow();
 
@@ -68,8 +61,16 @@ function init()
     }
 
 
-    // if (audio.canPlayType('audio/ogg')) {
-    //     audio.setAttribute('src','01_stars_are_my_guide.ogg');
+    $(document).on('show.visibility', function() {
+        // if(!paused) {
+        //     gamePause();
+        // }
+    });
+    $(document).on('hide.visibility', function() {
+        if(!paused) {
+            gamePause();
+        }
+    });
 
     
     initAudio();
@@ -81,9 +82,4 @@ function init()
 // called from audio.js once audios loaded:
 function start(){
     initCanvasAnim();
-
-    
-    Keyboard.listenForEvents([Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
-
-    document.body.addEventListener('keypress', checkKeyPress);
 }
