@@ -100,7 +100,7 @@ function failedtoLoadAudio(e){
 var audiosLoaded = 0;
 
 
-var isPlayingAudio = audio.currentTime > 0 && !audio.paused && !audio.ended && audio.readyState > audio.HAVE_CURRENT_DATA;
+var isPlayingAudio;
 function loadedAudio(){
     audiosLoaded++;
     if(audiosLoaded==audiosArr.length-1){
