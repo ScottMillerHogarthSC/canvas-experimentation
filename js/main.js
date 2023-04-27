@@ -74,7 +74,8 @@ var isSongToEnding=false;
 var collided=false; 
 var paused=false;
 var muted = false;
-var noEnemies = false;
+var noEnemies = true;
+var noEnemiesOverride=false;
 var moving_backwards = false; 
 
 var tlJump = gsap.timeline({paused:true});
@@ -263,7 +264,7 @@ function init_renderPlayer() {
             imgLoaded++;
         }
 
-
+    
 
     // player hurt
 
@@ -495,7 +496,7 @@ function updateStage(){
         renderPlayerUI();
 
         
-        if(!noEnemies){
+        if(!noEnemies && !noEnemiesOverride){
             renderEnemy();
         } else {
             ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
@@ -536,15 +537,35 @@ function updateStage(){
 }
 
 var x_moveAmount_fg = 1.15;
+var nearEnding=false;
 function moveFg(){
     if(!moving_backwards){
-        
-        if(fg.x<-((fg.width*(fgsList.length))-1152-canvas.width)){
-            
-            alert('end');
 
-            // [todo] - end of foregrounds reached, play ending! 
+        // console.log(fg.x,-(fg.width*2));
+        if(fg.x<-(fg.width*2)+canvas.width && noEnemies){
+            noEnemies=false;
+        }
+        
+
+        if(fg.x<-((fg.width*(fgsList.length))-(1152*2)-canvas.width) && !nearEnding){
+            nearEnding=true;
+            gsap.fromTo("#bg-canvas",3,{filter:"brightness(1)"},{filter:"brightness(.5)"});
+        }
+
+        if(fg.x<-((fg.width*(fgsList.length))-1152-canvas.width)){
+               
+            // 'end'
+            // end of foregrounds reached, play ending! 
             collided=true;
+
+
+
+            createjs.Ticker.removeEventListener("tick", updateStage);
+            createjs.Ticker.removeEventListener("tick", checkKeys);
+
+            // keysWait=true;
+
+            createjs.Ticker.addEventListener("tick", playEnding);
 
         } else {
             x_moveAmount_bg=1;
@@ -652,7 +673,11 @@ function moveSpriteSheets(){
 
 
         if(isEnemy.attack){
-            sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+            if(whichEnemy=="CyberBike"){
+                sprite_x.enemyX+=192;
+            } else {
+                sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+            }
             if(sprite_x.enemyX>=spritesheetW.enemyW) {
                 sprite_x.enemyX=0;
                 
@@ -667,7 +692,11 @@ function moveSpriteSheets(){
                 
             }
         } else if(isEnemy.attackBack){
-            sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+            if(whichEnemy=="CyberBike"){
+                sprite_x.enemyX+=192;
+            } else {
+                sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+            }
             if(sprite_x.enemyX>=spritesheetW.enemyW) {
                 sprite_x.enemyX=0;
 
@@ -1262,8 +1291,12 @@ function enemyAttack(){
         } else {
             isEnemy.attack=true;
         }
+
+
+        
+
         if(!noAudio){
-            // [todo]- need to have different SFX sound per enemyIndex:
+            // different SFX sound per enemyIndex:
             if(whichEnemy=="BattleCar"){
                 playSFX(audio_shoot);
             }
@@ -1282,9 +1315,9 @@ var moveFactor_enemy = 1;
 var whichEnemyIndex=0;
 var startedAttack = false;
 function renderEnemy(whichEnemy) {
-    
+    enemyCellW=enemy.width;
     // init enemy:
-    if(!enemyIndexFlag) {
+    if(!enemyIndexFlag && !nearEnding) {
 
         // only do this once:
         setEnemyIndex();
@@ -1372,18 +1405,30 @@ function renderEnemy(whichEnemy) {
         drawEnemy(enemyImgIndex.hurt, sprite_x.enemyX, whichEnemyIndex)
 
     } else if(isEnemy.attack) {
+        enemyCellW = enemiesList[whichEnemyIndex][4].cellW;
+
         if(!startedAttack){
             startedAttack=true;
             sprite_x.enemyX=0;
         }
-        spritesheetW.enemyW=enemiesList[whichEnemyIndex][4].width;    
+        spritesheetW.enemyW=enemiesList[whichEnemyIndex][4].width;
+        
         //attack
         drawEnemy(enemyImgIndex.attack, sprite_x.enemyX, whichEnemyIndex);
         
     } else if(isEnemy.attackBack){
-        //attackBack
+        enemyCellW = enemiesList[whichEnemyIndex][5].cellW;
+
+        if(!startedAttack){
+            startedAttack=true;
+            sprite_x.enemyX=0;
+        }
+
         spritesheetW.enemyW=enemiesList[whichEnemyIndex][5].width;
+        
+        //attackBack
         drawEnemy(enemyImgIndex.attackBack, sprite_x.enemyX, whichEnemyIndex);
+
     } else if(isEnemy.runBack) {
         // walkBack
         spritesheetW.enemyW=enemiesList[whichEnemyIndex][3].width;
@@ -1432,10 +1477,27 @@ function renderEnemyUI(){
 // drawEnemy(enemyImgs[enemyImgIndex.hurtBack], sprite_x.enemyX)
 function drawEnemy(img, spx, ind){
     ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
-    ctxEnemy.drawImage(enemyImgs[img], spx, 0,
-        enemy[ind].width, enemy[ind].height,
-        enemy[ind].x, enemy[ind].y, 
-        enemy[ind].width, enemy[ind].height);
+    
+
+    if((isEnemy.attackBack || isEnemy.attack) && whichEnemy=="CyberBike"){
+        if(isEnemy.attackBack){
+            ctxEnemy.drawImage(enemyImgs[img], spx, 0,
+                enemyCellW, enemy[ind].height,
+                (enemy[ind].x-enemyCellW/2), enemy[ind].y, 
+                enemyCellW, enemy[ind].height);
+        } 
+        else if(isEnemy.attack){
+            ctxEnemy.drawImage(enemyImgs[img], spx, 0,
+                enemyCellW, enemy[ind].height,
+                enemy[ind].x, enemy[ind].y, 
+                enemyCellW, enemy[ind].height);
+        }
+    } else {
+        ctxEnemy.drawImage(enemyImgs[img], spx, 0,
+            enemy[ind].width, enemy[ind].height,
+            enemy[ind].x, enemy[ind].y, 
+            enemy[ind].width, enemy[ind].height);
+    }
 }
 
 var enemyIndexFlag = false;
@@ -1820,11 +1882,10 @@ function toggleHighlights() {
     }
 }
 function toggleEnemies() {
-    if(!noEnemies){
-        noEnemies=true;
+    if(!noEnemiesOverride){
+        noEnemiesOverride=true;
     } else {
-        noEnemies=false;
-
+        noEnemiesOverride=false;
     }
 }
 function zoomInContainer(){

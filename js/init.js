@@ -24,7 +24,7 @@ function init()
         devTools=true;
     }
     if(window.location.search.includes("noEnemies")){
-        noEnemies=true;
+        noEnemiesOverride=true;
         devTools=true;
     }
     if(window.location.search.includes("zoom")){

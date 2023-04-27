@@ -46,6 +46,8 @@ function bindButtons(){
     btnMoveDown.addEventListener("mouseup", mobileBtnReleased);
     btnJump.addEventListener("mouseup", mobileBtnReleased);
     btnWheelie.addEventListener("mouseup", mobileBtnReleased);
+
+    container.classList.add("noMouse");
 }
 
 function unbindButtons(){
@@ -85,6 +87,8 @@ function unbindButtons(){
     btnMoveDown.removeEventListener("mouseup", mobileBtnReleased);
     btnJump.removeEventListener("mouseup", mobileBtnReleased);
     btnWheelie.removeEventListener("mouseup", mobileBtnReleased);
+
+    container.classList.remove("noMouse");
 }
 
 function bindRestartButtons(){
