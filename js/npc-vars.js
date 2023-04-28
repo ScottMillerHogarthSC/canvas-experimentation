@@ -1,8 +1,8 @@
 var npc_groundY = enemy_groundY+48;
-var npc = [{x:100,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:38,hitY:10,health:20,fullhealth:20,killValue:5},       
-            {x:200,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:38,hitY:10,health:20,fullhealth:20,killValue:5},
-            {x:576,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:38,hitY:10,health:20,fullhealth:20,killValue:5},
-            {x:500,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:38,hitY:10,health:20,fullhealth:20,killValue:5}]
+var npc = [{x:596,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5},       
+            {x:626,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5},
+            {x:676,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5},
+            {x:576,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5}]
 
 var isNpc = []
 
@@ -14,7 +14,8 @@ for(i=0;i<=npc.length-1;i++){
         walkBack:false,
         hurt:false,
         hurtBack:false,
-        killed:false
+        killed:false,
+        hitPlayer:false
     }
 }
 
@@ -31,4 +32,5 @@ var npcList = [ // order of the below must be preserved
 ];
 var npcImgs = [];
 var npcImgIndex = {walkBack:0, hurtBack:0, walk:0, hurt:0, death:0, deathBack:0};
+
 

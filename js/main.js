@@ -66,7 +66,7 @@ var score = {curr:0};
 
 var nearEdge = {left:false,right:false}
 
-var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, npcX:[0]};
+var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, npcX:[0], fireX:0};
 
 var spritesheetW = {playerW: player_idle.width, 
                     enemyW:enemiesList[0][0].width,
@@ -81,7 +81,10 @@ var collided=false;
 var paused=false;
 var muted = false;
 var noEnemies = true;
-var noEnemiesOverride=false;
+var noEnemiesOverride = false;
+var noNpcs = true;
+var fireStarted=false;
+var fires = [];
 var moving_backwards = false; 
 
 var tlJump = gsap.timeline({paused:true});
@@ -122,6 +125,23 @@ function initCanvasAnim(){
             imgLoaded++;
         }
 
+        fire01_img = new Image();
+        imageAdded++;
+        fire01_img.src = "images/Fire/1.png";
+        fire01_img.onload = function(){ imgLoaded++; }
+        fire02_img = new Image();
+        imageAdded++;
+        fire02_img.src = "images/Fire/2.png";
+        fire02_img.onload = function(){ imgLoaded++; }
+        fire03_img = new Image();
+        imageAdded++;
+        fire03_img.src = "images/Fire/3.png";
+        fire03_img.onload = function(){ imgLoaded++; }
+        fire04_img = new Image();
+        imageAdded++;
+        fire04_img.src = "images/Fire/4.png";
+        fire04_img.onload = function(){ imgLoaded++; }
+
 
     // player
         init_renderPlayer();
@@ -137,7 +157,6 @@ function initCanvasAnim(){
         npcList[i].forEach(depictNpc);
     }
     
-
 
     
     
@@ -391,7 +410,6 @@ function shoot(){
 
 function forwards(){
     if(moving_backwards){
-        //[todo]- turning around moves back a bit??
         player.x=player.x+24;
     }
 
@@ -428,19 +446,18 @@ function updateStage(){
 
         // background 
         if(!isPlayer.dead){
-            moveBg();
-            moveFg();
 
-            ctxBG.clearRect(0, 0, canvas.width, canvas.height);
+            if(!fireStarted){
+                moveBg();
+                moveFg();
 
-            for(i = 0; i<bgsImgs.length; i++) {
-                ctxBG.drawImage(bgsImgs[i], bgsList[i].x, bgsList[i].y, bgsList[i].width, bgsList[i].height);
-                ctxBG.drawImage(bgsImgs[i], (bgsList[i].x+bgsList[i].width), bgsList[i].y, bgsList[i].width, bgsList[i].height);
-            }
-            
-            for(i=0; i<buildingsImgs.length; i++){
-                ctxBG.drawImage(buildingsImgs[i], buildingsList[i].x, bgBuildings.y, bgBuildings.width, bgBuildings.height);
-                ctxBG.drawImage(buildingsImgs[i], (buildingsList[i].x+buildingsList[i].width), bgBuildings.y, bgBuildings.width, bgBuildings.height);
+
+                ctxBG.clearRect(0, 0, canvas.width, canvas.height);
+
+                for(i = 0; i<bgsImgs.length; i++) {
+                    ctxBG.drawImage(bgsImgs[i], bgsList[i].x, bgsList[i].y, bgsList[i].width, bgsList[i].height);
+                    ctxBG.drawImage(bgsImgs[i], (bgsList[i].x+bgsList[i].width), bgsList[i].y, bgsList[i].width, bgsList[i].height);
+                }
             }
             
             renderFG();
@@ -463,12 +480,22 @@ function updateStage(){
         
         if(!noEnemies && !noEnemiesOverride){
             renderEnemy();
-
-            
         } else {
             ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
         }
-        renderNPCs();
+
+        if(!noNpcs && !noEnemiesOverride){
+            renderNPCs();
+        }
+
+        if(fireStarted){
+            for(i=0; i<=canvas.width/32; i++){
+                ctxPlayer.drawImage(fires[i], sprite_x.fireX, 0, 
+                    32, 32,
+                    (i*32), 256,
+                    32, 32);
+            }
+        }
 
 
 
@@ -510,57 +537,26 @@ var x_moveAmount_fg = 1.15;
 var nearEnding=false;
 function moveFg(){
     if(!moving_backwards){
-
-        // console.log(fg.x,-(fg.width*2));
-        if(fg.x<-(fg.width*2)+canvas.width && noEnemies){
-            noEnemies=false;
-        }
+        gameProgression();
         
-
-        if(fg.x<-((fg.width*(fgsList.length))-(1152*2)-canvas.width) && !nearEnding){
-            nearEnding=true;
-            gsap.fromTo("#bg-canvas",3,{filter:"brightness(1)"},{filter:"brightness(.5)"});
+        x_moveAmount_bg=1;
+        fg.x=fg.x-(moveFactor*x_moveAmount_fg);
+        
+        // move obstacles
+        for(i=0; i<obstacle.length; i++){
+            obstacle[i].x=obstacle[i].x-(moveFactor*x_moveAmount_fg);
         }
-
-        if(fg.x<-((fg.width*(fgsList.length))-1152-canvas.width)){
-               
-            // 'end'
-            // end of foregrounds reached, play ending! 
-            collided=true;
-
-
-
-            createjs.Ticker.removeEventListener("tick", updateStage);
-            createjs.Ticker.removeEventListener("tick", checkKeys);
-
-            // keysWait=true;
-
-            createjs.Ticker.addEventListener("tick", playEnding);
-
-        } else {
-            x_moveAmount_bg=1;
-            fg.x=fg.x-(moveFactor*x_moveAmount_fg);
-            
-            // move obstacles
-            for(i=0; i<obstacle.length; i++){
-                obstacle[i].x=obstacle[i].x-(moveFactor*x_moveAmount_fg);
-            }
-        }
-
     } else {
         if(fg.x>1152) {
             playerDeath("runback");
-
-        } else {
+        } else {    
             fg.x=fg.x+(moveFactor*x_moveAmount_fg);
             
             // move obstacles
             for(i=0; i<obstacle.length; i++){
                 obstacle[i].x=obstacle[i].x+(moveFactor*x_moveAmount_fg);
-            }    
+            }   
         }
-        
-        
     }
 }
 var fgIndexSet=false;
@@ -569,6 +565,11 @@ function renderFG(){
         setFgIndex();
     }
     ctxFG.clearRect(0, 0, canvas.width, canvas.height);
+
+    for(i=0; i<buildingsImgs.length; i++){
+        ctxFG.drawImage(buildingsImgs[i], buildingsList[i].x, bgBuildings.y, bgBuildings.width, bgBuildings.height);
+        ctxFG.drawImage(buildingsImgs[i], (buildingsList[i].x+buildingsList[i].width), bgBuildings.y, bgBuildings.width, bgBuildings.height);
+    }
 
     for(i = 0; i<fgsImgs.length; i++) {
         ctxFG.drawImage(fgsImgs[fgsImgIndex[i]], (fg.x+fgsList[i].x), fg.y, fg.width, fg.height);
@@ -644,61 +645,63 @@ function moveSpriteSheets(){
 
 
 ////// ENEMY SPRITES /////////
-        if(isEnemy.attack){
-            if(whichEnemy=="CyberBike"){
-                sprite_x.enemyX+=192;
-            } else {
-                sprite_x.enemyX+=enemy[whichEnemyIndex].width;
-            }
-            if(sprite_x.enemyX>=spritesheetW.enemyW) {
-                sprite_x.enemyX=0;
-                
-                attackCount++;
-
-                if(attackCount>=enemy[whichEnemyIndex].shootAmount){
-                    attackCount=0;
-                    isEnemy.attack=false;
-                    isEnemy.run=true;
-                    startedAttack=false;
+        if(!noEnemies){
+            if(isEnemy.attack){
+                if(whichEnemy=="CyberBike"){
+                    sprite_x.enemyX+=192;
+                } else {
+                    sprite_x.enemyX+=enemy[whichEnemyIndex].width;
                 }
-                
-            }
-        } else if(isEnemy.attackBack){
-            if(whichEnemy=="CyberBike"){
-                sprite_x.enemyX+=192;
-            } else {
-                sprite_x.enemyX+=enemy[whichEnemyIndex].width;
-            }
-            if(sprite_x.enemyX>=spritesheetW.enemyW) {
-                sprite_x.enemyX=0;
+                if(sprite_x.enemyX>=spritesheetW.enemyW) {
+                    sprite_x.enemyX=0;
+                    
+                    attackCount++;
 
-                attackCount++;
-
-                if(attackCount>=enemy[whichEnemyIndex].shootAmount){
-                    attackCount=0;
-                    isEnemy.attackBack=false;
-                    isEnemy.runBack=true;
-                    startedAttack=false;
+                    if(attackCount>=enemy[whichEnemyIndex].shootAmount){
+                        attackCount=0;
+                        isEnemy.attack=false;
+                        isEnemy.run=true;
+                        startedAttack=false;
+                    }
+                    
                 }
+            } else if(isEnemy.attackBack){
+                if(whichEnemy=="CyberBike"){
+                    sprite_x.enemyX+=192;
+                } else {
+                    sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+                }
+                if(sprite_x.enemyX>=spritesheetW.enemyW) {
+                    sprite_x.enemyX=0;
+
+                    attackCount++;
+
+                    if(attackCount>=enemy[whichEnemyIndex].shootAmount){
+                        attackCount=0;
+                        isEnemy.attackBack=false;
+                        isEnemy.runBack=true;
+                        startedAttack=false;
+                    }
+                }
+            } 
+            else {
+                sprite_x.enemyX+=enemy[whichEnemyIndex].width;
+                if(sprite_x.enemyX>=spritesheetW.enemyW) sprite_x.enemyX=0;
             }
-        } 
-        else {
-            sprite_x.enemyX+=enemy[whichEnemyIndex].width;
-            if(sprite_x.enemyX>=spritesheetW.enemyW) sprite_x.enemyX=0;
-        }
 
 
-        if(isEnemy.exploding){
-            sprite_x.explosionX+=(96);
-            if(sprite_x.explosionX>=spritesheetW.explosionW) {
-                // only play this anim once!
-                isEnemy.exploding=false;
-                isEnemy.killed=true;
-                sprite_x.explosionX=0;
-                
-                enemyKillCount++;
-                gsap.to(score,1,{curr:"+="+enemy[whichEnemyIndex].killValue});
+            if(isEnemy.exploding){
+                sprite_x.explosionX+=(96);
+                if(sprite_x.explosionX>=spritesheetW.explosionW) {
+                    // only play this anim once!
+                    isEnemy.exploding=false;
+                    isEnemy.killed=true;
+                    sprite_x.explosionX=0;
+                    
+                    enemyKillCount++;
+                    gsap.to(score,1,{curr:"+="+enemy[whichEnemyIndex].killValue});
 
+                }
             }
         }
 ////// END enemy /////////
@@ -706,27 +709,33 @@ function moveSpriteSheets(){
 
 
 ////// NPC SPRITES /////////
-        for(i=0; i<=npc.length-1; i++){
-            if(isNpc[i].walk || isNpc[i].walkBack){
-                spritesheetW.npcW[i]=npcList[0][2].width;
-            } else if(isNpc[i].idle || isNpc[i].idleBack){
-                spritesheetW.npcW[i]=npcList[0][0].width;
-            }
-            if(isNpc[i].hurt || isNpc[i].hurtBack){
-                spritesheetW.npcW[i]=npcList[0][4].width;
-            }
+        if(!noNpcs){
+            for(i=0; i<=npc.length-1; i++){
+                if(isNpc[i].walk || isNpc[i].walkBack){
+                    spritesheetW.npcW[i]=npcList[0][2].width;
+                } else if(isNpc[i].idle || isNpc[i].idleBack){
+                    spritesheetW.npcW[i]=npcList[0][0].width;
+                }
+                if(isNpc[i].hurt || isNpc[i].hurtBack){
+                    spritesheetW.npcW[i]=npcList[0][4].width;
+                }
 
-            sprite_x.npcX[i]+=npc[0].width;
-            if(!isNpc[i].death && !isNpc[i].deathBack){
-                if(sprite_x.npcX[i]>=spritesheetW.npcW[i]) sprite_x.npcX[i]=0;
-            } else {
-                if(!isNpc[i].killed) killNpc(i);
+                sprite_x.npcX[i]+=npc[0].width;
+                if(!isNpc[i].death && !isNpc[i].deathBack){
+                    if(sprite_x.npcX[i]>=spritesheetW.npcW[i]) sprite_x.npcX[i]=0;
+                } else {
+                    if(!isNpc[i].killed) killNpc(i);
+                }
             }
-
         }
 ////// END npc /////////
 
 
+////// Fire sprites ////////
+        if(fireStarted){
+            sprite_x.fireX+=32;
+            if(sprite_x.fireX>=192) sprite_x.fireX=0;
+        }
 
     }
     if(counter%2==0){
@@ -929,8 +938,12 @@ function checkPlayerPosition() {
 
 // dont let player run off screen
 // to right:
-    if(player.x>(canvas.width/2)-(player.width/2)){
+    if(player.x>(canvas.width/2)-(player.width/2) && !fireStarted){
         player.x=(canvas.width/2)-(player.width/2);
+
+        /// if we're on fire screen allow player movement
+    } else if(player.x>canvas.width-player.hitW && fireStarted){
+        player.x=canvas.width-player.hitW;
     }
 // to left:
     if((player.x<=0)){
@@ -944,6 +957,9 @@ function checkPlayerPosition() {
     if(moving_backwards) { playerL = player.x+player.hitXB; }
     let playerT = player.y+player.hitY;
     let playerB = playerT+player.hitH;
+
+
+    isPlayer.hurt=false;
 
     if(highlights){
     // [todo] player hit area
@@ -993,9 +1009,10 @@ function checkPlayerPosition() {
         if(isNpc[i].walkBack) { npcL[i] = npc[i].x+npc[i].hitXB; }
         npcR[i] = npc[i].x+npc[i].hitW;
 
-        if(isPlayer.attack) {
+        if(isPlayer.attack || fireStarted) {
             if(playerR<npcL[i] && npcL[i]-playerR<player.shootRange
-             && playerT+player_shoot.offsetY>=npcT){
+             && playerT+player_shoot.offsetY>=npcT
+             || fireStarted){
                 if(isNpc[i].walk) {
                     isNpc[i].hurt=true;
                 }
@@ -1071,9 +1088,13 @@ function checkPlayerPosition() {
             player.health=player.health-0.01;
             player.health = player.health < 0 ? 0 : player.health;
             if(player.health==0) { 
-                playerDeath("enemy");
+                playerDeath("npc");
             }
-            return
+
+            isNpc[i].hitPlayer=true;
+            // return
+        } else {
+            isNpc[i].hitPlayer=false
         }
 
     }
@@ -1101,16 +1122,9 @@ function checkPlayerPosition() {
             
             if(playerR > obstacleL && playerL < obstacleL){
                 player.x=obstacleL-player.hitW;
-
-                // [todo]- player gets stuck next to tall block! 
-            }
-            if(playerL < obstacleR && playerR > obstacleR){
-                // player.x=obstacleR-player.hitXB;
             }
             x_moveAmount_bg=0;
 
-
-            // slow down enemy speed here- we're running but not moving:
             moveFactor_enemy=.5;
 
             // but if we running backwards into obj enemy speed needs to be normal:
@@ -1118,8 +1132,7 @@ function checkPlayerPosition() {
                 if(isPlayer.runBack){
                     moveFactor_enemy=4;
                 }
-            }
-            
+            }            
 
 // if within obstacle but above it:
         } else if(playerR > obstacleL && playerL < obstacleR && playerB < obstacleT){ 
@@ -1144,13 +1157,11 @@ function checkPlayerPosition() {
 
             moveFactor_enemy=1;
 
-            // if(!tlJump.isActive()){
-                if(playerR < obstacleL || playerL > obstacleR){
-                    player_ground.y=player_ground.floor;
-                }
-            // }
 
-
+            if(playerR < obstacleL || playerL > obstacleR){
+                player_ground.y=player_ground.floor;
+            }
+            
             x_moveAmount_bg=1;
             if(isPlayer.run){
                 player.x+=2;
@@ -1179,7 +1190,8 @@ function checkPlayerPosition() {
         }
     // console.log(curr_obs);
 
-    isPlayer.hurt=false;
+
+
 /////// ENEMY HITS PLAYER /////////
     if(!isEnemy.killed 
         && !isPlayer.invincible
@@ -1205,9 +1217,10 @@ function checkPlayerPosition() {
     
 
 /////// PLAYER SHOOT HITS: //////////
-    if(isPlayer.attack) {
+    if(isPlayer.attack || fireStarted) {
         if(playerR<enemyL && enemyL-playerR<player.shootRange
-         && playerT+player_shoot.offsetY>=enemyT){
+         && playerT+player_shoot.offsetY>=enemyT
+         || fireStarted){
             if(isEnemy.run) isEnemy.hurt=true;
             else if(isEnemy.runBack) isEnemy.hurtBack=true;
 
@@ -1287,6 +1300,21 @@ function checkPlayerPosition() {
             isPlayer.hurt=false;
         }
     }
+
+    if(fireStarted){
+        moveFactor_enemy=.5;
+        if(playerB>280 && !isPlayer.invincible) {
+            isPlayer.hurt=true;
+
+            player.health=player.health-0.2
+            player.health = player.health < 0 ? 0 : player.health;
+            if(player.health==0) { 
+                playerDeath("fire");
+            }
+        }
+    }
+
+
 }
 
 function setupJumpTL(){
@@ -1379,11 +1407,8 @@ function setNPCIndex(){
     for(i=0; i<=npc.length-1; i++){
         sprite_x.npcX[i]=0;
         moveFactor_npc[i]=1;
+        isNpc[i].walk=true;
     }
-    isNpc[0].walk=true;
-    isNpc[1].walkBack=true;
-    isNpc[2].walkBack=true;
-    isNpc[3].walkBack=true;
     
 }
 var moveFactor_npc=[];
@@ -1478,7 +1503,8 @@ function renderNPCs(){
                 if(isNpc[i].hurtBack){
                     isNpc[i].hurtBack=false;
                 }
-                isNpc[i].walkBack=true
+                isNpc[i].walk=false;
+                isNpc[i].walkBack=true;
 
             }
              else if((isNpc[i].walkBack || isNpc[i].attackBack || isNpc[i].hurtBack) && npc[i].x<0){
@@ -1518,6 +1544,8 @@ function renderEnemy(whichEnemy) {
     if(isEnemy.killed){
         ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
 
+        isEnemy.exploding=false;
+
         // [todo]-delay this so theres a break between enemies!
         // re-initialise enemy for a new one:
         enemyIndexFlag=false;
@@ -1529,6 +1557,7 @@ function renderEnemy(whichEnemy) {
         playSFX(audio_explosion);
 
         ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
+
         // play explosion!
         spritesheetW.explosionW=explosion.width;
         ctxEnemy.drawImage(explosion_img, sprite_x.explosionX, 0,
@@ -1538,7 +1567,6 @@ function renderEnemy(whichEnemy) {
 
         return;
     }
-
 
 /////// DO ENEMY MOVE FACTOR CLACULATIONS /////
 
@@ -1656,7 +1684,6 @@ function renderEnemy(whichEnemy) {
 
 
     renderEnemyUI();
-    
 }
 
 function renderEnemyUI(){
@@ -1777,9 +1804,8 @@ function killEnemy(whichEnemy){
 
 function killNpc(whichNpcIndex){
     isNpc[whichNpcIndex].killed=true;
-        // console.log('killNpc');
-
-    gsap.delayedCall(2,function(){
+        
+    gsap.delayedCall(2+whichNpcIndex,function(){
 
         // console.log('respawn Npc');
         npc[whichNpcIndex].health=npc[whichNpcIndex].fullhealth;
@@ -1797,7 +1823,7 @@ function killNpc(whichNpcIndex){
 
         if(getRandomInt(2)==0){
             isNpc[whichNpcIndex].walk=true;
-            npc[whichNpcIndex].x=0;
+            npc[whichNpcIndex].x=-48;
         } else {
             isNpc[whichNpcIndex].walkBack=true;
             npc[whichNpcIndex].x=canvas.width;
@@ -1859,26 +1885,68 @@ function moveBg(){
 
     if(bgOverlay.x<-bgOverlay.width) bgOverlay.x = 0;
     if(bgOverlay.x>bgOverlay.width) bgOverlay.x = canvas.width;
-    
-    
-
 }
 
+var fireBurned = false;
+function gameProgression(){
 
-var progress=0;
-function moveAhead() {
-    // console.log("moveAhead");
+    //temp
+        // noNpcs=false;
+        // noEnemies=false;
 
-    // progress++;
-    player.x=-96;
+    // after 1 FGs progssion turn on Enemies:
+    if(fg.x<-(fg.width)+canvas.width && noNpcs){
+        noNpcs=false;
+    }
+
+    // after 2 FGs progssion turn on Enemies:
+    if(fg.x<-(fg.width*2)+canvas.width && noEnemies){
+        noEnemies=false;
+    }
+
+    // after 3 FGs progssion turn on fire:
+    if(fg.x<-(fg.width*3)-(canvas.width/2) && !fireStarted && !fireBurned){
+    // if(!fireStarted && !fireBurned){
+        fireStarted=true;
+        
+
+        // initialise fires:
+        var whichFire=0;
+        // var fires;
+        for(i=0; i<=canvas.width/32; i++){
+            whichFire++;
+            switch(whichFire) {
+                case 1: fires[i] = fire01_img; break;
+                case 2: fires[i] = fire02_img; break;
+                case 3: fires[i] = fire03_img; break;
+                case 4: fires[i] = fire04_img; whichFire=0;  break;
+            }
+        }
+
+        gsap.delayedCall(15, function(){ fireStarted=false; fireBurned=true});
+    }
+
+
     
-}
+    // when nearing end of FGs darken BGs ready for outro
+    if(fg.x<-((fg.width*(fgsList.length))-(1152*2)-canvas.width) && !nearEnding){
+        nearEnding=true;
+        gsap.fromTo("#bg-canvas",3,{filter:"brightness(1)"},{filter:"brightness(.5)"});
+    }
 
-function moveBack(){
-    // console.log("moveBack");
 
-    // progress--;
-    // player.x=canvas.width;
+    // reached end of game:
+    if(fg.x<-((fg.width*(fgsList.length))-1152-canvas.width)){
+           
+        // 'end'
+        // end of foregrounds reached, play ending! 
+        collided=true;
+
+        createjs.Ticker.removeEventListener("tick", updateStage);
+        createjs.Ticker.removeEventListener("tick", checkKeys);
+
+        createjs.Ticker.addEventListener("tick", playEnding);
+    }
 }
 
 
@@ -1913,6 +1981,8 @@ function playerDeath(death_type){
             }
         } else if(death_type=="runback"){
             died_txt.innerHTML="you cannot run away from your destiny";
+        } else if(death_type=="fire"){
+            died_txt.innerHTML="you have drowned in the flames";
         }
         
         
@@ -2137,6 +2207,11 @@ function zoomInContainer(){
     }
 }
 
+function getRandom(max) {
+    var num = Math.random() * max
+    return Math.round(num * 100) / 100;
+;
+}
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
