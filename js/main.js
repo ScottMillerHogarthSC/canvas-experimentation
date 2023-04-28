@@ -20,6 +20,8 @@ var fg_canvas = document.getElementById('fg-canvas');
 var player_canvas = document.getElementById('player-canvas');
 var enemy_canvas = document.getElementById('enemy-canvas');
 var hud_canvas = document.getElementById('hud-canvas');
+
+
 var score_txt = document.getElementById('score_txt');
 var died_txt = document.getElementById('died_txt');
 var restart_btn = document.getElementById("restart_btn");
@@ -64,9 +66,13 @@ var score = {curr:0};
 
 var nearEdge = {left:false,right:false}
 
-var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0};
+var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, npcX:[0]};
 
-var spritesheetW = {playerW: player_idle.width, enemyW:enemiesList[0][0].width, shootW:player_shoot.width, explosionW:explosion.width }; // sprites width
+var spritesheetW = {playerW: player_idle.width, 
+                    enemyW:enemiesList[0][0].width,
+                    shootW:player_shoot.width,
+                    explosionW:explosion.width,
+                    npcW:[npcList[0][2].width]  }; // sprites width
 
 var counter=0;
     
@@ -124,6 +130,11 @@ function initCanvasAnim(){
     // enemy
     for(i=0; i<enemiesList.length; i++){
         enemiesList[i].forEach(depictEnemy);
+    }
+
+    // npc
+    for(i=0; i<npcList.length; i++){
+        npcList[i].forEach(depictNpc);
     }
     
 
@@ -187,6 +198,15 @@ function depictEnemy(arr){
     });
 };
 
+function depictNpc(arr){
+    const myOptions = Object.assign({}, arr);
+    return loadImage(myOptions.url).then(img => {
+        imgLoaded++;
+        img.id=myOptions.id;
+        npcImgs.push(img);
+        // console.log(enemyImgs);
+    });
+};
 
 function init_renderPlayer() {
     // player
@@ -338,62 +358,6 @@ function gamePause(){
     }
 }
 
-var keysWait = false;
-function checkKeys(){ 
-
-    if(!keysWait && !isPlayer.dead && !paused){
-    
-        if (Keyboard.isDown(Keyboard.RIGHT) && Keyboard.isDown(Keyboard.LEFT)) { 
-            return;
-        }
-        else if (Keyboard.isDown(Keyboard.LEFT)) { 
-            backwards();
-        }
-        else if (Keyboard.isDown(Keyboard.RIGHT)) { 
-            forwards();
-        }
-
-
-        if(Keyboard.isDown(Keyboard.DOWN)){
-            shoot();
-        }
-
-        if(Keyboard.isDown(Keyboard.UP)){
-            if(!jumpBtnDown){
-                jump();
-            } else {
-                if(!moving_backwards) isPlayer.idle=true;
-                else isPlayer.idleBack=true;
-            }
-        }
-        if(!Keyboard.isDown(Keyboard.UP)){
-            jumpBtnDown=false;
-        }
-
-        if(!Keyboard.isDown(Keyboard.LEFT) 
-            && !Keyboard.isDown(Keyboard.RIGHT) 
-            && !Keyboard.isDown(Keyboard.DOWN) 
-            && !Keyboard.isDown(Keyboard.UP)) {
-            
-            isPlayer.runBack=false;
-            isPlayer.run=false;
-            isPlayer.attackBack=false;
-            isPlayer.attack=false;
-            isPlayer.jump=false;
-            jumpBtnDown=false;
-
-
-            if(!moving_backwards) isPlayer.idle=true;
-            else isPlayer.idleBack=true;
-
-        }
-    }
-
-    
-    
-
-}
-
 var jumpBtnDown=false;
 function jump() {
     isPlayer.idle=false;
@@ -496,11 +460,17 @@ function updateStage(){
         renderPlayerUI();
 
         
+        
         if(!noEnemies && !noEnemiesOverride){
             renderEnemy();
+
+            
         } else {
             ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
         }
+        renderNPCs();
+
+
 
 
         
@@ -648,6 +618,7 @@ function moveSpriteSheets(){
     if(counter%6==0){
         
 
+////// PLAYER SPRITES /////////
         if(isPlayer.dead){
             
             sprite_x.playerX+=player.width;
@@ -659,7 +630,6 @@ function moveSpriteSheets(){
         } else {
             sprite_x.playerX+=player.width;
         }
-
         
          // if player is in middle of a jump anim:
         if(keysWait){
@@ -669,9 +639,11 @@ function moveSpriteSheets(){
         } else {
             if(sprite_x.playerX>=spritesheetW.playerW) sprite_x.playerX=0;
         }
+////// END player /////////
 
 
 
+////// ENEMY SPRITES /////////
         if(isEnemy.attack){
             if(whichEnemy=="CyberBike"){
                 sprite_x.enemyX+=192;
@@ -728,7 +700,34 @@ function moveSpriteSheets(){
                 gsap.to(score,1,{curr:"+="+enemy[whichEnemyIndex].killValue});
 
             }
-        }        
+        }
+////// END enemy /////////
+    
+
+
+////// NPC SPRITES /////////
+        for(i=0; i<=npc.length-1; i++){
+            if(isNpc[i].walk || isNpc[i].walkBack){
+                spritesheetW.npcW[i]=npcList[0][2].width;
+            } else if(isNpc[i].idle || isNpc[i].idleBack){
+                spritesheetW.npcW[i]=npcList[0][0].width;
+            }
+            if(isNpc[i].hurt || isNpc[i].hurtBack){
+                spritesheetW.npcW[i]=npcList[0][4].width;
+            }
+
+            sprite_x.npcX[i]+=npc[0].width;
+            if(!isNpc[i].death && !isNpc[i].deathBack){
+                if(sprite_x.npcX[i]>=spritesheetW.npcW[i]) sprite_x.npcX[i]=0;
+            } else {
+                if(!isNpc[i].killed) killNpc(i);
+            }
+
+        }
+////// END npc /////////
+
+
+
     }
     if(counter%2==0){
         sprite_x.shootX+=player.width;
@@ -914,8 +913,6 @@ function renderPlayer() {
 var curr_obs=0;
 function checkPlayerPosition() {
 
-    
-    
 // player is near edges of screen
     if(player.x>((canvas.width/2)-(player.width/2))-1){
         nearEdge.right=true;
@@ -940,7 +937,22 @@ function checkPlayerPosition() {
         player.x=0;
     }
 
-    
+    // DEFINE PLAYER AREA
+
+    let playerR = player.x+player.hitW;
+    let playerL = player.x+player.hitX;
+    if(moving_backwards) { playerL = player.x+player.hitXB; }
+    let playerT = player.y+player.hitY;
+    let playerB = playerT+player.hitH;
+
+    if(highlights){
+    // [todo] player hit area
+        ctxPlayer.beginPath();
+        ctxPlayer.rect(playerL, playerT, player.hitW, player.hitH);
+        ctxPlayer.fillStyle = "rgba(0,255,0,0.5)";
+        ctxPlayer.fill();
+    }
+
 
  
     if(highlights){
@@ -964,7 +976,6 @@ function checkPlayerPosition() {
     var enemyH = enemy[whichEnemyIndex].hitH;
 
     if(highlights){
-    // [todo] enemy hit area
         ctxEnemy.beginPath();
         ctxEnemy.rect(enemyL, enemyT, enemy[whichEnemyIndex].hitW, enemy[whichEnemyIndex].hitH);
         ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
@@ -972,45 +983,99 @@ function checkPlayerPosition() {
     }
 
 
+    var npcT = npc_groundY+npc[0].hitY;
+    var npcL = [];
+    var npcR = [];
+    var playerHitsNPC=false;
 
+    for(i=0; i<=npc.length-1; i++){
+        npcL[i]=npc[i].x+npc[i].hitX;
+        if(isNpc[i].walkBack) { npcL[i] = npc[i].x+npc[i].hitXB; }
+        npcR[i] = npc[i].x+npc[i].hitW;
 
-/////// ENEMY HITS OBSTACLE /////////
-    
-    // if(isEnemy.run){
-        // for(i=0; i<obstacle.length-1; i++){
-        //     let e_obstacleR = obstacle[i].x+obstacle[i].w; 
-        //     let e_obstacleL = obstacle[i].x;
+        if(isPlayer.attack) {
+            if(playerR<npcL[i] && npcL[i]-playerR<player.shootRange
+             && playerT+player_shoot.offsetY>=npcT){
+                if(isNpc[i].walk) {
+                    isNpc[i].hurt=true;
+                }
+                else if(isNpc[i].walkBack) {
+                    isNpc[i].hurtBack=true;
+                }
 
-        //     if(e_obstacleL < enemyR){
-        //         isEnemy.runBack=true;
-        //         isEnemy.run=false;
+                score.curr=score.curr+0.01;
 
-        //         // console.log('enemy block collide')
-        //     }
-        // }
+                npc[i].health--;
+                npc[i].health = npc[i].health < 0 ? 0 : npc[i].health;
+                if(npc[i].health==0) {
+                    if(isNpc[i].walk && !isNpc[i].death) {
+                        sprite_x.npcX[i]=0;
+                        isNpc[i].death=true;
+                    } else if(isNpc[i].walkBack && !isNpc[i].deathBack) {
+                        sprite_x.npcX[i]=0;
+                        isNpc[i].deathBack=true;
+                    }
+                }
+            } else {
+                isNpc[i].hurt=false;
+                isNpc[i].hurtBack=false;
+            }
+        } else if(isPlayer.attackBack){
+            if(playerL>npcR[i] && npcR[i]-playerL>-player.shootRange
+            && playerT+player_shoot.offsetY>=npcT){
+                if(isNpc[i].walk) {
+                    isNpc[i].hurt=true;
+                }
+                else if(isNpc[i].walkBack) {
+                    isNpc[i].hurtBack=true;
+                }
 
-            // if(obstacleL < enemyR && enemyL < obstacleR && isEnemy.run){
-            //     isEnemy.run=false;
-            //     isEnemy.runBack=true;
-            // }
-    // }    
-    
+                score.curr=score.curr+0.01;
 
+                npc[i].health--;
+                npc[i].health = npc[i].health < 0 ? 0 : npc[i].health;
+                if(npc[i].health==0) {
+                    if(isNpc[i].walk && !isNpc[i].death) {
+                        sprite_x.npcX[i]=0;
+                        isNpc[i].death=true;
+                    } else if(isNpc[i].walkBack && !isNpc[i].deathBack) {
+                        sprite_x.npcX[i]=0;
+                        isNpc[i].deathBack=true;
+                    }
+                }
+            }
+        } else {
+            isNpc[i].hurt=false;
+            isNpc[i].hurtBack=false;
+        }
 
-// DEFINE PLAYER AREA
+        if(!isNpc[i].killed){
+            if(highlights){
+                ctxEnemy.beginPath();
+                ctxEnemy.rect(npcL[i], npcT, npc[i].hitW, npc[i].hitH);
+                ctxEnemy.fillStyle = "rgba(255,0,0,0.5)";
+                ctxEnemy.fill();
+            }
+        }
 
-    let playerR = player.x+player.hitW;
-    let playerL = player.x+player.hitX;
-    if(moving_backwards) { playerL = player.x+player.hitXB; }
-    let playerT = player.y+player.hitY;
-    let playerB = playerT+player.hitH;
+        if(!isNpc[i].killed 
+        && !isPlayer.invincible
+        && playerL < npcL[i] + npc[i].hitW
+        && playerL + player.hitW > npcL[i]
+        && playerT < npcT + npc[i].hitH
+        && playerT + player.hitH > npcT){
+            // colliding! 
+            playSFX(audio_playerhurt);
+            
+            isPlayer.hurt=true;
+            player.health=player.health-0.01;
+            player.health = player.health < 0 ? 0 : player.health;
+            if(player.health==0) { 
+                playerDeath("enemy");
+            }
+            return
+        }
 
-    if(highlights){
-    // [todo] player hit area
-        ctxPlayer.beginPath();
-        ctxPlayer.rect(playerL, playerT, player.hitW, player.hitH);
-        ctxPlayer.fillStyle = "rgba(0,255,0,0.5)";
-        ctxPlayer.fill();
     }
 
     curr_obs=0;
@@ -1121,7 +1186,7 @@ function checkPlayerPosition() {
         && playerL < enemyL + enemy[whichEnemyIndex].hitW
         && playerL + player.hitW > enemyL
         && playerT < enemyT + enemy[whichEnemyIndex].hitH
-        && playerT + player.hitH > enemyT ){
+        && playerT + player.hitH > enemyT){
 
         // colliding! 
         playSFX(audio_playerhurt);
@@ -1222,39 +1287,6 @@ function checkPlayerPosition() {
             isPlayer.hurt=false;
         }
     }
-
-    
-
-/////// ENEMY REPEAT OR OFF SCREEN / TURN BACK: //////////
-    if(!isEnemy.killed){
-        
-        if((isEnemy.run || isEnemy.attack || isEnemy.hurt) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width+3)) {
-
-            // stop enemy going off screen to left:
-            enemy[whichEnemyIndex].x=canvas.width;
-            if(isEnemy.hurtBack){
-                isEnemy.hurtBack=false;
-            }
-            isEnemy.runBack=true
-
-        }
-         else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<0){
-         // else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
-            if(isEnemy.hurtBack){
-                isEnemy.hurtBack=false;
-                isEnemy.hurt=true;
-            } else {
-                isEnemy.runBack=false;
-                isEnemy.run=true;
-            }
-        }
-
-        // enemy
-        if(enemy[whichEnemyIndex].x>canvas.width){
-            isEnemy.runBack=true;
-            isEnemy.run=false;
-        }
-    }
 }
 
 function setupJumpTL(){
@@ -1310,6 +1342,163 @@ function enemyAttack(){
 function enemyTLplayed(){
     // console.log("enemyTLplayed");
 }
+
+
+var npcIndexFlag=false;
+function setNPCIndex(){
+
+    npcIndexFlag=true;
+    var whichNPC = "Punk";
+    
+    for(i=0; i<npcImgs.length; i++){
+        if(npcImgs[i].id == whichNPC+"-Walk-back") {
+            npcImgIndex.walkBack=i;
+        }
+        if(npcImgs[i].id == whichNPC+"-Hurt-back") {
+            npcImgIndex.hurtBack=i;
+        }
+        if(npcImgs[i].id == whichNPC+"-Hurt") {
+            npcImgIndex.hurt=i;
+        }
+        if(npcImgs[i].id == whichNPC+"-Walk") {
+            npcImgIndex.walk=i;
+        }
+        if(npcImgs[i].id == whichNPC+"-Attack") {
+            npcImgIndex.attack=i;
+        }
+        if(npcImgs[i].id == whichNPC+"-Attack-back") {
+            npcImgIndex.attackBack=i;
+        }
+        if(npcImgs[i].id == whichNPC+"-Death") {
+            npcImgIndex.death=i;
+        }
+        if(npcImgs[i].id == whichNPC+"-Death-back") {
+            npcImgIndex.deathBack=i;
+        }
+    }
+    for(i=0; i<=npc.length-1; i++){
+        sprite_x.npcX[i]=0;
+        moveFactor_npc[i]=1;
+    }
+    isNpc[0].walk=true;
+    isNpc[1].walkBack=true;
+    isNpc[2].walkBack=true;
+    isNpc[3].walkBack=true;
+    
+}
+var moveFactor_npc=[];
+function renderNPCs(){
+    if(!npcIndexFlag){
+        npcIndexFlag=true;
+        setNPCIndex();
+    }
+
+    var ind;
+    for(i=0; i<=npc.length-1; i++){
+
+        if(isNpc[i].hurt || isNpc[i].death) {
+            moveFactor_npc[i]=-1.5;
+        } else if(isNpc[i].hurtBack || isNpc[i].deathBack) {
+            moveFactor_npc[i]=.5;
+        } else moveFactor_npc[i]=1;
+
+        if(moving_backwards) {
+            if(isNpc[i].hurt) {
+                moveFactor_npc[i]=0;
+            } else if(isNpc[i].hurtBack) {
+                moveFactor_npc[i]=0;
+            } else moveFactor_npc[i]=1;
+        }
+
+
+        if(isNpc[i].walkBack) {
+            ind = npcImgIndex.walkBack;
+
+            npc[i].x-=moveFactor_npc[i];
+
+            if(isPlayer.run) {
+                npc[i].x-=moveFactor_npc[i];  
+                if(nearEdge.right){
+                    npc[i].x-=moveFactor_npc[i];  
+                }
+            }
+            if(moving_backwards) {
+
+                npc[i].x+=moveFactor_npc[i]/2;  
+                if(isPlayer.runBack) {
+                    npc[i].x+=moveFactor_npc[i]/3;  
+                }
+            }
+        } else if(isNpc[i].walk) {
+            ind = npcImgIndex.walk;
+
+
+            npc[i].x+=moveFactor_npc[i]/3; 
+
+            if(isPlayer.run) {
+                if(nearEdge.right){
+                    npc[i].x-=(moveFactor_npc[i]*1.25);  
+                }
+            }
+            if(moving_backwards) {
+
+                npc[i].x+=moveFactor_npc[i]/2; 
+                if(isPlayer.runBack) {
+                    npc[i].x+=moveFactor_npc[i];  
+                }
+            }
+        } 
+        if(isNpc[i].hurt) {
+            ind = npcImgIndex.hurt;
+        }
+        if(isNpc[i].hurtBack) {
+            ind = npcImgIndex.hurtBack;
+        }
+        if(isNpc[i].death) {
+             ind = npcImgIndex.death;
+        }
+        if(isNpc[i].deathBack) {
+             ind = npcImgIndex.deathBack;
+        }
+
+
+        ctxEnemy.drawImage(npcImgs[ind], sprite_x.npcX[i], 0,
+            48, 48,
+            npc[i].x, npc[i].y, 
+            48, 48);
+
+
+        /////// ENEMY REPEAT OR OFF SCREEN / TURN BACK: //////////
+        if(!isNpc[i].killed){
+            
+            if((isNpc[i].walk || isNpc[i].hurt) && npc[i].x<-(npc[i].width+3)) {
+
+                // stop enemy going off screen to left:
+                npc[i].x=canvas.width;
+                if(isNpc[i].hurtBack){
+                    isNpc[i].hurtBack=false;
+                }
+                isNpc[i].walkBack=true
+
+            }
+             else if((isNpc[i].walkBack || isNpc[i].attackBack || isNpc[i].hurtBack) && npc[i].x<0){
+                if(isNpc[i].hurtBack){
+                    isNpc[i].hurtBack=false;
+                    isNpc[i].hurt=true;
+                } else {
+                    isNpc[i].walkBack=false;
+                    isNpc[i].walk=true;
+                }
+            }
+
+            // enemy
+            if(npc[i].x>canvas.width){
+                isNpc[i].walkBack=true;
+                isNpc[i].walk=false;
+            }
+        }
+    }
+}
     
 var moveFactor_enemy = 1;
 var whichEnemyIndex=0;
@@ -1321,17 +1510,13 @@ function renderEnemy(whichEnemy) {
 
         // only do this once:
         setEnemyIndex();
-
-
         
         setupEnemyTimeLine();
-
     }
 
 
     if(isEnemy.killed){
         ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
-
 
         // [todo]-delay this so theres a break between enemies!
         // re-initialise enemy for a new one:
@@ -1355,10 +1540,7 @@ function renderEnemy(whichEnemy) {
     }
 
 
-
-
-
-                // DO ENEMY MOVE FACTOR CLACULATIONS
+/////// DO ENEMY MOVE FACTOR CLACULATIONS /////
 
 
     if(isEnemy.runBack){
@@ -1439,6 +1621,37 @@ function renderEnemy(whichEnemy) {
         spritesheetW.enemyW=enemiesList[whichEnemyIndex][2].width;
         drawEnemy(enemyImgIndex.walk, sprite_x.enemyX, whichEnemyIndex);
 
+    }
+
+    /////// ENEMY REPEAT OR OFF SCREEN / TURN BACK: //////////
+    if(!isEnemy.killed){
+        
+        if((isEnemy.run || isEnemy.attack || isEnemy.hurt) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width+3)) {
+
+            // stop enemy going off screen to left:
+            enemy[whichEnemyIndex].x=canvas.width;
+            if(isEnemy.hurtBack){
+                isEnemy.hurtBack=false;
+            }
+            isEnemy.runBack=true
+
+        }
+         else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<0){
+         // else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
+            if(isEnemy.hurtBack){
+                isEnemy.hurtBack=false;
+                isEnemy.hurt=true;
+            } else {
+                isEnemy.runBack=false;
+                isEnemy.run=true;
+            }
+        }
+
+        // enemy
+        if(enemy[whichEnemyIndex].x>canvas.width){
+            isEnemy.runBack=true;
+            isEnemy.run=false;
+        }
     }
 
 
@@ -1527,11 +1740,6 @@ function setEnemyIndex(chosenEnemy){
     }
 
     
-
-
-
-
-
     for(i=0; i<enemyImgs.length; i++){
         if(enemyImgs[i].id == whichEnemy+"-Walk-back") {
             enemyImgIndex.walkBack=i;
@@ -1565,6 +1773,37 @@ function setEnemyIndex(chosenEnemy){
 
 function killEnemy(whichEnemy){
     isEnemy.exploding=true;
+}
+
+function killNpc(whichNpcIndex){
+    isNpc[whichNpcIndex].killed=true;
+        // console.log('killNpc');
+
+    gsap.delayedCall(2,function(){
+
+        // console.log('respawn Npc');
+        npc[whichNpcIndex].health=npc[whichNpcIndex].fullhealth;
+        isNpc[whichNpcIndex].hurt=false;
+        isNpc[whichNpcIndex].hurtBack=false;
+        isNpc[whichNpcIndex].death=false;
+        isNpc[whichNpcIndex].deathBack=false;
+        isNpc[whichNpcIndex].walk=false;
+        isNpc[whichNpcIndex].walkBack=false;
+
+        sprite_x.npcX[whichNpcIndex]=0;
+        isNpc[whichNpcIndex].killed=false;
+
+        moveFactor_npc[whichNpcIndex]=1;
+
+        if(getRandomInt(2)==0){
+            isNpc[whichNpcIndex].walk=true;
+            npc[whichNpcIndex].x=0;
+        } else {
+            isNpc[whichNpcIndex].walkBack=true;
+            npc[whichNpcIndex].x=canvas.width;
+        }
+
+    });
 }
 
 
@@ -1896,6 +2135,10 @@ function zoomInContainer(){
         zoomIn=false;
         gsap.to("#container",zoomSpeed,{scale:1}) 
     }
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
 }
 
 /*///////////////////////  ////////////////////////////////*/

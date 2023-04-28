@@ -69,3 +69,56 @@ function checkKeyPress(e){
         gamePause();
     }
 }
+
+
+var keysWait = false;
+function checkKeys(){ 
+
+    if(!keysWait && !isPlayer.dead && !paused){
+    
+        if (Keyboard.isDown(Keyboard.RIGHT) && Keyboard.isDown(Keyboard.LEFT)) { 
+            return;
+        }
+        else if (Keyboard.isDown(Keyboard.LEFT)) { 
+            backwards();
+        }
+        else if (Keyboard.isDown(Keyboard.RIGHT)) { 
+            forwards();
+        }
+
+
+        if(Keyboard.isDown(Keyboard.DOWN)){
+            shoot();
+        }
+
+        if(Keyboard.isDown(Keyboard.UP)){
+            if(!jumpBtnDown){
+                jump();
+            } else {
+                if(!moving_backwards) isPlayer.idle=true;
+                else isPlayer.idleBack=true;
+            }
+        }
+        if(!Keyboard.isDown(Keyboard.UP)){
+            jumpBtnDown=false;
+        }
+
+        if(!Keyboard.isDown(Keyboard.LEFT) 
+            && !Keyboard.isDown(Keyboard.RIGHT) 
+            && !Keyboard.isDown(Keyboard.DOWN) 
+            && !Keyboard.isDown(Keyboard.UP)) {
+            
+            isPlayer.runBack=false;
+            isPlayer.run=false;
+            isPlayer.attackBack=false;
+            isPlayer.attack=false;
+            isPlayer.jump=false;
+            jumpBtnDown=false;
+
+
+            if(!moving_backwards) isPlayer.idle=true;
+            else isPlayer.idleBack=true;
+
+        }
+    }
+}

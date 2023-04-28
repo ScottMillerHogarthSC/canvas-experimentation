@@ -43,6 +43,4 @@ var enemiesList = [ // order of the below must be preserved
 ]
 ;
 var enemyImgs = [];
-var enemyImgIndex = {walkBack:0, hurtBack:0, walk:0, hurt:0};
-
-var enemies = [[]];
+var enemyImgIndex = {walkBack:0, hurtBack:0, walk:0, hurt:0, attack:0, attackBack:0};
