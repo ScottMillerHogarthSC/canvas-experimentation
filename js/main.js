@@ -522,6 +522,8 @@ function updateStage(){
 
         if(!noNpcs && !noEnemiesOverride){
             renderNPCs();
+        } else {
+            ctxNpc.clearRect(0, 0, canvas.width, canvas.height);
         }
 
         if(fireStarted){
@@ -2155,6 +2157,12 @@ function restartGame(){
     isEnemy.runBack=true;
     for (i = enemy.length - 1; i >= 0; i--) {
         enemy[i].x=canvas.width;
+    }
+    for(i=0; i<=npc.length-1; i++){
+        sprite_x.npcX[i]=0;
+        moveFactor_npc[i]=1;
+        isNpc[i].walk=true;
+        npc[i].x=npc[i].initX;
     }
     enemyKillCount=0;
 

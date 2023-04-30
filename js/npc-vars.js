@@ -1,8 +1,8 @@
 var npc_groundY = enemy_groundY+48;
-var npc = [{x:596,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5},       
-            {x:626,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5},
-            {x:676,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5},
-            {x:576,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5}]
+var npc = [{x:596,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5,initX:596},       
+            {x:626,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5,initX:626},
+            {x:676,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5,initX:676},
+            {x:576,y:npc_groundY,width:48,height:48,hitW:20,hitX:5,hitXB:24,hitH:32,hitY:16,health:20,fullhealth:20,killValue:5,initX:576}]
 
 var isNpc = []
 
