@@ -28,6 +28,7 @@ function playEnding(){
 
 			ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
 			ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
+			ctxNpc.clearRect(0, 0, canvas.width, canvas.height);
 
 			typeText(ending_txt,.7,0);
 	        endingTL = gsap.timeline({paused:true, onComplete:bindRestartButtons});

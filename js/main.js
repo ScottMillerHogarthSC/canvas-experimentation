@@ -19,6 +19,7 @@ var bgOverlay_canvas = document.getElementById('bgOverlay-canvas');
 var fg_canvas = document.getElementById('fg-canvas');
 var player_canvas = document.getElementById('player-canvas');
 var enemy_canvas = document.getElementById('enemy-canvas');
+var npc_canvas = document.getElementById('npc-canvas');
 var hud_canvas = document.getElementById('hud-canvas');
 
 
@@ -44,6 +45,9 @@ player_canvas.height=canvas.height;
 enemy_canvas.width=canvas.width;
 enemy_canvas.height=canvas.height;
 
+npc_canvas.width=canvas.width;
+npc_canvas.height=canvas.height;
+
 bgOverlay_canvas.width=canvas.width;
 bgOverlay_canvas.height=canvas.height;
 
@@ -57,6 +61,9 @@ var ctxFG = fg_canvas.getContext('2d');
 var ctxPlayer = player_canvas.getContext('2d');
 var ctxHud = hud_canvas.getContext('2d');
 var ctxEnemy = enemy_canvas.getContext('2d');
+var ctxNpc = npc_canvas.getContext('2d');
+
+
 
 var imageAdded= 0,
     imgLoaded = 0;
@@ -1506,6 +1513,7 @@ function renderNPCs(){
         setNPCIndex();
     }
 
+    ctxNpc.clearRect(0, 0, canvas.width, canvas.height);
     var ind;
     for(i=0; i<=npc.length-1; i++){
 
@@ -1573,8 +1581,7 @@ function renderNPCs(){
              ind = npcImgIndex.deathBack;
         }
 
-
-        ctxEnemy.drawImage(npcImgs[ind], sprite_x.npcX[i], 0,
+        ctxNpc.drawImage(npcImgs[ind], sprite_x.npcX[i], 0,
             48, 48,
             npc[i].x, npc[i].y, 
             48, 48);
