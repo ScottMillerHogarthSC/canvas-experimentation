@@ -2166,6 +2166,7 @@ function restartGame(){
     fireStarted=false;
     fireBurned=false;
     doFlash=false;
+    flash_counter=0;
 
 
     if(nearEnding){
