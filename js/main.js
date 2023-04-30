@@ -2163,6 +2163,16 @@ function restartGame(){
         obstacle[i].x=obstacle[i].initX;
     }
 
+    fireStarted=false;
+    fireBurned=false;
+    doFlash=false;
+
+
+    if(nearEnding){
+        nearEnding=false;
+        gsap.to("#bg-canvas",0,{filter:"brightness(1)"});
+    }
+
     if(endingPlaying){
         endingPlaying=false;
         createjs.Ticker.framerate = frameRate;
