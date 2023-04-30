@@ -58,6 +58,7 @@ body{
 #wrap {
     overflow: hidden;
     text-align: center;
+    cursor: url(../images/cursor.png), auto;
 }
 .hidden {
     opacity: 0;
@@ -104,6 +105,7 @@ body{
     text-align: center;
     font-size: 100%;
     font-family: 'FutureMillennium';
+    user-select: none;
 }
 .txt_popup {
     min-height: 10vh;
@@ -129,7 +131,6 @@ body{
     top: 50%;
     padding: 0 32px;
     min-height: 32px;
-    cursor: pointer;
     width: auto;
     left: 50%;
     margin-top: 3em;
@@ -187,7 +188,6 @@ button.btn_play:active{
     transform: translate(-51%, -45%)
 }
 button {
-    cursor: pointer;
     outline: none;
 }
 .mobile .btn_play,.mobile #died_txt {
@@ -201,21 +201,23 @@ button {
     bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.8em;
+    font-size: .9vw;
     width: 100%;
     text-align: center;
-
+    padding: 1em 0;
     z-index: 101;
 }
 #footer a {
     color: #fff;
     text-decoration: none; 
+    user-select: none;  
 }
 #footer a:hover {
     text-decoration: underline;
+    color: #e72ea1;
 }
 #container.noMouse {
-    cursor: none;
+    /*cursor: url(images/cursor.png ) 15 15, move;*/
 }
 
 

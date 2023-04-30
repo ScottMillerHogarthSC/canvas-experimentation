@@ -33,6 +33,8 @@ var obstacle = [
 	{x:(fg.width*3)+384,y:(32*8),w:(32*4),h:32,initX:(fg.width*3)+384},
 	{x:(fg.width*3)+608,y:(32*8),w:(32*2),h:32,initX:(fg.width*3)+608},
 	{x:(fg.width*3)+736,y:(32*8),w:(32*3),h:32,initX:(fg.width*3)+736},
+	{x:(fg.width*4)+0,y:(32*8)+25,w:32,h:7,initX:(fg.width*4)+0},
+	{x:(fg.width*4)+32,y:(32*8)+18,w:(32)*2,h:14,initX:(fg.width*4)+32},
 	{x:(fg.width*5)+64,y:(32*8),w:(32),h:32,initX:(fg.width*5)+64},
 	{x:(fg.width*5)+128,y:(32*7),w:(32*4),h:16,initX:(fg.width*5)+128},
 	{x:(fg.width*5)+320,y:(32*6),w:(32*2),h:32,initX:(fg.width*5)+320},

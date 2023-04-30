@@ -66,7 +66,7 @@ function checkKeyPress(e){
     else if(e.code == "Space") {
         gamePause();
     } else {
-        gamePause();
+        // gamePause();
     }
 }
 
@@ -95,7 +95,7 @@ function checkKeys(){
             if(!jumpBtnDown){
                 jump();
             } else {
-                if(!moving_backwards) isPlayer.idle=true;
+                if(!moving_backwards) isPlayer.walk=true;
                 else isPlayer.idleBack=true;
             }
         }
@@ -116,7 +116,7 @@ function checkKeys(){
             jumpBtnDown=false;
 
 
-            if(!moving_backwards) isPlayer.idle=true;
+            if(!moving_backwards) isPlayer.walk=true;
             else isPlayer.idleBack=true;
 
         }

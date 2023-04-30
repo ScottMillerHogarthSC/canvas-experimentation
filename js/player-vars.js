@@ -3,7 +3,7 @@ var player = {x:0,y:0,width:48,height:48,hitW:30,hitX:0,hitXB:20,hitH:36,hitY:12
 player.y=player_ground.y-player.height; 
 
 var isPlayer = {
-    idle:true,
+    walk:true,
     idleBack:false,
     run:false,
     runBack:false,
@@ -12,12 +12,14 @@ var isPlayer = {
     hurt:false,
     jump:false,
     dead: false,
-    invincible: false
+    invincible: false,
+    atObstacle: false
 }
 
 
-var player_idle = {url:"images/Biker/Walk.png",width:288,height:48},
-    player_idleBack = {url:"images/Biker/Biker_idle.png",width:192,height:48},
+var player_idle = {url:"images/Biker/Biker_idle.png",width:192,height:48},
+    player_walk = {url:"images/Biker/Walk.png",width:288,height:48},
+    player_idleBack = {url:"images/Biker/Biker_idle-back.png",width:192,height:48},
     player_run = {url:"images/Biker/Run.png",width:288,height:48},
     player_runBack = {url:"images/Biker/Run-back.png",width:288,height:48},
     player_attack = {url:"images/Biker/Idle1.png",width:192,height:48},

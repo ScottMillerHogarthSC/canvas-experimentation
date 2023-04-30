@@ -127,7 +127,7 @@ function mobileBtnPressed(ev){
         if(!jumpBtnDown){
             jump();
         } else {
-            if(!moving_backwards) isPlayer.idle=true;
+            if(!moving_backwards) isPlayer.walk=true;
             else isPlayer.idleBack=true;
         }
         $('#btns').addClass('pressedJump');

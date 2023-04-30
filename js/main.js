@@ -24,10 +24,12 @@ var hud_canvas = document.getElementById('hud-canvas');
 
 var score_txt = document.getElementById('score_txt');
 var died_txt = document.getElementById('died_txt');
+var ending_txt = document.getElementById('ending_txt');
 var restart_btn = document.getElementById("restart_btn");
 //dev tools
 var frameRate_txt = document.getElementById("frameRate_txt");
 var frameRate_btn = document.getElementById("frameRate_btn");
+var twoPlayer=true;
 
 
 bg_canvas.width=canvas.width;
@@ -66,15 +68,17 @@ var score = {curr:0};
 
 var nearEdge = {left:false,right:false}
 
-var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, npcX:[0], fireX:0};
+var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, flashX:[0], npcX:[0], fireX:0};
 
-var spritesheetW = {playerW: player_idle.width, 
+var spritesheetW = {playerW: player_walk.width, 
                     enemyW:enemiesList[0][0].width,
                     shootW:player_shoot.width,
                     explosionW:explosion.width,
+                    flashW:flash.width,
                     npcW:[npcList[0][2].width]  }; // sprites width
 
 var counter=0;
+var flash_counter=0;
     
 var isSongToEnding=false; 
 var collided=false; 
@@ -91,6 +95,8 @@ var tlJump = gsap.timeline({paused:true});
 tlJump = gsap.timeline({paused:true});
 
 var deathTL = gsap.timeline({paused:true});
+
+var endingTL = gsap.timeline({paused:true});
 
 // dev Tools
 var devTools = false;
@@ -160,17 +166,18 @@ function initCanvasAnim(){
 
     
     
+    runGame();
 
+    
+    bindButtons();
+}
+
+function runGame(){
     createjs.Ticker.addEventListener("tick", updateStage);
     createjs.Ticker.addEventListener("tick", checkKeys);
     createjs.Ticker.framerate = frameRate;
     // createjs.Ticker.framerate = 26;
-
-
-
-    bindButtons();
 }
-
 
 // load image for 
 const loadImage = url => {
@@ -231,6 +238,13 @@ function init_renderPlayer() {
     // player
 
         // player idle        
+
+            player_walk_img = new Image();
+            imageAdded++;
+            player_walk_img.src = player_walk.url;
+            player_walk_img.onload = function(){
+                imgLoaded++;
+            }
 
             player_idle_img = new Image();
             imageAdded++;
@@ -300,6 +314,13 @@ function init_renderPlayer() {
         imageAdded++;
         explosion_img.src = explosion.url;
         explosion_img.onload = function(){
+            imgLoaded++;
+        }
+
+        flash_img = new Image();
+        imageAdded++;
+        flash_img.src = flash.url;
+        flash_img.onload = function(){
             imgLoaded++;
         }
 
@@ -379,7 +400,7 @@ function gamePause(){
 
 var jumpBtnDown=false;
 function jump() {
-    isPlayer.idle=false;
+    isPlayer.walk=false;
     isPlayer.idleBack=false;
     isPlayer.attack=false;
     isPlayer.jump=true;
@@ -393,7 +414,7 @@ function jump() {
 function shoot(){
     isPlayer.attack=false;
     isPlayer.attackBack=false;
-    isPlayer.idle=false;
+    isPlayer.walk=false;
     isPlayer.run=false;
     isPlayer.runBack=false;
 
@@ -417,7 +438,7 @@ function forwards(){
 
     isPlayer.attack=false;
     isPlayer.attackBack=false;
-    isPlayer.idle=false;
+    isPlayer.walk=false;
     isPlayer.runBack=false;
     isPlayer.run=true;
 }
@@ -430,7 +451,7 @@ function backwards() {
 
     isPlayer.attack=false;
     isPlayer.attackBack=false;
-    isPlayer.idle=false;
+    isPlayer.walk=false;
     isPlayer.run=false;
     isPlayer.runBack=true;
 
@@ -447,7 +468,7 @@ function updateStage(){
         // background 
         if(!isPlayer.dead){
 
-            if(!fireStarted){
+            if(!fireStarted && !doFlash){
                 moveBg();
                 moveFg();
 
@@ -497,6 +518,17 @@ function updateStage(){
             }
         }
 
+        if(doFlash){
+
+            for(i=0;i<=flashes.length-1;i++){
+                if(flashes[i].go){
+                    ctxEnemy.drawImage(flash_img, sprite_x.flashX[i], 0, 
+                        flash.cellW, flash.cellW,
+                        flashes[i].x, flashes[i].y, 
+                        flash.cellW, flash.cellW);
+                }
+            }
+        }
 
 
 
@@ -567,8 +599,8 @@ function renderFG(){
     ctxFG.clearRect(0, 0, canvas.width, canvas.height);
 
     for(i=0; i<buildingsImgs.length; i++){
-        ctxFG.drawImage(buildingsImgs[i], buildingsList[i].x, bgBuildings.y, bgBuildings.width, bgBuildings.height);
-        ctxFG.drawImage(buildingsImgs[i], (buildingsList[i].x+buildingsList[i].width), bgBuildings.y, bgBuildings.width, bgBuildings.height);
+        ctxBG.drawImage(buildingsImgs[i], buildingsList[i].x, bgBuildings.y, bgBuildings.width, bgBuildings.height);
+        ctxBG.drawImage(buildingsImgs[i], (buildingsList[i].x+buildingsList[i].width), bgBuildings.y, bgBuildings.width, bgBuildings.height);
     }
 
     for(i = 0; i<fgsImgs.length; i++) {
@@ -615,11 +647,12 @@ function setFgIndex(){
 var attackCount=0;
 function moveSpriteSheets(){
     counter++;
-    if(counter>999) counter=0;
-    if(counter%6==0){
+    if(counter>20) counter=0;
+    if(counter%6==0)
+    {
         
 
-////// PLAYER SPRITES /////////
+        ////// PLAYER SPRITES /////////
         if(isPlayer.dead){
             
             sprite_x.playerX+=player.width;
@@ -640,11 +673,11 @@ function moveSpriteSheets(){
         } else {
             if(sprite_x.playerX>=spritesheetW.playerW) sprite_x.playerX=0;
         }
-////// END player /////////
+        ////// END player /////////
 
 
 
-////// ENEMY SPRITES /////////
+        ////// ENEMY SPRITES /////////
         if(!noEnemies){
             if(isEnemy.attack){
                 if(whichEnemy=="CyberBike"){
@@ -704,11 +737,11 @@ function moveSpriteSheets(){
                 }
             }
         }
-////// END enemy /////////
+        ////// END enemy /////////
     
 
 
-////// NPC SPRITES /////////
+        ////// NPC SPRITES /////////
         if(!noNpcs){
             for(i=0; i<=npc.length-1; i++){
                 if(isNpc[i].walk || isNpc[i].walkBack){
@@ -728,10 +761,39 @@ function moveSpriteSheets(){
                 }
             }
         }
-////// END npc /////////
+        ////// END npc /////////
 
+        // do flash spritesheet movements ///
+        if(doFlash){
+            flash_counter=flash_counter+0.65;
+            flashes[0].go=true;
+            if(flash_counter>1){flashes[1].go=true;}
+            if(flash_counter>2){flashes[2].go=true;}
+            if(flash_counter>3){flashes[3].go=true;}
+            if(flash_counter>4){flashes[4].go=true;}
+            if(flash_counter>5){flashes[5].go=true;}
+            if(flash_counter>6){flashes[6].go=true;}
+            if(flash_counter>7){flashes[7].go=true;}
+            
+            for(i=0;i<=flashes.length-1;i++){
 
-////// Fire sprites ////////
+                if(flashes[i].go){
+                    sprite_x.flashX[i]+=(flash.cellW);
+                    if(sprite_x.flashX[i]>=spritesheetW.flashW) {
+                        flashes[i].go=false;
+                        flashCount++;
+                    }
+                }
+            }
+            if(flashCount>30){
+                doFlash=false;
+            }
+            if(flashCount>15){
+                fireStarted=true;
+            }
+        }
+
+        ////// Fire sprites ////////
         if(fireStarted){
             sprite_x.fireX+=32;
             if(sprite_x.fireX>=192) sprite_x.fireX=0;
@@ -741,6 +803,20 @@ function moveSpriteSheets(){
     if(counter%2==0){
         sprite_x.shootX+=player.width;
         if(sprite_x.shootX>=spritesheetW.shootW) sprite_x.shootX=0;
+    }
+}
+
+var doFlash=false;
+var numFlashes=8;
+function doAflash(){
+    // console.log("flash"+int);
+    if(!doFlash){
+        doFlash=true;
+
+        for(i=0;i<numFlashes;i++){
+            flashes[i]={x:(576/numFlashes)*i,y:flash.y,go:false}
+            sprite_x.flashX[i]=0;
+        }
     }
 }
 
@@ -861,8 +937,10 @@ function renderPlayer() {
 
         } else if(isPlayer.attack) {
 
-            // make player stop moving while shooting
-            player.x-=moveFactor*x_moveAmount_fg;
+            // make player stop moving while shooting -- dont do this during fire scene
+            if(!fireStarted || fireBurned){
+                player.x-=moveFactor*x_moveAmount_fg;
+            }
 
 
             spritesheetW.playerW=player_attack.width;
@@ -882,8 +960,9 @@ function renderPlayer() {
         }
         else if(isPlayer.attackBack) {
 
-            // make player stop moving while shooting
-            player.x+=moveFactor*x_moveAmount_fg;
+            if(!fireStarted || fireBurned){
+                player.x+=moveFactor*x_moveAmount_fg;
+            }
 
 
             spritesheetW.playerW=player_attackBack.width;
@@ -900,7 +979,14 @@ function renderPlayer() {
                 player.x+player.width-player_shootBack.offsetX, player.y-player_shootBack.offsetY, 
                 player.width, player.height);
         }
-        else if(isPlayer.idle){
+        else if(isPlayer.walk && (!fireStarted || fireBurned)){
+            spritesheetW.playerW=player_walk.width;
+
+            ctxPlayer.drawImage(player_walk_img, sprite_x.playerX, 0,
+                player.width, player.height,
+                player.x, player.y, 
+                player.width, player.height);
+        } else if(isPlayer.walk && (fireStarted && !fireBurned)){
             spritesheetW.playerW=player_idle.width;
 
             ctxPlayer.drawImage(player_idle_img, sprite_x.playerX, 0,
@@ -938,11 +1024,11 @@ function checkPlayerPosition() {
 
 // dont let player run off screen
 // to right:
-    if(player.x>(canvas.width/2)-(player.width/2) && !fireStarted){
+    if(player.x>(canvas.width/2)-(player.width/2) && !fireStarted && !doFlash){
         player.x=(canvas.width/2)-(player.width/2);
 
         /// if we're on fire screen allow player movement
-    } else if(player.x>canvas.width-player.hitW && fireStarted){
+    } else if(player.x>canvas.width-player.hitW && fireStarted && doFlash){
         player.x=canvas.width-player.hitW;
     }
 // to left:
@@ -1009,10 +1095,10 @@ function checkPlayerPosition() {
         if(isNpc[i].walkBack) { npcL[i] = npc[i].x+npc[i].hitXB; }
         npcR[i] = npc[i].x+npc[i].hitW;
 
-        if(isPlayer.attack || fireStarted) {
+        if(isPlayer.attack || fireStarted || doFlash) {
             if(playerR<npcL[i] && npcL[i]-playerR<player.shootRange
              && playerT+player_shoot.offsetY>=npcT
-             || fireStarted){
+             || fireStarted || doFlash){
                 if(isNpc[i].walk) {
                     isNpc[i].hurt=true;
                 }
@@ -1123,22 +1209,17 @@ function checkPlayerPosition() {
             if(playerR > obstacleL && playerL < obstacleL){
                 player.x=obstacleL-player.hitW;
             }
+
+
+            // new var to handle moveFactor adjustments when player stuck at obs
+            isPlayer.atObstacle=true;
+
             x_moveAmount_bg=0;
-
-            moveFactor_enemy=.5;
-
-            // but if we running backwards into obj enemy speed needs to be normal:
-            if(moving_backwards && (isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack)){
-                if(isPlayer.runBack){
-                    moveFactor_enemy=4;
-                }
-            }            
 
 // if within obstacle but above it:
         } else if(playerR > obstacleL && playerL < obstacleR && playerB < obstacleT){ 
 
             x_moveAmount_bg=1;
-            moveFactor_enemy=1;
             
             if(isPlayer.run){
                 player.x+=2;
@@ -1147,7 +1228,8 @@ function checkPlayerPosition() {
                 player.x-=2;
             }
 
-            
+            isPlayer.atObstacle=false;
+
             if(player_ground.y>obstacleT){
                 player_ground.y=obstacleT;
             } 
@@ -1155,9 +1237,8 @@ function checkPlayerPosition() {
 // not within obstacle
         } else {
 
-            moveFactor_enemy=1;
-
-
+            isPlayer.atObstacle=false;
+            
             if(playerR < obstacleL || playerL > obstacleR){
                 player_ground.y=player_ground.floor;
             }
@@ -1301,8 +1382,8 @@ function checkPlayerPosition() {
         }
     }
 
-    if(fireStarted){
-        moveFactor_enemy=.5;
+    if(fireStarted && !fireBurned){
+        moveFactor_enemy=0;
         if(playerB>280 && !isPlayer.invincible) {
             isPlayer.hurt=true;
 
@@ -1375,7 +1456,6 @@ function enemyTLplayed(){
 var npcIndexFlag=false;
 function setNPCIndex(){
 
-    npcIndexFlag=true;
     var whichNPC = "Punk";
     
     for(i=0; i<npcImgs.length; i++){
@@ -1435,13 +1515,12 @@ function renderNPCs(){
             } else moveFactor_npc[i]=1;
         }
 
-
         if(isNpc[i].walkBack) {
             ind = npcImgIndex.walkBack;
 
             npc[i].x-=moveFactor_npc[i];
 
-            if(isPlayer.run) {
+            if(isPlayer.run && !isPlayer.atObstacle) {
                 npc[i].x-=moveFactor_npc[i];  
                 if(nearEdge.right){
                     npc[i].x-=moveFactor_npc[i];  
@@ -1450,7 +1529,7 @@ function renderNPCs(){
             if(moving_backwards) {
 
                 npc[i].x+=moveFactor_npc[i]/2;  
-                if(isPlayer.runBack) {
+                if(isPlayer.runBack && !isPlayer.atObstacle) {
                     npc[i].x+=moveFactor_npc[i]/3;  
                 }
             }
@@ -1460,7 +1539,7 @@ function renderNPCs(){
 
             npc[i].x+=moveFactor_npc[i]/3; 
 
-            if(isPlayer.run) {
+            if(isPlayer.run && !isPlayer.atObstacle) {
                 if(nearEdge.right){
                     npc[i].x-=(moveFactor_npc[i]*1.25);  
                 }
@@ -1468,7 +1547,7 @@ function renderNPCs(){
             if(moving_backwards) {
 
                 npc[i].x+=moveFactor_npc[i]/2; 
-                if(isPlayer.runBack) {
+                if(isPlayer.runBack && !isPlayer.atObstacle) {
                     npc[i].x+=moveFactor_npc[i];  
                 }
             }
@@ -1495,7 +1574,6 @@ function renderNPCs(){
 
         /////// ENEMY REPEAT OR OFF SCREEN / TURN BACK: //////////
         if(!isNpc[i].killed){
-            
             if((isNpc[i].walk || isNpc[i].hurt) && npc[i].x<-(npc[i].width+3)) {
 
                 // stop enemy going off screen to left:
@@ -1505,7 +1583,6 @@ function renderNPCs(){
                 }
                 isNpc[i].walk=false;
                 isNpc[i].walkBack=true;
-
             }
              else if((isNpc[i].walkBack || isNpc[i].attackBack || isNpc[i].hurtBack) && npc[i].x<0){
                 if(isNpc[i].hurtBack){
@@ -1517,7 +1594,7 @@ function renderNPCs(){
                 }
             }
 
-            // enemy
+            // turnaround npc when at screen front
             if(npc[i].x>canvas.width){
                 isNpc[i].walkBack=true;
                 isNpc[i].walk=false;
@@ -1574,7 +1651,7 @@ function renderEnemy(whichEnemy) {
     if(isEnemy.runBack){
         enemy[whichEnemyIndex].x-=moveFactor_enemy; 
 
-        if(isPlayer.run) {
+        if(isPlayer.run && !isPlayer.atObstacle) {
             enemy[whichEnemyIndex].x-=moveFactor_enemy;  
             if(nearEdge.right){
                 enemy[whichEnemyIndex].x-=moveFactor_enemy;  
@@ -1583,14 +1660,14 @@ function renderEnemy(whichEnemy) {
         if(moving_backwards) {
 
             enemy[whichEnemyIndex].x+=moveFactor_enemy/2;  
-            if(isPlayer.runBack) {
+            if(isPlayer.runBack && !isPlayer.atObstacle) {
                 enemy[whichEnemyIndex].x+=moveFactor_enemy/3;  
             }
         }
     } else if(isEnemy.run){
         enemy[whichEnemyIndex].x+=moveFactor_enemy/3; 
 
-        if(isPlayer.run) {
+        if(isPlayer.run && !isPlayer.atObstacle) {
             if(nearEdge.right){
                 enemy[whichEnemyIndex].x-=(moveFactor_enemy*1.25);  
             }
@@ -1598,7 +1675,7 @@ function renderEnemy(whichEnemy) {
         if(moving_backwards) {
 
             enemy[whichEnemyIndex].x+=moveFactor_enemy/2; 
-            if(isPlayer.runBack) {
+            if(isPlayer.runBack && !isPlayer.atObstacle) {
                 enemy[whichEnemyIndex].x+=moveFactor_enemy;  
             }
         }
@@ -1661,11 +1738,10 @@ function renderEnemy(whichEnemy) {
             if(isEnemy.hurtBack){
                 isEnemy.hurtBack=false;
             }
-            isEnemy.runBack=true
-
+            isEnemy.run=false;
+            isEnemy.runBack=true;
         }
          else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<0){
-         // else if((isEnemy.runBack || isEnemy.attackBack || isEnemy.hurtBack) && enemy[whichEnemyIndex].x<-(enemy[whichEnemyIndex].width)){
             if(isEnemy.hurtBack){
                 isEnemy.hurtBack=false;
                 isEnemy.hurt=true;
@@ -1907,7 +1983,8 @@ function gameProgression(){
     // after 3 FGs progssion turn on fire:
     if(fg.x<-(fg.width*3)-(canvas.width/2) && !fireStarted && !fireBurned){
     // if(!fireStarted && !fireBurned){
-        fireStarted=true;
+        
+        doAflash();
         
 
         // initialise fires:
@@ -1923,7 +2000,7 @@ function gameProgression(){
             }
         }
 
-        gsap.delayedCall(15, function(){ fireStarted=false; fireBurned=true});
+        gsap.delayedCall(12, function(){ fireStarted=false; fireBurned=true; moveFactor_enemy=1});
     }
 
 
@@ -2036,7 +2113,7 @@ function restartGame(){
     unbindRestartButtons();
     bindButtons();
 
-    tlEnemyVars.restart();
+    tlEnemyVars.seek(0);
     deathTL.pause();
     deathTL.seek(0);
 
@@ -2044,9 +2121,12 @@ function restartGame(){
     player.health=full_health;
     player.lives=full_lives;
     isPlayer.dead=false;
-    isPlayer.idle=true;
+    isPlayer.walk=true;
     collided=false;
     onlyDieOnce=false;
+
+    noNpcs=true;
+    noEnemies=true;
 
 
     // reset enemies:
@@ -2073,6 +2153,20 @@ function restartGame(){
     player.x=0
     for(i=0; i<obstacle.length; i++){
         obstacle[i].x=obstacle[i].initX;
+    }
+
+    if(endingPlaying){
+        endingPlaying=false;
+        createjs.Ticker.framerate = frameRate;
+        createjs.Ticker.removeEventListener("tick", playEnding);
+        
+        createjs.Ticker.addEventListener("tick", updateStage);
+        createjs.Ticker.addEventListener("tick", checkKeys);
+
+        gsap.to(["#overlay-bg"],0,{alpha:1,display:"none"});
+
+        endingTL.pause();
+        endingTL.seek(0);
     }
 }
 

@@ -6,6 +6,9 @@ var enemyCellW = 96;
 var enemyKillCount=0;
 
 var explosion = {url:"images/Explosion/2.png",width:576,height:96};
+var flash = {url:"images/Explosion/2.png",width:576,height:96,cellW:96,x:0,y:192};
+var flashes = [{x:0,y:0,go:false}]
+var flashCount=0;
 
 var isEnemy = {
     idle:false,
