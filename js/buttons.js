@@ -8,8 +8,19 @@ var btnMoveUp, btnMoveForwards, btnMoveBackwards, btnMoveDown, btnJump, btnOptio
     btnJump = document.getElementById("btnJump");
     btnOption = document.getElementById("btnOption");
     btnStart = document.getElementById("btnStart");
+    introContainer = document.getElementById("introContainer");
 
 function bindButtons(){
+    intro=false;
+    gsap.to(introContainer,0,{display:"none"});
+
+    container.removeEventListener('click', bindButtons);
+    window.removeEventListener('keydown', bindButtons);
+    mobileControls.removeEventListener('touchstart', bindButtons);
+
+
+    createjs.Ticker.addEventListener("tick", checkKeys);
+
     Keyboard.listenForEvents([Keyboard.LEFT, Keyboard.RIGHT, Keyboard.UP, Keyboard.DOWN]);
 
     document.body.addEventListener('keypress', checkKeyPress);

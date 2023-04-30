@@ -33,21 +33,3 @@ var player_idle = {url:"images/Biker/Biker_idle.png",width:192,height:48},
 
 var player_shoot = {url:"images/Shoot/1_1.png",width:288,height:48,offsetX:10,offsetY:4},
     player_shootBack = {url:"images/Shoot/1_1-back.png",width:288,height:48,offsetX:86,offsetY:4};
-
-
-
-
-// var player_idle = {url:"images/CyberBike/Idle.png",width:384,height:96},
-//     player_idleBack = {url:"images/CyberBike/Idle-back.png",width:384,height:96},
-//     player_run = {url:"images/CyberBike/Walk.png",width:384,height:96},
-//     player_runBack = {url:"images/CyberBike/Walk-back.png",width:384,height:96},
-//     player_attack = {url:"images/CyberBike/Attack1.png",width:384,height:96},
-//     player_attackBack = {url:"images/CyberBike/Attack1-back.png",width:384,height:96};
-
-// var player_idle = {url:"images/Idle.png",width:576,height:96},
-//     player_idleBack = {url:"images/Idle-back.png",width:576,height:96},
-//     player_run = {url:"images/Run.png",width:576,height:96},
-//     player_runBack = {url:"images/Run-back.png",width:576,height:96},
-//     player_attack = {url:"images/Run_Attack.png",width:384,height:96},
-//     player_attackBack = {url:"images/Run_Attack-back.png",width:384,height:96};
-

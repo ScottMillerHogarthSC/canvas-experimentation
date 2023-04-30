@@ -90,6 +90,7 @@ var noNpcs = true;
 var fireStarted=false;
 var fires = [];
 var moving_backwards = false; 
+var intro=true;
 
 var tlJump = gsap.timeline({paused:true});
 tlJump = gsap.timeline({paused:true});
@@ -165,18 +166,20 @@ function initCanvasAnim(){
     
 
     
-    
-    runGame();
+    //
+    showGame();
 
-    
-    bindButtons();
-}
+    // once intro is played bind these start buttons!
+    container.addEventListener('click', bindButtons);
+    window.addEventListener('keydown', bindButtons);
+    mobileControls.addEventListener('touchstart', bindButtons);
+}   
 
-function runGame(){
+
+
+function showGame(){
     createjs.Ticker.addEventListener("tick", updateStage);
-    createjs.Ticker.addEventListener("tick", checkKeys);
     createjs.Ticker.framerate = frameRate;
-    // createjs.Ticker.framerate = 26;
 }
 
 // load image for 
@@ -386,6 +389,7 @@ function gamePause(){
         tlEnemyVars.pause();
 
         audio.pause();
+        container.classList.remove("noMouse");
     } else {
 
         paused=false;
@@ -395,17 +399,19 @@ function gamePause(){
         tlEnemyVars.play();
 
         if(!isPlayingAudio && !muted) audio.play();
+        container.classList.add("noMouse");
     }
 }
 
 var jumpBtnDown=false;
 function jump() {
+    jumpBtnDown=true;
+
     isPlayer.walk=false;
     isPlayer.idleBack=false;
     isPlayer.attack=false;
     isPlayer.jump=true;
     keysWait=true;
-    jumpBtnDown=true;
 
     setupJumpTL();
     tlJump.restart();
@@ -469,8 +475,10 @@ function updateStage(){
         if(!isPlayer.dead){
 
             if(!fireStarted && !doFlash){
-                moveBg();
-                moveFg();
+                if(!intro){
+                    moveBg();
+                    moveFg();
+                }
 
 
                 ctxBG.clearRect(0, 0, canvas.width, canvas.height);
@@ -555,12 +563,12 @@ function updateStage(){
             
         }
 
-        
-        moveSpriteSheets();
-        
-        checkPlayerPosition();
+        if(!intro){
+            moveSpriteSheets();
+            checkPlayerPosition();
 
-        updateScore();
+            updateScore();
+        }
         
     }
 }

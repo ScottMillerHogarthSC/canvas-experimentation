@@ -193,6 +193,19 @@ button {
 .mobile .btn_play,.mobile #died_txt {
     /*font-size: 1.3vw;*/
 }
+#introContainer,#intro_txt {
+    display: block;
+    opacity: 1;
+    cursor: url(../images/cursor.png), auto;
+}
+#intro_txt{
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    position: absolute;
+    padding: 1em;
+    background-color: #000;
+}
 
 #footer {
     color: #fff;
@@ -216,8 +229,8 @@ button {
     text-decoration: underline;
     color: #e72ea1;
 }
-#container.noMouse {
-    /*cursor: url(images/cursor.png ) 15 15, move;*/
+#container.noMouse canvas,#container.noMouse .overlays {
+    cursor: none;
 }
 
 
