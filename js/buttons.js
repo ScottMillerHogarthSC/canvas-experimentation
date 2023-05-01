@@ -11,8 +11,18 @@ var btnMoveUp, btnMoveForwards, btnMoveBackwards, btnMoveDown, btnJump, btnOptio
     introContainer = document.getElementById("introContainer");
 
 function bindButtons(){
-    intro=false;
-    gsap.to(introContainer,0,{display:"none"});
+    if(intro){
+        // play music! 
+        if(firstpress){
+            firstpress=false;
+            if(!noAudio) { 
+                audio.play(); 
+            }
+        }
+        
+        intro=false;
+        gsap.to(introContainer,0,{display:"none"});
+    }
 
     container.removeEventListener('click', bindButtons);
     window.removeEventListener('keydown', bindButtons);
