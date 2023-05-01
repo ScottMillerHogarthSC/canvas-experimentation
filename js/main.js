@@ -179,7 +179,7 @@ function initCanvasAnim(){
     // once intro is played bind these start buttons!
     container.addEventListener('click', bindButtons);
     window.addEventListener('keydown', bindButtons);
-    mobileControls.addEventListener('touchstart', bindButtons);
+    mobileControls.addEventListener('touchend', bindButtons);
 }   
 
 
