@@ -175,7 +175,9 @@ button,#dev-tools input{
     border:none;
     font-size: 1vw;
     padding: 1vw;
+    margin: 0;
     border-radius: 10px;
+    cursor: pointer;
 }
 button:hover{
     color: yellow;

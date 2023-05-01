@@ -93,6 +93,7 @@ var paused=false;
 var muted = false;
 var noEnemies = true;
 var noEnemiesOverride = false;
+var invincibleOverride = false;
 var noNpcs = true;
 var fireStarted=false;
 var fires = [];
@@ -352,6 +353,20 @@ function init_renderPlayer() {
             imgLoaded++;
         }
 
+        player_shot_img = new Image();
+        imageAdded++;
+        player_shot_img.src = player_shot.url;
+        player_shot_img.onload = function(){
+            imgLoaded++;
+        }
+
+        player_shotBack_img = new Image();
+        imageAdded++;
+        player_shotBack_img.src = player_shotBack.url;
+        player_shotBack_img.onload = function(){
+            imgLoaded++;
+        }
+
     // player dead
 
         player_dead_img = new Image();
@@ -540,6 +555,7 @@ function updateStage(){
 
             for(i=0;i<=flashes.length-1;i++){
                 if(flashes[i].go){
+                    audio_explosion.play();
                     ctxEnemy.drawImage(flash_img, sprite_x.flashX[i], 0, 
                         flash.cellW, flash.cellW,
                         flashes[i].x, flashes[i].y, 
@@ -911,6 +927,24 @@ function renderPlayer() {
                 player.x, player.y, 
                 player.width, player.height);
         }
+    } else if(isPlayer.shot){ 
+
+
+        // [todo] - move this elsewhere:
+        spritesheetW.playerW=player_shot.width;
+
+        // ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
+        if(!moving_backwards){
+            ctxPlayer.drawImage(player_shot_img, sprite_x.playerX, 0,
+                player.width, player.height,
+                player.x-player_shot.offsetX, player.y, 
+                player.width, player.height);
+        } else {
+            ctxPlayer.drawImage(player_shotBack_img, sprite_x.playerX, 0,
+                player.width, player.height,
+                player.x-player_shotBack.offsetX, player.y, 
+                player.width, player.height);
+        }
     } else if(isPlayer.jump){ 
 
         // [todo] - move this elsewhere:
@@ -1062,7 +1096,7 @@ function checkPlayerPosition() {
     let playerT = player.y+player.hitY;
     let playerB = playerT+player.hitH;
 
-
+    isPlayer.shot=false;
     isPlayer.hurt=false;
 
     if(highlights){
@@ -1372,7 +1406,7 @@ function checkPlayerPosition() {
 
             playSFX(audio_playerhurt);
 
-            isPlayer.hurt=true;
+            isPlayer.shot=true;
 
             player.health=player.health-0.2;
             player.health = player.health < 0 ? 0 : player.health;
@@ -1380,7 +1414,7 @@ function checkPlayerPosition() {
                 playerDeath("shoot");
             }
         } else {
-            isPlayer.hurt=false;
+            isPlayer.shot=false;
         }
 
     } else if(isEnemy.attackBack) {
@@ -1388,7 +1422,7 @@ function checkPlayerPosition() {
         if(playerR<enemyL && enemyL-playerR<=enemy[whichEnemyIndex].shootRange
          && playerT+player_shoot.offsetY>=enemyT
          && !isPlayer.invincible){
-            isPlayer.hurt=true;
+            isPlayer.shot=true;
 
             player.health=player.health-0.2
             player.health = player.health < 0 ? 0 : player.health;
@@ -1396,7 +1430,7 @@ function checkPlayerPosition() {
                 playerDeath("shoot");
             }
         } else {
-            isPlayer.hurt=false;
+            isPlayer.shot=false;
         }
     }
 
@@ -2223,7 +2257,9 @@ function continueGame() {
 
     
     var tlFlashPlayer=gsap.timeline({onComplete:function(){
-        isPlayer.invincible=false;
+        if(!invincibleOverride){
+            isPlayer.invincible=false;
+        }
     }});
     tlFlashPlayer.to(player_canvas,.1,{alpha:.4},0)
                  .to(player_canvas,.1,{alpha:1},">.15")
@@ -2312,6 +2348,7 @@ function setupDevTools() {
     noEnemies_btn.addEventListener("click", toggleEnemies);
     zoomIn_btn.addEventListener("click", zoomInContainer);
     die_btn.addEventListener("click", playerDeath);
+    invincible_btn.addEventListener("click", toggleInvincible);
 }
 function setFrameRate(){
     frameRate = frameRate_txt.value;
@@ -2324,6 +2361,16 @@ function toggleHighlights() {
         highlights=false;
     }
 }
+function toggleInvincible() {
+    if(!invincibleOverride) {
+        invincibleOverride=true;
+        isPlayer.invincible=true;
+    } else {
+        invincibleOverride=false;
+        isPlayer.invincible=true;
+    }
+}
+
 function toggleEnemies() {
     if(!noEnemiesOverride){
         noEnemiesOverride=true;

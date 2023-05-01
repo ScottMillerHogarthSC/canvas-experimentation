@@ -12,6 +12,7 @@ var isPlayer = {
     hurt:false,
     jump:false,
     dead: false,
+    shot: false,
     invincible: false,
     atObstacle: false
 }
@@ -29,7 +30,9 @@ var player_idle = {url:"images/Biker/Biker_idle.png",width:192,height:48},
     player_jump = {url:"images/Biker/Jump.png",width:384,height:48},
     player_jumpBack = {url:"images/Biker/Jump-back.png",width:384,height:48},
     player_dead = {url:"images/Biker/Death.png",width:288,height:48},
-    player_deadBack = {url:"images/Biker/Death-back.png",width:288,height:48};
+    player_deadBack = {url:"images/Biker/Death-back.png",width:288,height:48},
+    player_shot = {url:"images/Biker/Shot.png",width:240,height:48,offsetX:17},
+    player_shotBack = {url:"images/Biker/Shot-back.png",width:240,height:48,offsetX:-17};
 
 var player_shoot = {url:"images/Shoot/1_1.png",width:288,height:48,offsetX:10,offsetY:4},
     player_shootBack = {url:"images/Shoot/1_1-back.png",width:288,height:48,offsetX:86,offsetY:4};

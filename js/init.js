@@ -10,7 +10,6 @@ function init()
         console.log("devTools");
     }
     if(window.location.search.includes("frameRate")){
-        
         frameRate=window.location.search.split("frameRate=")[1];
         frameRate_txt.value=frameRate;
         devTools=true;
@@ -25,6 +24,11 @@ function init()
     }
     if(window.location.search.includes("noEnemies")){
         noEnemiesOverride=true;
+        devTools=true;
+    }
+    if(window.location.search.includes("invincible")){
+        isPlayer.invincible=true;
+        invincibleOverride=true;
         devTools=true;
     }
     if(window.location.search.includes("zoom")){
