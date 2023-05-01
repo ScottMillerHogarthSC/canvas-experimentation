@@ -412,6 +412,7 @@ function gamePause(){
 
 var jumpBtnDown=false;
 function jump() {
+    sprite_x.playerX=0;
     jumpBtnDown=true;
 
     isPlayer.walk=false;
@@ -2252,7 +2253,12 @@ function showCanvas(){
     canvasShowing=true;
 
     if(zoomIn){
-        gsap.to("#container",zoomSpeed,{scale:1.6 }) 
+        var scaleTo=2;
+        gsap.to("#container",zoomSpeed,{scale:scaleTo});
+        while(container.getBoundingClientRect().width>windowwidth){
+            scaleTo=scaleTo-0.1;
+            gsap.to("#container",0,{scale:scaleTo});
+        }
     }
         
     if(devTools){
