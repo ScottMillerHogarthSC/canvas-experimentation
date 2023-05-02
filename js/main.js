@@ -75,17 +75,20 @@ var score = {curr:0};
 
 var nearEdge = {left:false,right:false}
 
-var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, flashX:[0], npcX:[0], fireX:0};
+var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, flashX:[0], npcX:[0], fireX:0, droneX:0, bombX:0};
 
 var spritesheetW = {playerW: player_walk.width, 
                     enemyW:enemiesList[0][0].width,
                     shootW:player_shoot.width,
                     explosionW:explosion.width,
                     flashW:flash.width,
-                    npcW:[npcList[0][2].width]  }; // sprites width
+                    npcW:[npcList[0][2].width],
+                    droneW:drone.width,
+                    bombW:bomb.width}; // sprites width
 
 var counter=0;
 var flash_counter=0;
+var drone_counter=0;
     
 var isSongToEnding=false; 
 var collided=false; 
@@ -335,6 +338,20 @@ function init_renderPlayer() {
             imgLoaded++;
         }
 
+        drone_img = new Image();
+        imageAdded++;
+        drone_img.src = drone.url;
+        drone_img.onload = function(){
+            imgLoaded++;
+        }
+
+        bomb_img = new Image();
+        imageAdded++;
+        bomb_img.src = bomb.url;
+        bomb_img.onload = function(){
+            imgLoaded++;
+        }
+
     
 
     // player hurt
@@ -497,7 +514,7 @@ function updateStage(){
         // background 
         if(!isPlayer.dead){
 
-            if(!fireStarted && !doFlash){
+            if(!fireStarted && !doFlash && !do_droneStrike){
                 if(!intro){
                     moveBg();
                     moveFg();
@@ -542,7 +559,28 @@ function updateStage(){
             ctxNpc.clearRect(0, 0, canvas.width, canvas.height);
         }
 
-        if(fireStarted){
+
+    
+        if(do_droneStrike && !fireBurned){
+            doDroneStrike();
+        }
+        if(droneStrike=="striking"){
+            drone_counter++;
+            ctxPlayer.drawImage(drone_img, sprite_x.droneX, 0, 
+                drone.cellW, drone.height,
+                drone.x, drone.y,
+                drone.cellW, drone.height);
+
+            if(drone_counter>34 && bombDrop=="drop"){
+                ctxPlayer.drawImage(bomb_img, sprite_x.bombX, 0, 
+                    bomb.cellW, bomb.height,
+                    bomb.x, bomb.y,
+                    bomb.cellW, bomb.height);
+            }
+
+        }
+
+        if(fireStarted && !fireBurned){
             for(i=0; i<=canvas.width/32; i++){
                 ctxPlayer.drawImage(fires[i], sprite_x.fireX, 0, 
                     32, 32,
@@ -552,11 +590,10 @@ function updateStage(){
         }
 
         if(doFlash){
-
             for(i=0;i<=flashes.length-1;i++){
                 if(flashes[i].go){
                     audio_explosion.play();
-                    ctxEnemy.drawImage(flash_img, sprite_x.flashX[i], 0, 
+                    ctxPlayer.drawImage(flash_img, sprite_x.flashX[i], 0, 
                         flash.cellW, flash.cellW,
                         flashes[i].x, flashes[i].y, 
                         flash.cellW, flash.cellW);
@@ -826,6 +863,20 @@ function moveSpriteSheets(){
                 fireStarted=true;
             }
         }
+        /////// END flash ////////
+
+        if(droneStrike=="striking"){
+            if(drone_counter>3){
+                if(sprite_x.droneX<spritesheetW.droneW-drone.cellW) { 
+                    sprite_x.droneX+=drone.cellW;
+                }
+            }
+            if(drone_counter>35){
+                if(sprite_x.bombX<spritesheetW.bombW-bomb.cellW) { 
+                    sprite_x.bombX+=bomb.cellW;
+                }
+            }
+        }
 
         ////// Fire sprites ////////
         if(fireStarted){
@@ -843,7 +894,6 @@ function moveSpriteSheets(){
 var doFlash=false;
 var numFlashes=8;
 function doAflash(){
-    // console.log("flash"+int);
     if(!doFlash){
         doFlash=true;
 
@@ -852,6 +902,50 @@ function doAflash(){
             sprite_x.flashX[i]=0;
         }
     }
+}
+
+var droneStrike="not";
+var bombDrop="not";
+var do_droneStrike=false;
+function doDroneStrike(){
+    if(droneStrike=="not"){
+        droneStrike="striking";
+    } else if(droneStrike=="striking") {
+        drone.x+=6;
+        if(drone_counter>30){
+            bombDrop="drop";
+            if(bomb.y<player_ground.floor-bomb.height){
+                bomb.x+=0.5;
+                bomb.y+=2.5;
+            } else {
+                bombDrop="done";
+            }
+        }
+    }
+    if(drone.x>canvas.width){
+        droneStrike="done";
+    }
+
+    if(droneStrike=="done"){
+        doAflash();
+        if(!fireStarted && !fireBurned){
+            // initialise fires:
+            var whichFire=0;
+            // var fires;
+            for(i=0; i<=canvas.width/32; i++){
+                whichFire++;
+                switch(whichFire) {
+                    case 1: fires[i] = fire01_img; break;
+                    case 2: fires[i] = fire02_img; break;
+                    case 3: fires[i] = fire03_img; break;
+                    case 4: fires[i] = fire04_img; whichFire=0;  break;
+                }
+            }
+
+            gsap.delayedCall(12, function(){ fireStarted=false; fireBurned=true; moveFactor_enemy=1; do_droneStrike=false;});
+        }
+    }
+
 }
 
 function renderPlayerUI() {
@@ -1408,7 +1502,7 @@ function checkPlayerPosition() {
 
             isPlayer.shot=true;
 
-            player.health=player.health-0.2;
+            player.health=player.health-enemy[whichEnemyIndex].shootDamage;
             player.health = player.health < 0 ? 0 : player.health;
             if(player.health==0) { 
                 playerDeath("shoot");
@@ -1424,7 +1518,7 @@ function checkPlayerPosition() {
          && !isPlayer.invincible){
             isPlayer.shot=true;
 
-            player.health=player.health-0.2
+            player.health=player.health-enemy[whichEnemyIndex].shootDamage
             player.health = player.health < 0 ? 0 : player.health;
             if(player.health==0) { 
                 playerDeath("shoot");
@@ -1491,7 +1585,7 @@ function enemyAttack(){
         if(!noAudio){
             // different SFX sound per enemyIndex:
             if(whichEnemy=="BattleCar"){
-                playSFX(audio_shoot);
+                playSFX(audio_heavyshoot);
             }
             if(whichEnemy=="CyberBike"){
                 playSFX(audio_blaster);
@@ -1661,7 +1755,7 @@ var startedAttack = false;
 function renderEnemy(whichEnemy) {
     enemyCellW=enemy.width;
     // init enemy:
-    if(!enemyIndexFlag && !nearEnding) {
+    if(!enemyIndexFlag) {
 
         // only do this once:
         setEnemyIndex();
@@ -1677,7 +1771,11 @@ function renderEnemy(whichEnemy) {
 
         // [todo]-delay this so theres a break between enemies!
         // re-initialise enemy for a new one:
-        enemyIndexFlag=false;
+        if(!nearEnding){
+            enemyIndexFlag=false;
+        } else {
+            tlEnemyVars.pause();
+        }
         return;
     }
 
@@ -2032,27 +2130,12 @@ function gameProgression(){
         noEnemies=false;
     }
 
+    
+
     // after 3 FGs progssion turn on fire:
-    if(fg.x<-(fg.width*3)-(canvas.width/2) && !fireStarted && !fireBurned){
-    // if(!fireStarted && !fireBurned){
-        
-        doAflash();
-        
-
-        // initialise fires:
-        var whichFire=0;
-        // var fires;
-        for(i=0; i<=canvas.width/32; i++){
-            whichFire++;
-            switch(whichFire) {
-                case 1: fires[i] = fire01_img; break;
-                case 2: fires[i] = fire02_img; break;
-                case 3: fires[i] = fire03_img; break;
-                case 4: fires[i] = fire04_img; whichFire=0;  break;
-            }
-        }
-
-        gsap.delayedCall(12, function(){ fireStarted=false; fireBurned=true; moveFactor_enemy=1});
+    if(fg.x<-(fg.width*3)-(canvas.width/2)){
+        if(droneStrike=="not"){
+            do_droneStrike=true;}
     }
 
 
@@ -2217,6 +2300,10 @@ function restartGame(){
     fireBurned=false;
     doFlash=false;
     flash_counter=0;
+    do_droneStrike=false;
+    droneStrike="not";
+    bombDrop="not";
+    drone_counter=0;
 
 
     if(nearEnding){
@@ -2367,7 +2454,7 @@ function toggleInvincible() {
         isPlayer.invincible=true;
     } else {
         invincibleOverride=false;
-        isPlayer.invincible=true;
+        isPlayer.invincible=false;
     }
 }
 
