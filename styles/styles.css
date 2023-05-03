@@ -38,10 +38,9 @@ body{
     position: absolute;
     transform: translate(-50%,-50%);
     width: 100%;
-    height: 320px;
+    height: 100%;
     overflow: hidden;
     max-width: 576px;
-    cursor: url(../images/cursor.png), auto;
 }
 #container canvas,
 #container #overlays {
@@ -195,7 +194,6 @@ button {
 }
 #introContainer,#intro_txt {
     display: block;
-    cursor: url(../images/cursor.png), auto;
 }
 #introContainer{
     height: 320px;
@@ -218,8 +216,8 @@ button {
     padding: 1em;
     background-color: #000;
 }
-#container:hover #intro_txt{
-    background-color: #bb3064;
+#introContainer:hover #intro_txt{
+    background-color: #fff;
     color: #000;
 }
 
