@@ -121,7 +121,7 @@ var zoomSpeed = 1;
 function initCanvasAnim(){
 
     // pre load all images:
-    
+        
     // background 
         bgsList.forEach(depictBgs);
 
@@ -142,6 +142,8 @@ function initCanvasAnim(){
             ctxOverlay.drawImage(bgOverlay_img, bgOverlay.x, bgOverlay.y, bgOverlay.width, bgOverlay.height);
             imgLoaded++;
         }
+
+
 
         fire01_img = new Image();
         imageAdded++;
@@ -384,6 +386,20 @@ function init_renderPlayer() {
             imgLoaded++;
         }
 
+        player_hurtRun_img = new Image();
+        imageAdded++;
+        player_hurtRun_img.src = player_hurtRun.url;
+        player_hurtRun_img.onload = function(){
+            imgLoaded++;
+        }
+
+        player_hurtRunBack_img = new Image();
+        imageAdded++;
+        player_hurtRunBack_img.src = player_hurtRunBack.url;
+        player_hurtRunBack_img.onload = function(){
+            imgLoaded++;
+        }
+
     // player dead
 
         player_dead_img = new Image();
@@ -427,7 +443,8 @@ function gamePause(){
 
         tlEnemyVars.pause();
 
-        audio.pause();
+        pauseMusic(audio_music);
+
         container.classList.remove("noMouse");
     } else {
 
@@ -437,8 +454,9 @@ function gamePause(){
 
         tlEnemyVars.play();
 
-        if(!isPlayingAudio && !muted) audio.play();
+        
         container.classList.add("noMouse");
+        playMusic(audio_music,true);
     }
 }
 
@@ -458,21 +476,20 @@ function jump() {
 }
 
 function shoot(){
-    isPlayer.attack=false;
-    isPlayer.attackBack=false;
-    isPlayer.walk=false;
-    isPlayer.run=false;
-    isPlayer.runBack=false;
+    if(!isPlayer.hurt){
+        isPlayer.attack=false;
+        isPlayer.attackBack=false;
+        isPlayer.walk=false;
+        isPlayer.run=false;
+        isPlayer.runBack=false;
 
-    if(moving_backwards) {
-        isPlayer.attackBack=true;
-    } else {
-        isPlayer.attack=true;
-    }
-    if(!noAudio){
+        if(moving_backwards) {
+            isPlayer.attackBack=true;
+        } else {
+            isPlayer.attack=true;
+        }
         playSFX(audio_shoot);
     }
-
 }
 
 function forwards(){
@@ -941,7 +958,7 @@ function doDroneStrike(){
                     case 4: fires[i] = fire04_img; whichFire=0;  break;
                 }
             }
-
+            
             gsap.delayedCall(12, function(){ fireStarted=false; fireBurned=true; moveFactor_enemy=1; do_droneStrike=false;});
         }
     }
@@ -1004,22 +1021,32 @@ function renderPlayer() {
                 player.width, player.height);
         }
     } else if(isPlayer.hurt){ 
-
-
-        // [todo] - move this elsewhere:
-        spritesheetW.playerW=player_hurt.width;
-
-        // ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
-        if(!moving_backwards){
-            ctxPlayer.drawImage(player_hurt_img, sprite_x.playerX, 0,
+        if(isPlayer.run || isPlayer.runBack){
+            spritesheetW.playerW=player_hurtRun.width;
+        }
+        if(isPlayer.run){
+            ctxPlayer.drawImage(player_hurtRun_img, sprite_x.playerX, 0,
+                player.width, player.height,
+                player.x, player.y, 
+                player.width, player.height);
+        } else if(isPlayer.runBack){
+            ctxPlayer.drawImage(player_hurtRunBack_img, sprite_x.playerX, 0,
                 player.width, player.height,
                 player.x, player.y, 
                 player.width, player.height);
         } else {
-            ctxPlayer.drawImage(player_hurtBack_img, sprite_x.playerX, 0,
-                player.width, player.height,
-                player.x, player.y, 
-                player.width, player.height);
+            spritesheetW.playerW=player_hurt.width;
+            if(!moving_backwards){
+                ctxPlayer.drawImage(player_hurt_img, sprite_x.playerX, 0,
+                    player.width, player.height,
+                    player.x, player.y, 
+                    player.width, player.height);
+            } else {
+                ctxPlayer.drawImage(player_hurtBack_img, sprite_x.playerX, 0,
+                    player.width, player.height,
+                    player.x, player.y, 
+                    player.width, player.height);
+            }
         }
     } else if(isPlayer.shot){ 
 
@@ -1027,7 +1054,6 @@ function renderPlayer() {
         // [todo] - move this elsewhere:
         spritesheetW.playerW=player_shot.width;
 
-        // ctxPlayer.clearRect(0, 0, canvas.width, canvas.height);
         if(!moving_backwards){
             ctxPlayer.drawImage(player_shot_img, sprite_x.playerX, 0,
                 player.width, player.height,
@@ -1170,11 +1196,11 @@ function checkPlayerPosition() {
 
 // dont let player run off screen
 // to right:
-    if(player.x>(canvas.width/2)-(player.width/2) && !fireStarted && !doFlash){
+    if(player.x>(canvas.width/2)-(player.width/2) && !fireStarted && !doFlash && !do_droneStrike){
         player.x=(canvas.width/2)-(player.width/2);
 
         /// if we're on fire screen allow player movement
-    } else if(player.x>canvas.width-player.hitW && fireStarted && doFlash){
+    } else if(player.x>canvas.width-player.hitW && fireStarted && doFlash && do_droneStrike){
         player.x=canvas.width-player.hitW;
     }
 // to left:
@@ -1582,15 +1608,15 @@ function enemyAttack(){
 
         
 
-        if(!noAudio){
-            // different SFX sound per enemyIndex:
-            if(whichEnemy=="BattleCar"){
-                playSFX(audio_heavyshoot);
-            }
-            if(whichEnemy=="CyberBike"){
-                playSFX(audio_blaster);
-            }
+        
+        // different SFX sound per enemyIndex:
+        if(whichEnemy=="BattleCar"){
+            playSFX(audio_heavyshoot);
         }
+        if(whichEnemy=="CyberBike"){
+            playSFX(audio_blaster);
+        }
+        
     }
 }
 
@@ -1660,6 +1686,9 @@ function renderNPCs(){
             } else if(isNpc[i].hurtBack) {
                 moveFactor_npc[i]=0;
             } else moveFactor_npc[i]=1;
+        }
+        if(do_droneStrike) {
+            moveFactor_npc[i]=0;
         }
 
         if(isNpc[i].walkBack) {
@@ -2203,7 +2232,8 @@ function playerDeath(death_type){
 
         if(player.lives==0){
 
-            // player has no more lives:
+            // player has no more lives - do final died screen
+
 
             typeText(died_txt,2,0);
             deathTL = gsap.timeline({paused:true, onComplete:bindRestartButtons});
@@ -2211,6 +2241,7 @@ function playerDeath(death_type){
             deathTL.to(["#overlay-death","#died_txt"],0,{display:"block"},0)
                 .to("#died_txt",.2,{alpha:1},">")
                 .to("#overlay-death",1,{alpha:1},"<")
+                .call(playMusic,[audio_dieMusic],">")
             .fromTo(".game-canvas", 3, {filter:"brightness(1)"}, {filter:"brightness(0.2)"},">")
                 .to([restart_btn,restart_btn_mobile], 0, {display:"block"},">")
                 .to([restart_btn,restart_btn_mobile], 1, {alpha:1},"<")
@@ -2324,6 +2355,9 @@ function restartGame(){
         endingTL.pause();
         endingTL.seek(0);
     }
+    
+    
+    playMusic(audio_music);
 }
 
 function continueGame() {
@@ -2370,9 +2404,6 @@ function mobileBtnDoNothing(ev){
 
 var canvasShowing=false;
 function showCanvas(){
-    document.getElementById("loadingContent").style.display="none";
-    container.style.display = "block";
-    footer.style.display = "block";
     canvasShowing=true;
 
     if(zoomIn){

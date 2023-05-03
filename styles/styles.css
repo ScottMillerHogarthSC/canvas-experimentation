@@ -60,9 +60,6 @@ body{
     text-align: center;
     cursor: url(../images/cursor.png), auto;
 }
-.hidden {
-    opacity: 0;
-}
 .abs {
     position: absolute;
 }
@@ -197,12 +194,23 @@ button {
 }
 #introContainer,#intro_txt {
     display: block;
-    opacity: 1;
+}
+#introContainer{
+    height: 320px;
+    top: 50%;
+    transform: translateY(-50%);
+    overflow: hidden;
     cursor: url(../images/cursor.png), auto;
 }
-#intro_txt{
+.intro-title-img{
     top: 50%;
     left: 50%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+}
+#intro_txt{
+    top: calc(50% + 110px);
+    left: calc(50% - 60px);
     transform: translate(-50%,-50%);
     position: absolute;
     padding: 1em;
@@ -243,4 +251,7 @@ button {
 .devTools #dev-tools {
     display: block;
     z-index: 900;
+}
+.hidden {
+    opacity: 0;
 }

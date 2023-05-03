@@ -15,8 +15,8 @@ function bindButtons(){
         // play music! 
         if(firstpress){
             firstpress=false;
-            if(!noAudio) { 
-                audio.play(); 
+            if(!paused){
+                playMusic(audio_music);
             }
         }
         

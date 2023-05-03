@@ -85,5 +85,22 @@ function init()
 
 // called from audio.js once audios loaded:
 function start(){
+    document.getElementById("loadingContent").style.display="none";
+    container.style.display = "block";
+    footer.style.display = "block";
+
+    var introTL = gsap.timeline();
+    introTL
+        .to("#intro-bg",6,{scale:1.05,ease:"linear",transformOrigin:"center bottom"},0)
+        .to("#introContainer",0,{alpha:1},0)
+        .to("#intro-shredded",0,{alpha:1},">.4")
+        .to("#intro-and",0,{alpha:1},">.4")
+        .to("#intro-beheaded",0,{alpha:1},">.4")
+        .to("#intro-car",0,{alpha:1},"<")
+        .from("#intro-car",.6,{x:300},"<")
+        .to("#intro-beheaded",0,{alpha:1},">.4")
+        .to("#intro_txt",0,{alpha:1},1.5)
+
     initCanvasAnim();
+    // show
 }

@@ -12,14 +12,6 @@ var fgsList = [
 {id:"07", url:"images/Foreground/fg4.png", x:fg.width*5,y:0},
 {id:"08", url:"images/Foreground/fg0.png", x:fg.width*6,y:0},
 {id:"09", url:"images/Foreground/fg-end.png", x:fg.width*7,y:0}
-// {id:"01", url:"images/Foreground/fg0.png", x:-fg.width,y:0},
-// {id:"02", url:"images/Foreground/fg0.png", x:0,y:0},
-// {id:"03", url:"images/Foreground/fg1.png", x:fg.width,y:0},
-// {id:"04", url:"images/Foreground/fg2.png", x:fg.width*2,y:0},
-// {id:"05", url:"images/Foreground/fg3.png", x:fg.width*3,y:0},
-// {id:"06", url:"images/Foreground/fg4.png", x:fg.width*4,y:0},
-// {id:"07", url:"images/Foreground/fg0.png", x:fg.width*5,y:0},
-// {id:"08", url:"images/Foreground/fg-end.png", x:fg.width*6,y:0}
 ];  
 var fgsImgs = [];
 var fgsImgIndex = {}
@@ -28,7 +20,7 @@ var fgsImgIndex = {}
 	
 var obstacle = [
 	{x:(fg.width*2)+384,y:(32*8),w:(32*4),h:32,initX:(fg.width*2)+384},
-	{x:(fg.width*2)+608,y:(32*7),w:(32*2),h:32,initX:(fg.width*2)+608},
+	{x:(fg.width*2)+576,y:(32*7),w:(32*2),h:32,initX:(fg.width*2)+576},
 	{x:(fg.width*2)+736,y:(32*8),w:(32*3),h:32,initX:(fg.width*2)+736},
 	{x:(fg.width*3)+384,y:(32*8),w:(32*4),h:32,initX:(fg.width*3)+384},
 	{x:(fg.width*3)+608,y:(32*8),w:(32*2),h:32,initX:(fg.width*3)+608},
