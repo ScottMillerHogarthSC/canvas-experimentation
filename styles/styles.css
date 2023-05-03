@@ -196,7 +196,9 @@ button {
     display: block;
 }
 #introContainer{
-    height: 320px;
+    width: 100%;
+    max-width: 576px;
+    height: 100%;
     top: 50%;
     transform: translateY(-50%);
     overflow: hidden;
