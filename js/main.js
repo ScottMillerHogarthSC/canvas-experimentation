@@ -2541,6 +2541,9 @@ function resizeWindow(){
     
 }
 
+function log(text){
+    document.getElementById("log").value+=text+"\n";
+}
 
 
 function toggleCursor(off) {

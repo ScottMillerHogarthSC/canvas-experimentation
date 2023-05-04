@@ -146,6 +146,9 @@ function mobileBtnPressed(ev){
     if(ev.cancelable) {
         ev.preventDefault();
     }
+    log(this.id+" pressed");
+
+
     if(this.id=="btnJump") {
         if(!jumpBtnDown){
             jump();
@@ -173,6 +176,7 @@ function mobileBtnReleased(ev) {
     if(ev.cancelable) {
         ev.preventDefault();
     }
+    log(this.id+" released");
 
     if(this.id=="btnMoveForwards") {
     	createjs.Ticker.removeEventListener("tick", forwards);
