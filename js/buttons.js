@@ -142,12 +142,16 @@ function unbindContinueButtons(){
     window.removeEventListener('keydown', continueGame);
 }
 
+var btnsDown = [];
 function mobileBtnPressed(ev){
     if(ev.cancelable) {
         ev.preventDefault();
     }
-    log(this.id+" pressed");
-
+    // log(this.id+" pressed");
+    if(!btnsDown.includes(this.id)){
+        btnsDown.push(this.id);
+        log(btnsDown);
+    }
 
     if(this.id=="btnJump") {
         if(!jumpBtnDown){
@@ -176,7 +180,13 @@ function mobileBtnReleased(ev) {
     if(ev.cancelable) {
         ev.preventDefault();
     }
-    log(this.id+" released");
+    // log(this.id+" released");
+
+    var index = btnsDown.indexOf(this.id);
+    if (index > -1) {
+        btnsDown.splice(index, 1);
+        log(btnsDown);
+    }
 
     if(this.id=="btnMoveForwards") {
     	createjs.Ticker.removeEventListener("tick", forwards);
@@ -195,5 +205,8 @@ function mobileBtnReleased(ev) {
     if(this.id=="btnWheelie") {
     	createjs.Ticker.removeEventListener("tick", shoot);
         $('#btns').removeClass('pressedWheelie');
+        if(btnsDown.indexOf("btnMoveForwards")){
+            createjs.Ticker.addEventListener("tick", forwards);
+        }
     }
 }
