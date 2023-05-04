@@ -205,8 +205,12 @@ function mobileBtnReleased(ev) {
     if(this.id=="btnWheelie") {
     	createjs.Ticker.removeEventListener("tick", shoot);
         $('#btns').removeClass('pressedWheelie');
-        if(btnsDown.indexOf("btnMoveForwards")){
-            createjs.Ticker.addEventListener("tick", forwards);
-        }
+    }
+
+    if(btnsDown.indexOf("btnMoveForwards")>-1){
+        createjs.Ticker.addEventListener("tick", forwards);
+    }
+    if(btnsDown.indexOf("btnMoveBackwards")>-1){
+        createjs.Ticker.addEventListener("tick", backwards);
     }
 }
