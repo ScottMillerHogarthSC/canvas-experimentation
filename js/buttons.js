@@ -180,12 +180,10 @@ function mobileBtnReleased(ev) {
     if(ev.cancelable) {
         ev.preventDefault();
     }
-    // log(this.id+" released");
-
     var index = btnsDown.indexOf(this.id);
     if (index > -1) {
         btnsDown.splice(index, 1);
-        log(btnsDown);
+        // log(btnsDown);
     }
 
     if(this.id=="btnMoveForwards") {
@@ -207,10 +205,16 @@ function mobileBtnReleased(ev) {
         $('#btns').removeClass('pressedWheelie');
     }
 
-    if(btnsDown.indexOf("btnMoveForwards")>-1){
-        createjs.Ticker.addEventListener("tick", forwards);
-    }
-    if(btnsDown.indexOf("btnMoveBackwards")>-1){
-        createjs.Ticker.addEventListener("tick", backwards);
-    }
+    // // if(btnsDown.indexOf("btnMoveForwards")>-1){
+    // //     log('btnMoveForwards still pressed')
+    // //     createjs.Ticker.addEventListener("tick", forwards);
+    // // }
+    // // if(btnsDown.indexOf("btnMoveBackwards")>-1){
+    // //     createjs.Ticker.addEventListener("tick", backwards);
+    // // }
+    // // if(btnsDown.indexOf("btnWheelie")>-1){
+    // //     log('btnWheelie still pressed')
+    // //     createjs.Ticker.addEventListener("tick", shoot);
+    // // }
+    // log("isPlayer.run"+isPlayer.run);
 }

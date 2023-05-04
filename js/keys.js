@@ -98,7 +98,10 @@ function checkKeys(){
         if(!Keyboard.isDown(Keyboard.LEFT) 
             && !Keyboard.isDown(Keyboard.RIGHT) 
             && !Keyboard.isDown(Keyboard.DOWN) 
-            && !Keyboard.isDown(Keyboard.UP)) {
+            && !Keyboard.isDown(Keyboard.UP) 
+            && btnsDown.indexOf("btnMoveForwards")==-1
+            && btnsDown.indexOf("btnMoveBackwards")==-1 
+            && btnsDown.indexOf("btnWheelie")==-1) {
             
             isPlayer.runBack=false;
             isPlayer.run=false;

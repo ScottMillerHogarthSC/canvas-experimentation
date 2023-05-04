@@ -505,8 +505,6 @@ function forwards(){
     isPlayer.walk=false;
     isPlayer.runBack=false;
     isPlayer.run=true;
-
-    log("forwards");
 }
 function backwards() {
     
@@ -2546,6 +2544,7 @@ function resizeWindow(){
 function log(text){
     var logtxt = document.getElementById("log");
     logtxt.value=text+"\n"+logtxt.value;
+
 }
 
 
