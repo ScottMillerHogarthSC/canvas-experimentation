@@ -87,7 +87,6 @@ function init()
 function start(){
     document.getElementById("loadingContent").style.display="none";
     container.style.display = "block";
-    footer.style.display = "block";
 
     var introTL = gsap.timeline();
     introTL

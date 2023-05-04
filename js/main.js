@@ -191,6 +191,7 @@ function initCanvasAnim(){
 
 
 function showGame(){
+    footer.style.display = "block";
     createjs.Ticker.addEventListener("tick", updateStage);
     createjs.Ticker.framerate = frameRate;
 }

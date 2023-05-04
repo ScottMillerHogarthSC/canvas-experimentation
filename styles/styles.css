@@ -209,6 +209,9 @@ button {
     left: 50%;
     position: absolute;
     transform: translate(-50%,-50%);
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
 #intro_txt{
     top: calc(50% + 110px);
