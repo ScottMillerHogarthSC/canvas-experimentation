@@ -163,7 +163,8 @@ body{
 }
 button#restart_btn:hover{
     color: yellow;
-    transition: color 3s linear;
+    transition: color 0s linear;
+    box-shadow: 3px 3px 0px yellow;
 }
 button,#dev-tools input{
     font-family: 'Press Start 2P';
@@ -229,6 +230,19 @@ button {
     top: calc(50% + 50px);
     left: 123px;
     width: 364px;
+    min-height: 40px;
+    margin-top: -10vh;
+    line-height: 3em;
+}
+#end_score_txt {
+    top: calc(50% + 25px);
+    position: absolute;
+    left: calc(50% + -56px);
+    width: 263px;
+    text-align: center;
+    background-color: #000;
+    height: auto;
+    line-height: 3em;
 }
 #footer {
     color: #fff;

@@ -90,7 +90,9 @@ function start(){
 
     var introTL = gsap.timeline();
     introTL
-        .to("#intro-bg",6,{scale:1.05,ease:"linear",transformOrigin:"center bottom"},0)
+        .to("#intro-shredded",12,{x:-20,ease:"linear"},0)
+        .to("#intro-beheaded",12,{x:20,ease:"linear"},0)
+        .to("#intro-bg",12,{scale:1.1,ease:"linear",transformOrigin:"center bottom"},0)
         .to("#introContainer",0,{alpha:1},0)
         .to("#intro-shredded",0,{alpha:1},">.4")
         .to("#intro-and",0,{alpha:1},">.4")

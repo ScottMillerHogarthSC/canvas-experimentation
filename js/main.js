@@ -436,7 +436,7 @@ function init_renderPlayer() {
 
 function gamePause(){
     
-    if(!paused && !isPlayer.dead){
+    if(!paused && !isPlayer.dead && !endingPlaying){
         paused=true;
         gsap.to(["#paused_txt","#overlay-bg","#start-select"],0,{display:"block"});
         gsap.to(["#paused_txt","#start-select"],.2,{alpha:1});
@@ -662,21 +662,20 @@ function moveFg(){
         
         x_moveAmount_bg=1;
         fg.x=fg.x-(moveFactor*x_moveAmount_fg);
-        
+            
         // move obstacles
-        for(i=0; i<obstacle.length; i++){
-            obstacle[i].x=obstacle[i].x-(moveFactor*x_moveAmount_fg);
-        }
+        obstacle.forEach(obs => obs.x=obs.x-(moveFactor*x_moveAmount_fg));
+
     } else {
         if(fg.x>1152) {
             playerDeath("runback");
+            fg.x=1150;
         } else {    
             fg.x=fg.x+(moveFactor*x_moveAmount_fg);
             
             // move obstacles
-            for(i=0; i<obstacle.length; i++){
-                obstacle[i].x=obstacle[i].x+(moveFactor*x_moveAmount_fg);
-            }   
+            obstacle.forEach(obs => obs.x=obs.x+(moveFactor*x_moveAmount_fg));
+
         }
     }
 }
@@ -2131,6 +2130,7 @@ function moveBg(){
         for(i=bgsList.length-1; i>0; i--){
             bgsList[i].x=bgsList[i].x+((moveFactor*i)*.1);
         }
+            
 
         for(i=0; i<buildingsImgs.length; i++) {
             if(buildingsList[0].x<bgBuildings.width){
