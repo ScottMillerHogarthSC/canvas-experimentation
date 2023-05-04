@@ -23,12 +23,12 @@ var npcList = [ // order of the below must be preserved
 [
     {id:"Punk-Idle",url:"images/Punk/Idle.png",width:192,height:48},
     {id:"Punk-Idle-back",url:"images/Punk/Idle-back.png",width:192,height:48},
-    {id:"Punk-Walk",url:"images/Punk/Walk.png",width:288,height:48},
-    {id:"Punk-Walk-back",url:"images/Punk/Walk-back.png",width:288,height:48},
-    {id:"Punk-Hurt",url:"images/Punk/Hurt.png",width:96,height:48},
-    {id:"Punk-Hurt-back",url:"images/Punk/Hurt-back.png",width:96,height:48},
-    {id:"Punk-Death",url:"images/Punk/Death.png",width:288,height:48},
-    {id:"Punk-Death-back",url:"images/Punk/Death-back.png",width:288,height:48}]
+    {id:"Punk-Walk",url:"images/Zombie/Walk.png",width:288,height:48},
+    {id:"Punk-Walk-back",url:"images/Zombie/Walk-back.png",width:288,height:48},
+    {id:"Punk-Hurt",url:"images/Zombie/Hurt.png",width:96,height:48},
+    {id:"Punk-Hurt-back",url:"images/Zombie/Hurt-back.png",width:96,height:48},
+    {id:"Punk-Death",url:"images/Zombie/Death.png",width:288,height:48},
+    {id:"Punk-Death-back",url:"images/Zombie/Death-back.png",width:288,height:48}]
 ];
 var npcImgs = [];
 var npcImgIndex = {walkBack:0, hurtBack:0, walk:0, hurt:0, death:0, deathBack:0};

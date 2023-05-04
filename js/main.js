@@ -191,7 +191,7 @@ function initCanvasAnim(){
 
 
 function showGame(){
-    footer.style.display = "block";
+    
     createjs.Ticker.addEventListener("tick", updateStage);
     createjs.Ticker.framerate = frameRate;
 }
@@ -2307,12 +2307,14 @@ function restartGame(){
     isEnemy.runBack=true;
     for (i = enemy.length - 1; i >= 0; i--) {
         enemy[i].x=canvas.width;
+        enemy[i].health=enemy[i].fullhealth;
     }
     for(i=0; i<=npc.length-1; i++){
         sprite_x.npcX[i]=0;
         moveFactor_npc[i]=1;
         isNpc[i].walk=true;
         npc[i].x=npc[i].initX;
+        npc[i].health=npc[i].fullhealth;
     }
     enemyKillCount=0;
 
@@ -2336,6 +2338,9 @@ function restartGame(){
     droneStrike="not";
     bombDrop="not";
     drone_counter=0;
+    drone.x=drone.initX;
+    bomb.x=bomb.initX;
+    bomb.y=bomb.initY;
 
 
     if(nearEnding){

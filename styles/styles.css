@@ -195,7 +195,7 @@ button {
 #introContainer,#intro_txt {
     display: block;
 }
-#introContainer{
+#introContainer,#endingContainer{
     width: 100%;
     max-width: 576px;
     height: 100%;
@@ -204,7 +204,7 @@ button {
     overflow: hidden;
     cursor: url(../images/cursor.png), auto;
 }
-.intro-title-img{
+.intro-title-img,.end-title-img{
     top: 50%;
     left: 50%;
     position: absolute;
@@ -225,7 +225,11 @@ button {
     background-color: #fff;
     color: #000;
 }
-
+#ending_txt {
+    top: calc(50% + 50px);
+    left: 123px;
+    width: 364px;
+}
 #footer {
     color: #fff;
     /*display: none;*/

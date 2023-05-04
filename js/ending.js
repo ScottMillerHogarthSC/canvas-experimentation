@@ -30,12 +30,16 @@ function playEnding(){
 			ctxEnemy.clearRect(0, 0, canvas.width, canvas.height);
 			ctxNpc.clearRect(0, 0, canvas.width, canvas.height);
 
-			typeText(ending_txt,.7,0);
+			
 	        endingTL = gsap.timeline({paused:true, onComplete:bindRestartButtons});
 
-	        endingTL.to(["#ending_txt"],0,{display:"block"},0)
-	            .to("#ending_txt",.2,{alpha:1},">")
-	            .to([restart_btn,restart_btn_mobile], 0, {display:"block"},">")
+	        endingTL.to(["#ending_txt","#endingContainer"],0,{display:"block"},0)
+	        	.to("#endingContainer",.2,{alpha:1},">")
+	        	.to("#end-sly",0,{alpha:1},">.4")
+	        	.to("#end-txt",0,{alpha:1},">.4")
+	            .to("#ending_txt",.2,{alpha:1},">.4")
+	            .call(typeText, [ending_txt,.7,0], "<")
+	            .to([restart_btn,restart_btn_mobile], 0, {display:"block", left: "66%", top: "50px"},">.4")
 	            .to([restart_btn,restart_btn_mobile], 1, {alpha:1},"<");
 
 	        endingTL.play();

@@ -18,10 +18,12 @@ function bindButtons(){
             if(!paused){
                 playMusic(audio_music);
             }
+
         }
         
         intro=false;
         gsap.to(introContainer,0,{display:"none"});
+        gsap.to(footer,0,{display:"block",alpha:1});
     }
 
     container.removeEventListener('click', bindButtons);
@@ -181,7 +183,6 @@ function mobileBtnReleased(ev) {
     	createjs.Ticker.removeEventListener("tick", backwards);
         $('#btnsMove').removeClass("backwards");
         $('#introBtn').removeClass('pressedA');
-
     }
     if(this.id=="btnJump") {
     	$('#introBtnK').removeClass('pressed');

@@ -7,8 +7,8 @@ var enemyKillCount=0;
 
 var explosion = {url:"images/Explosion/2.png",width:576,height:96};
 var flash = {url:"images/Explosion/2.png",width:576,height:96,cellW:96,x:0,y:192};
-var drone = {url:"images/Drone/Drop.png",width:576,height:96,cellW:96,x:-96,y:32};
-var bomb = {url:"images/Drone/Bomb.png",width:96,height:16,cellW:16,x:170,y:76};
+var drone = {url:"images/Drone/Drop.png",width:576,height:96,cellW:96,x:-96,y:32,initX:-96};
+var bomb = {url:"images/Drone/Bomb.png",width:96,height:16,cellW:16,x:170,y:76,initX:170,initY:76};
 var flashes = [{x:0,y:0,go:false}]
 var flashCount=0;
 
