@@ -7,7 +7,7 @@ function init()
     // querystr overrides:
     if(window.location.search.includes("devTools")){
         devTools=true;
-        console.log("devTools");
+        log("devTools");
     }
     if(window.location.search.includes("frameRate")){
         frameRate=window.location.search.split("frameRate=")[1];

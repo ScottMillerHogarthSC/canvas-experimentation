@@ -2179,16 +2179,19 @@ function gameProgression(){
 
     // reached end of game:
     if(fg.x<-((fg.width*(fgsList.length))-1152-canvas.width)){
-           
         // 'end'
         // end of foregrounds reached, play ending! 
-        collided=true;
-
-        createjs.Ticker.removeEventListener("tick", updateStage);
-        createjs.Ticker.removeEventListener("tick", checkKeys);
-
-        createjs.Ticker.addEventListener("tick", playEnding);
+        startEnding();
     }
+}
+
+function startEnding(){
+    collided=true;
+
+    createjs.Ticker.removeEventListener("tick", updateStage);
+    createjs.Ticker.removeEventListener("tick", checkKeys);
+
+    createjs.Ticker.addEventListener("tick", playEnding);
 }
 
 

@@ -16,7 +16,15 @@ function playEnding(){
 	
 
 	if(player.x<360){ 
+		killEnemy();
+
+		for(i=0; i<=npc.length-1; i++){
+			isNpc[i].death=true;
+		}
+		renderNPCs();
 		renderEnemy();
+
+		isPlayer.hurt=false;
 
 		renderPlayer();
 		moveSpriteSheets();
@@ -46,7 +54,7 @@ function playEnding(){
 	            .call(function(){ document.getElementById("end_score_txt").innerHTML="you scored: "+(Math.round(score.curr).toWidth(8,'0')); },[], "<")
 	            .to("#end_score_txt",.2,{alpha:1},">.4")
 	            
-	            .to([restart_btn,restart_btn_mobile], 0, {display:"block", left: "66%", top: "51px"},">.4")
+	            .to([restart_btn,restart_btn_mobile], 0, {display:"block", left: "calc(50% + 74px)", top: "calc(50% + 51px)"},">.4")
 	            .to([restart_btn,restart_btn_mobile], 1, {alpha:1},"<");
 
 	        endingTL.play();

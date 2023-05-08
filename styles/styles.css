@@ -227,9 +227,11 @@ button {
     color: #000;
 }
 #ending_txt {
-    top: calc(50% + 50px);
-    left: 123px;
+    bottom: calc(50% - 12px);
+    left: calc(50% + 71px);
+    transform: translateX(-50%);
     width: 364px;
+    height: 40px;
     min-height: 40px;
     margin-top: -10vh;
     line-height: 3em;
