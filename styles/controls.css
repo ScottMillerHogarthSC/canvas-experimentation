@@ -28,7 +28,7 @@
     outline: none;
     cursor: pointer;
 
-    transform: scale(.77);
+    transform: scale(1.1);
     transform-origin: right bottom;
 
 }
