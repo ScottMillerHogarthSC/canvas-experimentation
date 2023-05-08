@@ -43,8 +43,8 @@ var enemiesList = [ // order of the below must be preserved
     {id:"BattleCar-Walk-back",url:"images/BattleCar/Walk-back.png",width:384,height:96,cellW:96},
     {id:"BattleCar-Attack",url:"images/BattleCar/Attack2.png",width:768,height:96,cellW:96},
     {id:"BattleCar-Attack-back",url:"images/BattleCar/Attack2-back.png",width:768,height:96,cellW:96},
-    {id:"BattleCar-Hurt",url:"images/BattleCar/Hurt.png",width:192,height:96,cellW:96},
-    {id:"BattleCar-Hurt-back",url:"images/BattleCar/Hurt-back.png",width:192,height:96,cellW:96}]
+    {id:"BattleCar-Hurt",url:"images/BattleCar/Hurt.png",width:384,height:96,cellW:96},
+    {id:"BattleCar-Hurt-back",url:"images/BattleCar/Hurt-back.png",width:384,height:96,cellW:96}]
 ]
 ;
 var enemyImgs = [];

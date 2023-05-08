@@ -162,6 +162,15 @@ function mobileBtnPressed(ev){
         }
         $('#btns').addClass('pressedJump');
     }
+    if(this.id=="btnMoveUp") {
+        if(!jumpBtnDown){
+            jump();
+        } else {
+            if(!moving_backwards) isPlayer.walk=true;
+            else isPlayer.idleBack=true;
+        }
+        $('#btnsMove').addClass('up');
+    }
     if(this.id=="btnWheelie") {
     	createjs.Ticker.addEventListener("tick", shoot);
         $('#btns').addClass('pressedWheelie');
@@ -189,16 +198,20 @@ function mobileBtnReleased(ev) {
     if(this.id=="btnMoveForwards") {
     	createjs.Ticker.removeEventListener("tick", forwards);
         $('#btnsMove').removeClass("forwards");
-        $('#introBtn').removeClass('pressedD');
+        // $('#introBtn').removeClass('pressedD');
     }
     if(this.id=="btnMoveBackwards") {
     	createjs.Ticker.removeEventListener("tick", backwards);
         $('#btnsMove').removeClass("backwards");
-        $('#introBtn').removeClass('pressedA');
+        // $('#introBtn').removeClass('pressedA');
     }
     if(this.id=="btnJump") {
-    	$('#introBtnK').removeClass('pressed');
+    	// $('#introBtnK').removeClass('pressed');
         $('#btns').removeClass('pressedJump');
+    }
+    if(this.id=="btnMoveUp") {
+        // $('#introBtnK').removeClass('pressed');
+        $('#btnsMove').removeClass('up');
     }
     if(this.id=="btnWheelie") {
     	createjs.Ticker.removeEventListener("tick", shoot);
