@@ -131,17 +131,22 @@ introTL.addLabel("reset", 0)
 
 .addLabel("city", ">1")
     .to(["#intro-licensed-by","#intro-roar","#intro-primitai"],0,{alpha:0}, "city")
+    .to("#intro-city",0,{alpha:1}, "city")    
     .to("#intro-city-txt1", 0, {alpha:1}, "city")
     .call(typeText,[intro_city_txt1,2,0], ">")
-    .to("#intro-city",0,{y:30}, "city")    
-    .to("#intro-city",2,{alpha:1}, "<.5")    
+    .to("#intro-city-02",0,{y:60}, "city")    
+    .to(["#intro-city-01","#intro-city-02"],2,{alpha:1}, "city+=1")
 
-    .to("#intro-city",4,{y:0, ease:"power1.inOut"}, ">")    
+    .to("#intro-city-02",5,{y:0, ease:"linear"}, "city+=4")
+    .to("#intro-city-txt1", 1, {alpha:0}, "city+=4")
 
-    .to("#intro-city-txt2", 0, {alpha:1}, "<1")
-    .call(typeText,[intro_city_txt2,2,0], ">")
+    .to("#intro-city-txt2", 0, {alpha:1}, "city+=4")
+    .call(typeText,[intro_city_txt2,2,0], "city+=3")
+    .to("#intro-city-txt2", 1, {alpha:0}, "city+=6")
+    .to("#intro-city",1,{alpha:0}, "city+=8")    
 
-.addLabel("lockup", ">4")
+
+.addLabel("lockup", ">")
     
     .to("#intro-shredded",12,{x:-20,ease:"linear"},"lockup")
     .to("#intro-beheaded",12,{x:20,ease:"linear"},"lockup")

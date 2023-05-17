@@ -246,11 +246,11 @@ button {
 #intro-city-txt1,
 #intro-city-txt2 {
     position: absolute;
-    top: 50px;
+    top: 60px;
     width: 100%;
 }
 #intro-city-txt2 {
-    top: 66px;
+    top: 76px;
 }
 #intro_txt{
     top: 50%;
