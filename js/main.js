@@ -176,16 +176,6 @@ function initCanvasAnim(){
     for(i=0; i<npcList.length; i++){
         npcList[i].forEach(depictNpc);
     }
-    
-
-    
-    //
-    showGame();
-
-    // once intro is played bind these start buttons!
-    container.addEventListener('click', bindButtons);
-    window.addEventListener('keydown', bindButtons);
-    mobileControls.addEventListener('touchend', bindButtons);
 }   
 
 
@@ -2433,7 +2423,7 @@ function showCanvas(){
 
 function updateScore(){
 
-    score_txt.innerHTML=(Math.round(score.curr).toWidth(8,'0')); //=> 00000100
+    score_txt.innerHTML=(Math.round(score.curr).toWidth(6,'0')); //=> 00000100
 }
 
 Number.prototype.toWidth = function(n,chr) {

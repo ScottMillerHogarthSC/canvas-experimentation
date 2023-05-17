@@ -70,6 +70,9 @@ body{
     opacity: 0.4;
     mix-blend-mode: color;
 }
+#bgOverlay-canvas.hidden {
+    opacity: 0;
+}
 
 .overlays {
     display: none;
@@ -196,6 +199,7 @@ button {
 #introContainer,#intro_txt {
     display: block;
 }
+
 #introContainer,#endingContainer{
     width: 100%;
     max-width: 576px;
@@ -204,6 +208,10 @@ button {
     transform: translateY(-50%);
     overflow: hidden;
     cursor: url(../images/cursor.png), auto;
+}
+#introContainer{
+    max-height: 320px;
+    background-color: #000;
 }
 .intro-title-img,.end-title-img{
     top: 50%;
@@ -214,18 +222,60 @@ button {
     width: 100%;
     object-fit: contain;
 }
+#intro-roar{
+    max-height: 320px;
+}
+#intro-primitai{
+    max-height: 320px;
+    overflow: hidden;
+}
+#intro-primitai-bg {
+    height: 400%;
+    background: linear-gradient( #ff0000 0%, #ff0000 38%, #ff0000 38%, #f00 60%, #dbff00 80%);
+}
+#intro-primitai .txt,
+#intro-licensed-by{
+    position: absolute;
+    top: 260px;
+    width: 100%;
+    opacity: 0;
+}
+#intro-licensed-by{
+    top: 60px;
+}
+#intro-city-txt1,
+#intro-city-txt2 {
+    position: absolute;
+    top: 50px;
+    width: 100%;
+}
+#intro-city-txt2 {
+    top: 66px;
+}
 #intro_txt{
-    top: calc(50% + 110px);
-    left: calc(50% - 60px);
+    top: 50%;
+    left: 50%;
     transform: translate(-50%,-50%);
     position: absolute;
     padding: 1em;
-    background-color: #000;
+    background-color: #fff;
+    color: #000;
+    border: solid 1px #fff;
+}
+#intro_txt.intro-played{
+    top: calc(50% + 110px);
+    left: calc(50% - 60px);
+    border: none;
 }
 #introContainer:hover #intro_txt{
+    background-color: #000;
+    color: #fff;
+}
+#intro_txt.intro-played:hover #intro_txt{
     background-color: #fff;
     color: #000;
 }
+
 #ending_txt {
     bottom: calc(50% - 12px);
     left: calc(50% + 71px);

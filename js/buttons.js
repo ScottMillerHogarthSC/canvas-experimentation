@@ -12,18 +12,8 @@ var btnMoveUp, btnMoveForwards, btnMoveBackwards, btnMoveDown, btnJump, btnOptio
 
 function bindButtons(){
     if(intro){
-        // play music! 
-        if(firstpress){
-            firstpress=false;
-            if(!paused){
-                playMusic(audio_music);
-            }
-
-        }
-        
         intro=false;
         gsap.to(introContainer,0,{display:"none"});
-        gsap.to(footer,0,{display:"block",alpha:1});
     }
 
     container.removeEventListener('click', bindButtons);
