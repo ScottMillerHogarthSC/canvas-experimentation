@@ -51,7 +51,7 @@ function playEnding(){
 	        	.to("#end-txt",0,{alpha:1},"<")
 	        	.call(typeText, [ending_txt,.7,0], ">.4")
 	            .to("#ending_txt",.2,{alpha:1},"<")
-	            .call(function(){ document.getElementById("end_score_txt").innerHTML="you scored: "+(Math.round(score.curr).toWidth(8,'0')); },[], "<")
+	            .call(function(){ document.getElementById("end_score_txt").innerHTML="you scored: "+(Math.round(score.curr).toWidth(6,'0')); },[], "<")
 	            .to("#end_score_txt",.2,{alpha:1},">.4")
 	            
 	            .to([restart_btn,restart_btn_mobile], 0, {display:"block", left: "calc(50% + 74px)", top: "calc(50% + 51px)"},">.4")
