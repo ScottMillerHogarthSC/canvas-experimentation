@@ -120,7 +120,7 @@ introTL.addLabel("reset", 0)
 
     .to("#intro-primitai",1,{alpha:1}, ">")
     .to("#intro-primitai-bg",0,{y:0}, ">")
-    .to("#intro-primitai-bg",3.5,{y:-500,ease:"linear"}, ">")
+    .to("#intro-primitai-bg",3.5,{y:"-39%",ease:"linear"}, ">")
     .to("#intro-presents",0,{alpha:1}, "<1.5")
     .to("#intro-primitai",0,{alpha:0}, "reset+=5")
     

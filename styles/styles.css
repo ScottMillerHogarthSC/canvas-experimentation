@@ -231,6 +231,7 @@ button {
 }
 #intro-primitai-bg {
     height: 400%;
+    max-width: calc(100vh * 1.8);
     background: linear-gradient( #ff0000 0%, #ff0000 38%, #ff0000 38%, #f00 60%, #dbff00 80%);
 }
 #intro-primitai .txt,
