@@ -137,7 +137,7 @@ introTL.addLabel("reset", 0)
     .to("#intro-city-02",0,{y:60}, "city")    
     .to(["#intro-city-01","#intro-city-02"],2,{alpha:1}, "city+=1")
 
-    .to("#intro-city-02",5,{y:0, ease:"linear"}, "city+=4")
+    .to("#intro-city-02",6,{y:0, ease:"linear"}, "city+=3")
     .to("#intro-city-txt1", 1, {alpha:0}, "city+=4")
 
     .to("#intro-city-txt2", 0, {alpha:1}, "city+=4")
