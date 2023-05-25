@@ -201,6 +201,7 @@ function playMusic(whichMusic,fromPause){
         }
         setInterval(setPlaybackTime, 400);
     }
+    gsap.to(".tape-wheel",0,{className:"tape-wheel tape-wheel-spin"});
 
 }
 
@@ -219,4 +220,5 @@ function getPlaybackTime(timeInSeconds,xy) {
 
 function pauseMusic(whichMusic){
     whichMusic.pause();
+    gsap.to(".tape-wheel",0,{className:"tape-wheel"});
 }
