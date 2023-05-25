@@ -14,6 +14,7 @@ function bindButtons(){
     if(intro){
         intro=false;
         gsap.to(introContainer,0,{display:"none"});
+        gsap.to("#overlay-stereo",0,{display:"flex"});
     }
 
     container.removeEventListener('click', bindButtons);

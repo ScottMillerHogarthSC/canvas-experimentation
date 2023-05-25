@@ -1295,7 +1295,7 @@ function checkPlayerPosition() {
                     isNpc[i].hurtBack=true;
                 }
 
-                score.curr=score.curr+0.01;
+                score.curr=score.curr+0.1;
 
                 npc[i].health--;
                 npc[i].health = npc[i].health < 0 ? 0 : npc[i].health;
@@ -2049,6 +2049,8 @@ function killEnemy(whichEnemy){
 
 function killNpc(whichNpcIndex){
     isNpc[whichNpcIndex].killed=true;
+
+    score.curr=score.curr+10;
         
     gsap.delayedCall(2+whichNpcIndex,function(){
 

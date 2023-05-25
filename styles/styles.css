@@ -131,51 +131,57 @@ body{
 #overlay-stereo {
     display: flex;
     opacity: 1;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: center;
+    padding-right: 8px;
+    padding-top: 10px;  
     max-height: 320px;
     max-width: 576px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 8px;
-    padding-right: 4px;
-    padding-bottom: 2px;
     box-sizing: border-box;
     text-shadow: 2px 2px 1px #000;
-    justify-content: right;
+    z-index: 101;
+    display: none;
 }
  
 #txt-song{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     font-size: 0;
-    align-items: flex-end;
+    /*align-items: flex-end;*/
     cursor: pointer;
     text-decoration: none;
-
  }
-#txt-song a,
-.mobile #txt-song {
+#txt-song a,#txt-song span,
+#txt-song {
     font-size: 8px;
     color: #fff;
     text-decoration: none;
     transition: color .5s;
 }
 #txt-song a:hover {
-    color: blue;
+    color: #b0f2f2;
     transition: color .15s;
 }
 .mobile #txt-song{
     display: inline;
 }
-.mobile #overlay-stereo { 
-    justify-content: center;
-    padding-right: 8px;
-    padding-bottom: 8px;  
-}
 #song-playback-title,#song-artist{
 
 }
+.note{
+    text-shadow: 0 0 1px white;
+    line-height: 10px;
+    animation: pulse .2s infinite alternate;
+    margin-left: 4px;
+}
+@keyframes pulse {
+    0%{ transform: scale(1); }
+    100%{ transform: scale(1.2); }
+}
+    
 
 #overlay-stereo .red {color: red;}
 

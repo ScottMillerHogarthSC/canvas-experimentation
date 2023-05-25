@@ -1,15 +1,16 @@
 var audio,audio_shoot,audio_blaster,audio_explosion,audio_playerhurt,audio_playerdead,
-noAudio=false, songPlaybackTime,songPlaybackTitle;
+noAudio=false,songPlaybackTime,songPlaybackTitle;
 function initAudio(){
     //[audio]
     audio_music = document.getElementById("audio");
+    audio_dieMusic = document.getElementById("audio-die_music");
+
     audio_shoot = document.getElementById("audio-shoot");
     audio_heavyshoot = document.getElementById("audio-heavyshoot");
     audio_blaster = document.getElementById("audio-blaster");
     audio_explosion = document.getElementById("audio-explosion");
     audio_playerhurt = document.getElementById("audio-playerhurt");
     audio_playerdead = document.getElementById("audio-playerdead");
-    audio_dieMusic = document.getElementById("audio-die_music");
     songPlaybackTime = document.getElementById("song-playback-time");
     songPlaybackTitle = document.getElementById("song-playback-title");
     
@@ -193,8 +194,10 @@ function playMusic(whichMusic,fromPause){
         // console.log(audioMusicTitlesArr[0]);
         if(whichMusic.id=="audio"){
             songPlaybackTitle.innerHTML=audioMusicTitlesArr[0];
+            songPlaybackTitle.href="https://open.spotify.com/track/6FoHaNsBdvZicXDPcmbmcN";
         } else if(whichMusic.id=="audio-die_music"){
             songPlaybackTitle.innerHTML=audioMusicTitlesArr[1];
+            songPlaybackTitle.href="https://open.spotify.com/track/6FoHaNsBdvZicXDPcmbmcN";
         }
         setInterval(setPlaybackTime, 400);
     }
@@ -204,7 +207,6 @@ function playMusic(whichMusic,fromPause){
 
 function setPlaybackTime() {
     songPlaybackTime.innerHTML=getPlaybackTime(_currentMusic.currentTime,true)+":"+getPlaybackTime(_currentMusic.currentTime,false);
-    // gsap.to(".song-playback-icon",1,{scaleY:3,stagger:0.2,yoyo:true,repeat:-1})
 }
 function getPlaybackTime(timeInSeconds,xy) {
         var minutes = Math.floor(timeInSeconds / 60);   
