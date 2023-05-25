@@ -120,12 +120,65 @@ body{
 #score_txt{
     top: 50%;
     transform: translateY(-50%);
-    max-height: 324px;
+    max-height: 320px;
     height: 100%;
     text-align: right;
-    padding: 5% 0px 0 0px;
-    width: 98%;
+    padding: 8px 10px 0 0px;
+    width: 100%;
+    box-sizing: border-box;
 }
+/* stereo - music readout */
+#overlay-stereo {
+    display: flex;
+    opacity: 1;
+    align-items: flex-end;
+    justify-content: center;
+    max-height: 320px;
+    max-width: 576px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 8px;
+    padding-right: 4px;
+    padding-bottom: 2px;
+    box-sizing: border-box;
+    text-shadow: 2px 2px 1px #000;
+    justify-content: right;
+}
+ 
+#txt-song{
+    display: flex;
+    flex-direction: column;
+    font-size: 0;
+    align-items: flex-end;
+    cursor: pointer;
+    text-decoration: none;
+
+ }
+#txt-song a,
+.mobile #txt-song {
+    font-size: 8px;
+    color: #fff;
+    text-decoration: none;
+    transition: color .5s;
+}
+#txt-song a:hover {
+    color: blue;
+    transition: color .15s;
+}
+.mobile #txt-song{
+    display: inline;
+}
+.mobile #overlay-stereo { 
+    justify-content: center;
+    padding-right: 8px;
+    padding-bottom: 8px;  
+}
+#song-playback-title,#song-artist{
+
+}
+
+#overlay-stereo .red {color: red;}
+
 .btn_play{
     height: auto;
     top: 50%;

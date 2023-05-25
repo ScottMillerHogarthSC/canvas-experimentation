@@ -1,5 +1,5 @@
 var audio,audio_shoot,audio_blaster,audio_explosion,audio_playerhurt,audio_playerdead,
-noAudio=false;
+noAudio=false, songPlaybackTime,songPlaybackTitle;
 function initAudio(){
     //[audio]
     audio_music = document.getElementById("audio");
@@ -10,6 +10,8 @@ function initAudio(){
     audio_playerhurt = document.getElementById("audio-playerhurt");
     audio_playerdead = document.getElementById("audio-playerdead");
     audio_dieMusic = document.getElementById("audio-die_music");
+    songPlaybackTime = document.getElementById("song-playback-time");
+    songPlaybackTitle = document.getElementById("song-playback-title");
     
 
     if (audio_music.canPlayType('audio/mpeg')) {
@@ -48,6 +50,7 @@ function initAudio(){
 }
 
 var audioMusicArr = [];
+var audioMusicTitlesArr = [];
 function preloadMusic(){
 
     audio_music.addEventListener('canplay', loadedMusic);
@@ -55,12 +58,14 @@ function preloadMusic(){
 
     audio_music.load(); 
     audioMusicArr.push(audio_music);
+    audioMusicTitlesArr.push("shredded &amp; beheaded");
 
     audio_dieMusic.addEventListener('canplay', loadedMusic);
     audio_dieMusic.addEventListener('error', failedtoLoadMusic);
 
     audio_dieMusic.load(); 
     audioMusicArr.push(audio_dieMusic);
+    audioMusicTitlesArr.push("<span class='red'>you died</span>");
 
 }
 
@@ -174,6 +179,7 @@ function playSFX(whichSound,stopOtherSounds){
         }
     }
 }
+var _currentMusic;
 function playMusic(whichMusic,fromPause){
     if(!fromPause){
         audioMusicArr.forEach(ele => ele.currentTime=0);
@@ -182,7 +188,31 @@ function playMusic(whichMusic,fromPause){
     if(!noAudio && !muted){
         whichMusic.volume=1;
         whichMusic.play();
+        //set song readout
+        _currentMusic = whichMusic;
+        // console.log(audioMusicTitlesArr[0]);
+        if(whichMusic.id=="audio"){
+            songPlaybackTitle.innerHTML=audioMusicTitlesArr[0];
+        } else if(whichMusic.id=="audio-die_music"){
+            songPlaybackTitle.innerHTML=audioMusicTitlesArr[1];
+        }
+        setInterval(setPlaybackTime, 400);
     }
+
+}
+
+
+function setPlaybackTime() {
+    songPlaybackTime.innerHTML=getPlaybackTime(_currentMusic.currentTime,true)+":"+getPlaybackTime(_currentMusic.currentTime,false);
+    // gsap.to(".song-playback-icon",1,{scaleY:3,stagger:0.2,yoyo:true,repeat:-1})
+}
+function getPlaybackTime(timeInSeconds,xy) {
+        var minutes = Math.floor(timeInSeconds / 60);   
+        var seconds = Math.floor(timeInSeconds - minutes * 60)
+        var x = minutes < 10 ? "0" + minutes : minutes;
+        var y = seconds < 10 ? "0" + seconds : seconds;
+        if(xy) {return x}
+        else { return y}
 }
 
 function pauseMusic(whichMusic){
