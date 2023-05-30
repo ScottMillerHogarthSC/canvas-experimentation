@@ -18,9 +18,9 @@ function bindButtons(){
         gsap.to("#tape",0,{display:"block"});
     }
 
-    container.removeEventListener('click', bindButtons);
-    window.removeEventListener('keydown', bindButtons);
-    mobileControls.removeEventListener('touchstart', bindButtons);
+    container.removeEventListener('click', introSkip);
+    window.removeEventListener('keydown', introSkip);
+    mobileControls.removeEventListener('touchstart', introSkip);
 
 
     createjs.Ticker.addEventListener("tick", checkKeys);

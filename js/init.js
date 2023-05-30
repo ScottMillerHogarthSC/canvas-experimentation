@@ -103,63 +103,68 @@ function start(){
     // once intro is played bind these start buttons!
     container.addEventListener('click', playIntro);
     mobileControls.addEventListener('touchend', playIntro);;
+    window.addEventListener('keydown', playIntro);
     // show
 }
 
-
+var introTL = gsap.timeline({paused:true,oncComplete:function(){
+    container.addEventListener('click', bindButtons);
+    window.addEventListener('keydown', bindButtons);
+    mobileControls.addEventListener('touchend', bindButtons);
+}});
 function playIntro() {
 
-var introTL = gsap.timeline({paused:true});
-    
-introTL.addLabel("reset", 0)
-    .to("#container", 0, {className:"noMouse"}, "reset")
-    .to("#intro_txt",0,{alpha:0}, "reset")
-    .to("#intro_txt",0,{className:"txt intro-played"}, "reset")
-    .to(".game-canvas",{className:"game-canvas"},"reset")
-    .to(["#bgOverlay-canvas","#bg-canvas"],{className:""},"reset")
+    introTL.addLabel("reset", 0)
+        .to("#container", 0, {className:"noMouse"}, "reset")
+        .to("#intro_txt",0,{alpha:0}, "reset")
+        .to("#intro_txt",0,{className:"txt intro-played"}, "reset")
+        .to(".game-canvas",{className:"game-canvas"},"reset")
+        .to(["#bgOverlay-canvas","#bg-canvas"],{className:""},"reset")
 
-    .to("#intro-primitai",1,{alpha:1}, ">")
-    .to("#intro-primitai-bg",0,{y:0}, ">")
-    .to("#intro-primitai-bg",3.5,{y:"-39%",ease:"linear"}, ">")
-    .to("#intro-presents",0,{alpha:1}, "<1.5")
-    .to("#intro-primitai",0,{alpha:0}, "reset+=5")
-    
-    .to("#intro-licensed-by",0,{alpha:1}, ">.2")
-    .to("#intro-roar",0,{alpha:1,clip:"rect(168px, 296px, 170px, 290px)"}, ">")
-    .to("#intro-roar",1,{clip:"rect(168px, 576px, 170px, 0px)",ease:"expo.in"}, ">")
-    .to("#intro-roar",1,{clip:"rect(0px, 576px, 490px, 0px)",ease:"sine.in"}, ">.2")
+    .addLabel("intro-primitai", ">")
+        .to("#intro-primitai",1,{alpha:1}, "intro-primitai")
+        .to("#intro-primitai-bg",0,{y:0}, ">")
+        .to("#intro-primitai-bg",3.5,{y:"-39%",ease:"linear"}, ">")
+        .to("#intro-presents",0,{alpha:1}, "<1.5")
+        .to("#intro-primitai",0,{alpha:0}, "intro-primitai+=5")
 
-.addLabel("city", ">1")
-    .to(["#intro-licensed-by","#intro-roar","#intro-primitai"],0,{alpha:0}, "city")
-    .to("#intro-city",0,{alpha:1}, "city")    
-    .to("#intro-city-txt1", 0, {alpha:1}, "city")
-    .call(typeText,[intro_city_txt1,2,0], ">")
-    .to("#intro-city-02",0,{y:60}, "city")    
-    .to(["#intro-city-01","#intro-city-02"],2,{alpha:1}, "city+=1")
+    .addLabel("intro-licensed-by", ">.2")
+        .to("#intro-licensed-by",0,{alpha:1}, "intro-licensed-by")
+        .to("#intro-roar",0,{alpha:1,clip:"rect(168px, 296px, 170px, 290px)"}, ">")
+        .to("#intro-roar",1,{clip:"rect(168px, 576px, 170px, 0px)",ease:"expo.in"}, ">")
+        .to("#intro-roar",1,{clip:"rect(0px, 576px, 490px, 0px)",ease:"sine.in"}, ">.2")
 
-    .to("#intro-city-02",6,{y:0, ease:"linear"}, "city+=3")
-    .to("#intro-city-txt1", 1, {alpha:0}, "city+=4")
+    .addLabel("city", ">1")
+        .to(["#intro-licensed-by","#intro-roar","#intro-primitai"],0,{alpha:0}, "city")
+        .to("#intro-city",0,{alpha:1}, "city")    
+        .to("#intro-city-txt1", 0, {alpha:1}, "city")
+        .call(typeText,[intro_city_txt1,2,0], ">")
+        .to("#intro-city-02",0,{y:60}, "city")    
+        .to(["#intro-city-01","#intro-city-02"],2,{alpha:1}, "city+=1")
+        .to("#intro-city-02",6,{y:0, ease:"linear"}, "city+=3")
+        .to("#intro-city-txt1", 1, {alpha:0}, "city+=4")
+        .to("#intro-city-txt2", 0, {alpha:1}, "city+=4")
+    .addLabel("city2", "city+=3")
+        .call(typeText,[intro_city_txt2,2,0], "city2")
+        .to("#intro-city-txt2", 1, {alpha:0}, "city2+=3")
+        .to("#intro-city",1,{alpha:0}, "city2+=8")    
 
-    .to("#intro-city-txt2", 0, {alpha:1}, "city+=4")
-    .call(typeText,[intro_city_txt2,2,0], "city+=3")
-    .to("#intro-city-txt2", 1, {alpha:0}, "city+=6")
-    .to("#intro-city",1,{alpha:0}, "city+=8")    
 
+    .addLabel("lockup", ">")
+        .to("#intro-shredded",12,{x:-20,ease:"linear"},"lockup")
+        .to("#intro-beheaded",12,{x:20,ease:"linear"},"lockup")
+        .to("#intro-bg",12,{scale:1.1,ease:"linear",transformOrigin:"center bottom"},"lockup")
+        .to(["#introContainer","#intro-player","#intro-bg"],0,{alpha:1},"lockup")
+        .to("#intro-shredded",0,{alpha:1},">.4")
+        .to("#intro-and",0,{alpha:1},">.4")
+        .to("#intro-beheaded",0,{alpha:1},">.4")
+        .to("#intro-car",0,{alpha:1,x:300},"<")
+        .to("#intro-car",.6,{x:0},">")
+        .to("#intro-beheaded",0,{alpha:1},">.4")
+        .to("#intro_txt",0,{alpha:1},">")
+        .to("#container",0,{className:""},">")
 
-.addLabel("lockup", ">")
-    
-    .to("#intro-shredded",12,{x:-20,ease:"linear"},"lockup")
-    .to("#intro-beheaded",12,{x:20,ease:"linear"},"lockup")
-    .to("#intro-bg",12,{scale:1.1,ease:"linear",transformOrigin:"center bottom"},"lockup")
-    .to(["#introContainer","#intro-player","#intro-bg"],0,{alpha:1},"lockup")
-    .to("#intro-shredded",0,{alpha:1},">.4")
-    .to("#intro-and",0,{alpha:1},">.4")
-    .to("#intro-beheaded",0,{alpha:1},">.4")
-    .to("#intro-car",0,{alpha:1,x:300},"<")
-    .to("#intro-car",.6,{x:0},">")
-    .to("#intro-beheaded",0,{alpha:1},">.4")
-    .to("#intro_txt",0,{alpha:1},">")
-    .to("#container",0,{className:""},">");
+    .addLabel("complete", ">");
 
 
     introTL.play();
@@ -167,9 +172,28 @@ introTL.addLabel("reset", 0)
     playMusic(audio_music);
 
     container.removeEventListener('click', playIntro);
-    mobileControls.removeEventListener('touchend', playIntro);;
+    mobileControls.removeEventListener('touchend', playIntro);
+    window.removeEventListener('keydown', playIntro);
 
-    container.addEventListener('click', bindButtons);
-    window.addEventListener('keydown', bindButtons);
-    mobileControls.addEventListener('touchend', bindButtons);;
+    container.addEventListener('click', introSkip);
+    window.addEventListener('keydown', introSkip);
+    mobileControls.addEventListener('touchend', introSkip);
+}
+
+
+function introSkip(){
+    if(introTL.nextLabel()!="complete"){
+
+        introTL.seek(introTL.nextLabel());
+
+        if(introTL.nextLabel()=="complete"){
+            container.addEventListener('click', bindButtons);
+            window.addEventListener('keydown', bindButtons);
+            mobileControls.addEventListener('touchend', bindButtons);    
+        }
+    } else{ 
+        container.addEventListener('click', bindButtons);
+        window.addEventListener('keydown', bindButtons);
+        mobileControls.addEventListener('touchend', bindButtons);
+    }
 }
