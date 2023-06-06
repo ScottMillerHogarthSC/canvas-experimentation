@@ -111,11 +111,14 @@ var introTL = gsap.timeline({paused:true,oncComplete:function(){
     container.addEventListener('click', bindButtons);
     window.addEventListener('keydown', bindButtons);
     mobileControls.addEventListener('touchend', bindButtons);
+
 }});
 function playIntro() {
-
+    var introLogoWidth = document.getElementById("intro-primitai-logo").offsetWidth;
+    // console.log(introLogoWidth);
     introTL.addLabel("reset", 0)
         .to("#container", 0, {className:"noMouse"}, "reset")
+        .to("#intro-primitai",0,{width:introLogoWidth+"px"},"reset")
         .to("#intro_txt",0,{alpha:0}, "reset")
         .to("#intro_txt",0,{className:"txt intro-played"}, "reset")
         .to(".game-canvas",{className:"game-canvas"},"reset")
@@ -164,7 +167,12 @@ function playIntro() {
         .to("#intro_txt",0,{alpha:1},">")
         .to("#container",0,{className:""},">")
 
-    .addLabel("complete", ">");
+    .addLabel("complete", ">")
+        .call(function(){
+            container.addEventListener('click', bindButtons);
+            window.addEventListener('keydown', bindButtons);
+            mobileControls.addEventListener('touchend', bindButtons);
+        }, "complete");
 
 
     introTL.play();

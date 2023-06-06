@@ -163,9 +163,9 @@ body{
     color: #b0f2f2;
     transition: color .15s;
 }
-.mobile #txt-song{
+/*.mobile #txt-song{
     display: inline;
-}
+}*/
 #song-playback-title,#song-artist{
 
 }

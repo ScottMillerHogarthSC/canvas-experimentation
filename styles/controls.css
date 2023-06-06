@@ -111,7 +111,7 @@
 #btnStart{
     left: 125px;
 }
-#btns{
+/*#btns{
     background-image: url(../images/Controls/btns.png);
     background-size: 100% auto;
     background-position: 0 0;
@@ -127,15 +127,31 @@
 }
 #btns.pressedJump {
     background-position: 0px bottom;
+}*/
+#btns{
+    background-image: url(../images/Controls/btns-flat.png);
+    background-size: auto 100%;
+    background-position: 0 0;
+    width: 88px;
+    height: 192px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-repeat: no-repeat; 
+}
+#btns.pressedWheelie {
+    background-position: -88px 0;
+}
+#btns.pressedJump {
+    background-position: right -1px;
 }
 #btnWheelie,
 #btnJump {
-    bottom: 71px;
-    right: 10px;
-    height: 70px;
+    bottom: 109px;
+    right: 5px;
+    height: 71px;
     width: 70px;
 }
 #btnWheelie {
-    right: 91px;
-    bottom: 8px;
+    bottom: 4px;
 }
