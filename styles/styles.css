@@ -341,6 +341,12 @@ button {
 #intro-city-txt2 {
     top: 76px;
 }
+#intro-city-cover {
+    background-color: #0d0114;
+}
+#intro-player {
+    left: 58%;
+}
 #intro_txt{
     top: 50%;
     left: 50%;

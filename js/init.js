@@ -141,23 +141,28 @@ function playIntro() {
         .to(["#intro-licensed-by","#intro-roar","#intro-primitai"],0,{alpha:0}, "city")
         .to("#intro-city",0,{alpha:1}, "city")    
         .to("#intro-city-txt1", 0, {alpha:1}, "city")
-        .call(typeText,[intro_city_txt1,2,0], ">")
+        .call(typeText,[intro_city_txt1,2,0], "cu")
         .to("#intro-city-02",0,{y:60}, "city")    
-        .to(["#intro-city-01","#intro-city-02"],2,{alpha:1}, "city+=1")
+        .to("#intro-city-03",0,{y:80}, "city")    
+        .to(["#intro-city-cover"],0,{alpha:1}, "city")
+        .to(["#intro-city-01","#intro-city-02","#intro-city-03"],0,{alpha:1}, "city+=1")
+        .to(["#intro-city-cover"],3,{alpha:0,ease:"linear"}, "city+=1")
         .to("#intro-city-02",6,{y:0, ease:"linear"}, "city+=3")
+        .to("#intro-city-03",6,{y:0, ease:"linear"}, "city+=3")
         .to("#intro-city-txt1", 1, {alpha:0}, "city+=4")
         .to("#intro-city-txt2", 0, {alpha:1}, "city+=4")
     .addLabel("city2", "city+=3")
         .call(typeText,[intro_city_txt2,2,0], "city2")
         .to("#intro-city-txt2", 1, {alpha:0}, "city2+=3")
-        .to("#intro-city",1,{alpha:0}, "city2+=8")    
+        .to("#intro-city",1,{alpha:0}, "city2+=4")    
 
 
     .addLabel("lockup", ">")
         .to("#intro-shredded",12,{x:-20,ease:"linear"},"lockup")
         .to("#intro-beheaded",12,{x:20,ease:"linear"},"lockup")
         .to("#intro-bg",12,{scale:1.1,ease:"linear",transformOrigin:"center bottom"},"lockup")
-        .to(["#introContainer","#intro-player","#intro-bg"],0,{alpha:1},"lockup")
+        .to(["#introContainer","#intro-bg","#intro-player-walk"],0,{alpha:1},"lockup")
+        .call(introPlayerWalk,[],"lockup")
         .to("#intro-shredded",0,{alpha:1},">.4")
         .to("#intro-and",0,{alpha:1},">.4")
         .to("#intro-beheaded",0,{alpha:1},">.4")
@@ -188,20 +193,54 @@ function playIntro() {
     mobileControls.addEventListener('touchend', introSkip);
 }
 
+var introWalk = {x:-100,spriteX:0}
+var introWalk_canvas = document.getElementById('intro-player-walk');
+introWalk_canvas.width=576;
+introWalk_canvas.height=320;
+var ctxIntroWalk = introWalk_canvas.getContext('2d');
+var introWalk_img = new Image();
+introWalk_img.src = "images/Text/intro-walk.png";
+
+function introPlayerWalk(){
+    createjs.Ticker.addEventListener("tick", animateWalking);
+    createjs.Ticker.framerate = 10;
+}
+
+function animateWalking(){
+    ctxIntroWalk.clearRect(0, 0, canvas.width, canvas.height);
+    ctxIntroWalk.drawImage(introWalk_img, introWalk.spriteX, 0, 134, 134, introWalk.x, 180, 134, 134);
+    introWalk.spriteX-=134;
+    if(introWalk.spriteX<=0){introWalk.spriteX=806-134}
+
+    introWalk.x+=8;
+    if(introWalk.x>80){
+        createjs.Ticker.removeEventListener("tick", animateWalking);
+        gsap.to("#intro-player-walk",0,{alpha:0});
+        gsap.to("#intro-player",0,{alpha:1});
+    }
+}
 
 function introSkip(){
-    if(introTL.nextLabel()!="complete"){
-
+    // console.log("nextLabel: "+introTL.nextLabel());
+    if(introTL.nextLabel()!="complete" && introTL.nextLabel()!=undefined){
         introTL.seek(introTL.nextLabel());
 
-        if(introTL.nextLabel()=="complete"){
-            container.addEventListener('click', bindButtons);
-            window.addEventListener('keydown', bindButtons);
-            mobileControls.addEventListener('touchend', bindButtons);    
-        }
-    } else{ 
+    } else if(introTL.nextLabel()=="complete"){ 
+        container.removeEventListener('click', introSkip);
+        window.removeEventListener('keydown', introSkip);
+        mobileControls.removeEventListener('touchend', introSkip);
+        
         container.addEventListener('click', bindButtons);
         window.addEventListener('keydown', bindButtons);
         mobileControls.addEventListener('touchend', bindButtons);
+    } else {
+
+        
+        // console.log("nextLabel undefined");
+        container.removeEventListener('click', introSkip);
+        window.removeEventListener('keydown', introSkip);
+        mobileControls.removeEventListener('touchend', introSkip);
+
+        bindButtons();
     }
 }

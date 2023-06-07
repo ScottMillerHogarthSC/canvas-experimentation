@@ -13,14 +13,17 @@ var btnMoveUp, btnMoveForwards, btnMoveBackwards, btnMoveDown, btnJump, btnOptio
 function bindButtons(){
     if(intro){
         intro=false;
+        introContainer.innerHTML="";
         gsap.to(introContainer,0,{display:"none"});
         gsap.to("#overlay-stereo",0,{display:"flex"});
         gsap.to("#tape",0,{display:"block"});
     }
-
+    createjs.Ticker.removeEventListener("tick", animateWalking);
     container.removeEventListener('click', introSkip);
     window.removeEventListener('keydown', introSkip);
     mobileControls.removeEventListener('touchstart', introSkip);
+
+    createjs.Ticker.framerate = frameRate;
 
 
     createjs.Ticker.addEventListener("tick", checkKeys);
