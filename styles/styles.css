@@ -140,7 +140,7 @@ body{
     font-size: 8px;
     box-sizing: border-box;
     text-shadow: 2px 2px 1px #000;
-    z-index: 101;
+    /*z-index: 101;*/
     left: 48px;
     display: none;
 }
