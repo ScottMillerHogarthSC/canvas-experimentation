@@ -90,7 +90,11 @@
             }
             else
             {
-                init();
+                
+
+                introWalk_img = new Image();
+                introWalk_img.src = "images/Text/intro-walk.png";
+                introWalk_img.onload = init;
             }
         }
     </script>

@@ -96,7 +96,6 @@ function start(){
 
     initCanvasAnim();
 
-    //
     showGame();
     gsap.to(footer,0,{display:"block",alpha:1});
 
@@ -198,8 +197,8 @@ var introWalk_canvas = document.getElementById('intro-player-walk');
 introWalk_canvas.width=576;
 introWalk_canvas.height=320;
 var ctxIntroWalk = introWalk_canvas.getContext('2d');
-var introWalk_img = new Image();
-introWalk_img.src = "images/Text/intro-walk.png";
+
+
 
 function introPlayerWalk(){
     createjs.Ticker.addEventListener("tick", animateWalking);
@@ -235,7 +234,7 @@ function introSkip(){
         mobileControls.addEventListener('touchend', bindButtons);
     } else {
 
-        
+
         // console.log("nextLabel undefined");
         container.removeEventListener('click', introSkip);
         window.removeEventListener('keydown', introSkip);
