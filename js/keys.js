@@ -57,6 +57,8 @@ function checkKeyPress(e){
     }
     else if(e.code == "Space") {
         gamePause();
+    } else if(e.code == "KeyZ") {
+        zoomInContainer();
     } else {
         // gamePause();
     }

@@ -157,18 +157,36 @@ function playIntro() {
 
 
     .addLabel("lockup", ">")
-        .to("#intro-shredded",12,{x:-20,ease:"linear"},"lockup")
-        .to(["#intro-beheaded","#intro-and"],12,{x:20,ease:"linear"},"lockup")
-        .to("#intro-bg",12,{scale:1.1,ease:"linear",transformOrigin:"center bottom"},"lockup")
-        .to(["#introContainer","#intro-bg","#intro-player-walk"],0,{alpha:1},"lockup")
-        .call(introPlayerWalk,[],"lockup")
-        .to("#intro-shredded",0,{alpha:1},">.4")
-        .to("#intro-and",0,{alpha:1},">.4")
-        .to("#intro-beheaded",0,{alpha:1},">.4")
+        .to(["#introContainer"],0,{alpha:1},"lockup")
+
+        .to(["#intro-shredded"],0,{scale:0.01,ease:"linear"},"lockup")
+        .to(["#intro-beheadedA"],0,{x:-190,clip:"rect(0px,579px,330px,500px)"},"lockup")
+        .to(["#intro-beheadedB"],0,{x:230,clip:"rect(0px,100px,330px,0px)"},"lockup")
+        
+
+
+        .to("#intro-shredded",.05,{alpha:1},">.4")
+        .to("#intro-shredded",.3,{scale:1.2,ease:"expo.out"},"<")
+        .to("#intro-and",0,{alpha:1,scale:1.2},">.4")
+        
+        .to(["#intro-beheadedA","#intro-beheadedB"],0,{alpha:1,scale:1.2},">.4")
+        .to("#intro-beheadedA",.3,{x:0,ease:"power1.out"},"<")
+        .to("#intro-beheadedA",.6,{clip:"rect(0px,579px,330px,0px)",ease:"power1.out"},"<")
+        .to("#intro-beheadedB",.3,{x:0,ease:"power1.out"},"<")
+        .to("#intro-beheadedB",.7,{clip:"rect(0px,579px,330px,0px)",ease:"power1.out"},"<")
+
+        .to(["#intro-shredded","#intro-beheadedA","#intro-beheadedB","#intro-and"],.5,{scale:1,ease:"back.out"},">")
+        .to("#intro-bg",.5,{alpha:1},"<")
+
+
+        .to(["#intro-shredded","#intro-beheadedA","#intro-beheadedB","#intro-and"],12,{scale:.8,ease:"linear"},">")
+        .to("#intro-bg",12,{scale:1.1,ease:"linear",transformOrigin:"center bottom"},"<")
+        .to(["#intro-player-walk"],0,{alpha:1},"<")
+        .call(introPlayerWalk,[],"<")
         .to("#intro-car",0,{alpha:1,x:300},"<")
         .to("#intro-car",.6,{x:0},">")
-        .to("#intro-beheaded",0,{alpha:1},">.4")
-        .to("#intro_txt",0,{alpha:1},">")
+        
+        
         .to("#container",0,{className:""},">")
 
     .addLabel("complete", ">")
@@ -216,6 +234,7 @@ function animateWalking(){
         createjs.Ticker.removeEventListener("tick", animateWalking);
         gsap.to("#intro-player-walk",0,{alpha:0});
         gsap.to("#intro-player",0,{alpha:1});
+        gsap.to(["#intro-txt-bg","#intro_txt"],0,{alpha:1})
     }
 }
 

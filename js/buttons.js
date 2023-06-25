@@ -13,6 +13,7 @@ var btnMoveUp, btnMoveForwards, btnMoveBackwards, btnMoveDown, btnJump, btnOptio
 function bindButtons(){
     if(intro){
         intro=false;
+        introTL.kill();
         introContainer.innerHTML="";
         gsap.to(introContainer,0,{display:"none"});
         gsap.to("#overlay-stereo",0,{display:"flex"});

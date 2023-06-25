@@ -358,17 +358,19 @@ button {
     border: solid 1px #fff;
 }
 #intro_txt.intro-played{
-    top: calc(50% + 110px);
-    left: calc(50% - 60px);
+    top: 201px;
+    left: 296px;
     border: none;
+    background: transparent;
+    font-size: 19px;
 }
 #introContainer:hover #intro_txt{
     background-color: #000;
     color: #fff;
 }
-#intro_txt.intro-played:hover #intro_txt{
-    background-color: #fff;
-    color: #000;
+#introContainer:hover #intro_txt.intro-played{
+    background-color: transparent;
+    color: red;
 }
 
 #ending_txt {
