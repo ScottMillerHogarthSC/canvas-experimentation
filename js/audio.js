@@ -59,7 +59,7 @@ function preloadMusic(){
 
     audio_music.load(); 
     audioMusicArr.push(audio_music);
-    audioMusicTitlesArr.push("shredded &amp; beheaded");
+    audioMusicTitlesArr.push("live to tell the tale");
 
     audio_dieMusic.addEventListener('canplay', loadedMusic);
     audio_dieMusic.addEventListener('error', failedtoLoadMusic);

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Primitai - Shredded &amp; Beheaded</title>
+    <title>Primitai - Live to Tell the Tell</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -118,7 +118,7 @@
             width: 100%;
             height: 100%;
         }
-        #container,#footer,#dev-tools,#mobileControls {
+        #wrap,#container,#footer,#dev-tools,#mobileControls {
             display: none;
         }
         #loadingContent{
@@ -137,7 +137,9 @@
         html.wf-pressstart2p-n4-active #loadingContent {
             opacity: 1;
         }
-
+    .game-canvas {
+        opacity: 0;
+    }
 
         #loadingImage{
             position:absolute;
@@ -163,13 +165,13 @@
 
 
 -->
-    <meta property="og:url"                content="http://primitai.com/" />
+    <meta property="og:url"                content="http://primitai-official.com/" />
     <meta property="og:type"               content="website" />
-    <meta property="og:title"              content="Primitai - Shredded &amp; Beheaded" />
-    <meta property="og:description"        content="Shredded &amp; Beheaded is an upcoming single from the forthcoming Primitai album 'With Heart, Faith and Steel'. This is the video game" /><!-- 
+    <meta property="og:title"              content="Primitai - Live to Tell the Tale" />
+    <meta property="og:description"        content="Live to Tell the Tale is an upcoming single from the forthcoming Primitai album 'With Heart, Faith and Steel'. This is the video game" /><!-- 
     <meta property="og:image"              content="https://stars-are-my-guide.ga/images/stars-are-my-guide-primitai-ogimage.jpg" /> -->
 
- -->
+ 
 </head>
 <body class="bg">
     <audio id="audio"></audio>
@@ -182,6 +184,7 @@
     <audio id="audio-die_music"></audio>
 
     <div id="wrap">
+        <div id="hacker-bg"></div>
         <div id="container">
             <canvas id="bg-canvas" class="hidden"></canvas>
             <canvas id="fg-canvas" class="game-canvas hidden"></canvas>
@@ -190,24 +193,8 @@
             <canvas id="enemy-canvas" class="game-canvas hidden"></canvas>
             <canvas id="player-canvas" class="game-canvas hidden"></canvas>
             <canvas id="hud-canvas" class="game-canvas hidden"></canvas>
-
-            <div id="score_txt" class="txt overlays"></div>
             <div id="overlay-bg" class="overlays"></div>
             <div id="overlay-death" class="overlays"></div>
-            <div id="tape">
-                <img id="tape-bg" class="tape" src="images/Text/tape-bg.jpg" alt="" />
-                <img id="tape-wheel1" class="tape-wheel" src="images/Text/tape-wheel.png" alt="" />
-                <img id="tape-wheel2" class="tape-wheel" src="images/Text/tape-wheel.png" alt="" />
-                <img id="tape-front" class="tape" src="images/Text/tape.png" alt="" />
-            </div>
-                
-            <div id="overlay-stereo" class="overlays">
-                <div id="txt-song" class="txt">
-                    <span id="song-playback-time">00:00</span> - <a target="_blank" id="song-playback-title" title="listen to this song on spotify" href="https://open.spotify.com/track/6FoHaNsBdvZicXDPcmbmcN">shredded &amp; beheaded</a> - <a target="_blank" title="check out primitai on spotify" id="song-artist" href="https://open.spotify.com/artist/4oZlvk8hh22ritpToa8kJj">primitai</a>
-                </div>
-            </div>
-
-            
             <div id="introContainer" class="overlays">
                 <div id="intro-primitai" class="intro-title-img hidden">
                     <div id="intro-primitai-bg" class="intro-title-img"></div>
@@ -227,36 +214,71 @@
                 </div>
 
 
-                <img src="images/Text/title-attempt-1.png" id="intro-bg" class="intro-title-img hidden" />
+                <img src="images/Text/title-attempt-1.jpg" id="intro-bg" class="intro-title-img hidden" />
                 <img src="images/Text/title-attempt-3.png" id="intro-shredded" class="intro-title-img hidden" />
-                <img src="images/Text/title-attempt-5a.png" id="intro-beheadedA" class="intro-title-img hidden" />
-                <img src="images/Text/title-attempt-5b.png" id="intro-beheadedB" class="intro-title-img hidden" />
-                <img src="images/Text/title-attempt-4.png" id="intro-and" class="intro-title-img hidden" />
                 
-                <img src="images/Text/title-attempt-2.png" id="intro-car" class="intro-title-img hidden" />
-                <img src="images/Text/title-attempt-7.png" id="intro-txt-bg" class="intro-title-img hidden" />
                 
                 <canvas id="intro-player-walk" class="intro-title-img hidden"></canvas>
                 <img src="images/Text/title-attempt-6.png" id="intro-player" class="intro-title-img hidden" />
-                <div id="intro_txt" class="txt hidden">click to play</div>
             </div>
-            <div id="endingContainer" class="overlays hidden">
-                <img src="images/Text/title-attempt-1.png" id="end-bg" class="end-title-img" />
-                <img src="images/Text/end-attempt-1.png" id="end-sly" class="end-title-img hidden" />
-                <img src="images/Text/end-attempt-2.png" id="end-txt" class="end-title-img hidden" />
-                <div id="ending_txt" class="txt txt_popup overlays">well done, you live to fight another day</div>
-                <div id="end_score_txt" class="txt overlays"></div>
-            </div>
-            <div id="text-overlay">
+            <div id="text-overlay" class="overlays">
                 <div id="paused_txt" class="txt txt_popup overlays">paused</div>
                 <div id="died_txt" class="txt txt_popup overlays">you died</div>
-                <button id="continue_btn" class="txt overlays btn_play">continue?</button>
-                <button id="restart_btn" class="txt overlays btn_play">play again?</button>
+            </div>
+        </div>
+        <div id="endingContainer" class="overlays hidden">
+            <img src="images/Text/end-attempt-1.png" id="end-sly" class="end-title-img hidden" />
+            <img src="images/Text/end-attempt-2.png" id="end-txt" class="end-title-img hidden" />
+            <div id="ending_txt" class="txt txt_popup overlays">well done,<br>you live to fight another day</div>
+            <div id="end_score_txt" class="txt overlays"></div>
+        </div>
+        <div id="overlay"></div>
+        <div id="score_txt" class="txt overlays"></div>
+        <div id="tape">
+            <img id="tape-bg" class="tape" src="images/Text/tape-bg.jpg" alt="" />
+            <img id="tape-wheel1" class="tape-wheel" src="images/Text/tape-wheel.png" alt="" />
+            <img id="tape-wheel2" class="tape-wheel" src="images/Text/tape-wheel.png" alt="" />
+            <img id="tape-front" class="tape" src="images/Text/tape.png" alt="" />
+        </div>
+            
+        <div id="overlay-stereo" class="overlays">
+            <div id="txt-song" class="txt">
+                <span id="song-playback-time">00:00</span> - <a target="_blank" id="song-playback-title" title="listen to this song on spotify" href="https://open.spotify.com/track/6FoHaNsBdvZicXDPcmbmcN">live to tell the tale</a> - <a target="_blank" title="check out primitai on spotify" id="song-artist" href="https://open.spotify.com/artist/4oZlvk8hh22ritpToa8kJj">primitai</a>
             </div>
         </div>
 
-       
-
+        <div id="intro_txt" class="txt hidden">click to play</div>
+        <button id="continue_btn" class="txt overlays btn_play">continue?</button>
+        <button id="restart_btn" class="txt overlays btn_play">play again?</button>
+        <div id="footer" class="hidden">
+            <div id="footer-primitai">
+                visit<br><a href="http://primitai-official.com" target="_blank">primitai-official.com</a><br>on the<br>world wide web</div>
+        </div>
+        <div id="screen">
+            <div id="instructions" class="screen2 hidden">
+                use your<br>> keyboard...<br>> to move<br>> <span class="arrowLR">&larr;</span> <span class="arrowLR">&rarr;</span><br>> <br>> <span class="arrowUD">&uarr;</span> to jump<br>> <br>> <span class="arrowUD">&darr;</span> to shoot<br>></span>
+            </div>
+            <div id="intro-text" class="screen2">
+                ><br>
+                ><span id="screen_txt"></span><span class="blinking">|</span><br>
+                <span id="intro_screen_txt" class="hidden">dir</span>
+                <span id="intro_screen_txt2" class="hidden">exe LIVETOTELL</span>
+                <span id="intro_screen_txt3" class="hidden"> press any key<br>> to <span class="arrowUD">PLAY</span></span>
+            </div>
+            <div id="intro-text-dir" class="screen2 hidden">
+                Volume in drive has no label<br>
+                Directory of A:\<br><br>
+                LIVETOTELL&nbsp;&nbsp;BAT<br>
+                DESKTOPD&nbsp;&nbsp;&nbsp;&nbsp;CFG<br>
+                CHKLIST&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MS<br>
+                LIVETOTELL&nbsp;&nbsp;DAT<br>
+                MUSIC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MP3<br>
+                MUSIC2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MP3<br>
+            </div>
+            <div id="intro-text-playing" class="screen2 hidden">
+                INTRO PLAYING
+            </div>
+        </div>
         <div id="mobileControls">
             <div id="mobilePause"></div>
             <div id="mobilePause2"></div>
@@ -280,13 +302,9 @@
     
 
 
-        <div id="footer" class="hidden">
-            <div id="footer-primitai">
-                <a href="http://www.primitai.com" target="_blank">primitai.com</a></div>
-        </div>
         <div id="dev-tools">
-                <button id="die_btn">die</button>|<button id="noEnemies_btn">enemeies</button>|<button id="highlights_btn">highlights</button>|<button id="invincible_btn">invincible</button>|<button id="zoomIn_btn">zoom</button>|<button id="frameRate_btn">frameRate</button>:<input type="text" name="frameRate_txt" id="frameRate_txt" value="100" /><textarea id="log"></textarea>
-            </div>
+            <button id="die_btn">die</button>|<button id="noEnemies_btn">enemeies</button>|<button id="highlights_btn">highlights</button>|<button id="invincible_btn">invincible</button>|<button id="zoomIn_btn">zoom</button>|<button id="frameRate_btn">frameRate</button>:<input type="text" name="frameRate_txt" id="frameRate_txt" value="100" /><textarea id="log"></textarea>
+        </div>
     </div>
 
     <div id="loadingContent">

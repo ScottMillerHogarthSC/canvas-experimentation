@@ -18,6 +18,14 @@ function bindButtons(){
         gsap.to(introContainer,0,{display:"none"});
         gsap.to("#overlay-stereo",0,{display:"flex"});
         gsap.to("#tape",0,{display:"block"});
+        gsap.to(["#bg-canvas",".game-canvas"],0,{alpha:1});
+
+        if(mobile){
+            gsap.to("#mobileControls",0,{alpha:.7});
+        }
+
+        typeCodes("instructions",2);
+
     }
     createjs.Ticker.removeEventListener("tick", animateWalking);
     container.removeEventListener('click', introSkip);

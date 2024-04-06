@@ -44,17 +44,16 @@ function playEnding(){
 	        endingTL = gsap.timeline({paused:true, onComplete:bindRestartButtons});
 
 	        endingTL.to(["#ending_txt","#endingContainer","#end_score_txt"],0,{display:"block"},0)
-        		.to("#end-bg",10,{scale:1.1,ease:"linear"},0)
-	        	.to("#endingContainer",.2,{alpha:1},0)
+        		.to(["#overlay-stereo","#tape","#score_txt","#intro-text"],0,{alpha:0},0)
+        		.to("#endingContainer",.2,{alpha:1},0)
 	        	.to("#end-sly",0,{alpha:1,x:"-90%",y:0},"<.4")
-	        	.to("#end-sly",.4,{x:"-50%"},"<")
+	        	.to("#end-sly",.4,{x:"0%"},">")
 	        	.to("#end-txt",0,{alpha:1},"<")
 	        	.call(typeText, [ending_txt,.7,0], ">.4")
 	            .to("#ending_txt",.2,{alpha:1},"<")
 	            .call(function(){ document.getElementById("end_score_txt").innerHTML="you scored: "+(Math.round(score.curr).toWidth(6,'0')); },[], "<")
 	            .to("#end_score_txt",.2,{alpha:1},">.4")
-	            
-	            .to([restart_btn,restart_btn_mobile], 0, {display:"block", left: "calc(50% + 74px)", top: "calc(50% + 51px)"},">.4")
+	            .to([restart_btn,restart_btn_mobile], 0, {display:"block", left: "calc(50% + 187px)", top: "calc(50% + 151px)", transform:"rotate(6deg) skew(4deg) translate(-50%, -50%)"},">.4")
 	            .to([restart_btn,restart_btn_mobile], 1, {alpha:1},"<");
 
 	        endingTL.play();

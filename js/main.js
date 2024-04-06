@@ -99,6 +99,7 @@ var noEnemiesOverride = false;
 var invincibleOverride = false;
 var noNpcs = true;
 var fireStarted=false;
+var _fireLastsSeconds = 6;
 var fires = [];
 var moving_backwards = false; 
 var intro=true;
@@ -949,7 +950,7 @@ function doDroneStrike(){
                 }
             }
             
-            gsap.delayedCall(12, function(){ fireStarted=false; fireBurned=true; moveFactor_enemy=1; do_droneStrike=false;});
+            gsap.delayedCall(_fireLastsSeconds, function(){ fireStarted=false; fireBurned=true; moveFactor_enemy=1; do_droneStrike=false;});
         }
     }
 
@@ -2456,7 +2457,22 @@ function typeText(whichEle, thisLength, charSpeed){
             gsap.to(mySplitText.chars[i], charSpeed, {autoAlpha:1, delay:(i * characterTime),ease:Linear.easeNone});
         }
 }
+var screen_txt = document.getElementById("screen_txt");
+function typeCodes(whichEle, speed){
+    var eleTxt = document.getElementById(whichEle);
+    var txt = eleTxt.innerHTML;
+    screen_txt.innerHTML = "";
+    for(i=0; i<txt.length+1; i++) {
+        gsap.delayedCall(0.05*i, updateCodeTxt, [i,txt])
+    }
+}
 
+function updateCodeTxt(i,txt){
+    screen_txt.innerHTML = txt.slice(0,i);
+}
+function clearCode(){
+    screen_txt.innerHTML=""
+}
 
 /*///////////////////////  ////////////////////////////////*/
 /*/////////////////////// DEV TOOLS ////////////////////////////////*/
