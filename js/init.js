@@ -148,6 +148,7 @@ function playIntro() {
         .call(clearCode,[],">")
 
     .addLabel("intro-primitai", ">.1")
+        .call(playMusic, [audio_music], "intro-primitai")
         .to("#intro-text-playing",0,{alpha:1},"intro-primitai")
         .to("#intro-text",0,{alpha:1,y:20},"intro-primitai")
 
@@ -216,8 +217,6 @@ function playIntro() {
 
 
     introTL.play();
-
-    playMusic(audio_music);
 
     wrap.removeEventListener('click', playIntro);
     mobileControls.removeEventListener('touchend', playIntro);
