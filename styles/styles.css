@@ -345,9 +345,9 @@ button {
     cursor: url(../images/cursor.png), auto;
 }
 #introContainer{
-    max-height: 434px;
-    height: 434px;
-    top: calc(50% + 55px);
+    max-height: 444px;
+    height: 444px;
+    top: calc(50% + 59px)
 }
 .intro-title-img,.end-title-img{
     top: 50%;
@@ -410,10 +410,8 @@ button {
     left: 50%;
     transform: translate(-50%,-50%);
     position: absolute;
-    padding: 1em;
-    background-color: #fff;
-    color: #000;
-    border: solid 1px #fff;
+    width: 120px;
+    cursor: pointer;
 }
 #intro_txt.intro-played{
     top: 201px;
@@ -437,12 +435,14 @@ button {
 #endingContainer {
     background-color: #000;
     max-height: 100%;
-    height: 436px;
-    top: calc(50% - 10px);
+    height: 446px;
+    top: calc(50% - 3px);
 }
 #end-sly {
-    top: 64%; 
-    left: 52%;
+    top: 50%;
+    left: 50%;
+    height: 100%;
+    width: 104%;
 }
 #end-txt {
     top: 34%;
@@ -466,6 +466,10 @@ button {
     text-align: center;
     height: auto;
     line-height: 3em;
+}
+.end_txt {
+    font-size: 1.1em;
+    text-shadow: 0px 0px 8px black;
 }
 #footer {
     color: #1c9371;
@@ -501,6 +505,7 @@ button {
     top: 50%;
     transform: translate(-50%,-50%);
     perspective: 500px;
+    cursor: url(../images/cursor.png), auto;
 }
 .screen2 {
     color: #1c9371;
