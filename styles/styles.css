@@ -23,6 +23,7 @@ body{
     font-family: 'Press Start 2P', monospace;
     /*font-weight: bold;*/
     overflow: hidden;
+    
 }
 
 @font-face {
@@ -58,6 +59,8 @@ body{
     overflow: hidden;
     text-align: center;
     cursor: url(../images/cursor.png), auto;
+    background-image: url(../images/wrapper/tile.jpg);
+    background-size: 10vw;
 }
 
 

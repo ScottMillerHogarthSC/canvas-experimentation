@@ -2521,10 +2521,10 @@ function toggleEnemies() {
 function zoomInContainer(){
     if(!zoomIn){
         zoomIn=true;
-        gsap.to("#container",zoomSpeed,{scale:1.6}) 
+        gsap.to("#wrap",zoomSpeed,{scale:1.6}) 
     } else {
         zoomIn=false;
-        gsap.to("#container",zoomSpeed,{scale:1}) 
+        gsap.to("#wrap",zoomSpeed,{scale:1}) 
     }
 }
 
