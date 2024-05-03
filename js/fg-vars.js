@@ -33,4 +33,6 @@ var obstacle = [
 	{x:(fg.width*5)+448,y:(32*5),w:(32*4),h:32,initX:(fg.width*5)+448},
 ]
 
-var powerups = [{x:384,y:(32*6),w:(32),h:32,initX:384}]
+var powerup = {id:"01",url:"images/Punk/Hurt.png",width:96,height:48};
+
+var powerups = [{x:384,y:(32*6),w:(32),h:32,initX:384}];

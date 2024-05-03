@@ -14,7 +14,8 @@ var isPlayer = {
     dead: false,
     shot: false,
     invincible: false,
-    atObstacle: false
+    atObstacle: false,
+    atPowerup: false
 }
 
 

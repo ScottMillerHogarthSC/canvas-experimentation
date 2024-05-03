@@ -145,6 +145,15 @@ function initCanvasAnim(){
         }
 
 
+    // powerup
+        powerup_img = new Image();
+        imageAdded++;
+        powerup_img.src = powerup.url;
+        powerup_img.onload = function(){
+            imgLoaded++;
+        }
+
+
 
         fire01_img = new Image();
         imageAdded++;
@@ -698,7 +707,9 @@ function renderFG(){
 function renderPowerups(){
 
     // [ todo ] render powerups
-    // ctxFG.drawImage(npcList[fgsImgIndex[i]], (fg.x+powerups[0].x), powerups.y, powerups.w, powerups.h);
+    // console.log(powerup_img);
+    ctxFG.drawImage(powerup_img, (fg.x+powerups[0].x), powerups[0].y, powerup.width, powerup.height);//, powerups[0].w, powerups[0].h);
+    // ctxFG.drawImage(powerup_img, 0, powerups.y, powerups.w, powerups.h);
 }
 
 function setFgIndex(){
@@ -1491,6 +1502,8 @@ function checkPlayerPosition() {
             
             isPlayer.atPowerup=true;
             console.log("powerup");
+
+            player.jumpH+=10;
 
 // if within powerup but above it:
         } else {
