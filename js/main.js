@@ -181,8 +181,7 @@ function initCanvasAnim(){
 
 
 
-function showGame(){
-    
+function showGame(){    
     createjs.Ticker.addEventListener("tick", updateStage);
     createjs.Ticker.framerate = frameRate;
 }
@@ -481,6 +480,8 @@ function shoot(){
             isPlayer.attack=true;
         }
         playSFX(audio_shoot);
+
+        writeToSidePanel("shoot");
     }
 }
 
@@ -496,6 +497,8 @@ function forwards(){
     isPlayer.walk=false;
     isPlayer.runBack=false;
     isPlayer.run=true;
+
+    writeToSidePanel("run forwards");
 }
 function backwards() {
     
@@ -510,6 +513,7 @@ function backwards() {
     isPlayer.run=false;
     isPlayer.runBack=true;
 
+    writeToSidePanel("run backwards");
 }
 
 function updateStage(){
@@ -1564,6 +1568,7 @@ function checkPlayerPosition() {
 function setupJumpTL(){
     tlJump = gsap.timeline({paused:true});
     tlJump.addLabel('up', 0)
+        .call(writeToSidePanel,["jump"],"up")
         .to(player,{y:"-="+player.jumpH,ease:"power3.out", duration:0.338},"up");
 }
 

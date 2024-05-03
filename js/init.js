@@ -89,20 +89,18 @@ function init()
 function start(){
     document.getElementById("loadingContent").style.display="none";
     
-    gsap.to([container,wrap],{display:"block"});
+    gsap.to([container,wrap,footer],{display:"block"});
 
-    gsap.to("#introContainer",0,{alpha:1});
     if(mobile){
         gsap.to("#mobileControls",0,{alpha:0});
     }
 
-    gsap.to("#intro_txt",0,{alpha:1})
+    gsap.to(["#intro_txt","#introContainer","#screen",footer],0,{alpha:1})
 
 
     initCanvasAnim();
 
     showGame();
-    gsap.to(footer,0,{display:"block",alpha:1});
 
     // once intro is played bind these start buttons!
     wrap.addEventListener('click', playIntro);

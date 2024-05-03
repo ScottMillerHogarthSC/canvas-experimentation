@@ -63,7 +63,7 @@
 #btnsMove.forwards{
     background-position-y: 25%;
 }
-.btnMove,#btnJump,#btnWheelie, #btnOption{
+.btnMove,#btnJump,#btnShoot, #btnOption{
     width: 50px;
     height: 56px;
     position: absolute;
@@ -145,13 +145,13 @@
 #btns.pressedJump {
     background-position: right -1px;
 }
-#btnWheelie,
+#btnShoot,
 #btnJump {
     bottom: 109px;
     right: 5px;
     height: 71px;
     width: 70px;
 }
-#btnWheelie {
+#btnShoot {
     bottom: 4px;
 }

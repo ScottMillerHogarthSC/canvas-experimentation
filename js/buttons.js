@@ -46,14 +46,14 @@ function bindButtons(){
     btnMoveBackwards.addEventListener("touchstart", mobileBtnPressed);
     btnMoveDown.addEventListener("touchstart", mobileBtnPressed);
     btnJump.addEventListener("touchstart", mobileBtnPressed);
-    btnWheelie.addEventListener("touchstart", mobileBtnPressed);
+    btnShoot.addEventListener("touchstart", mobileBtnPressed);
 
     btnMoveUp.addEventListener("mousedown", mobileBtnPressed);
     btnMoveForwards.addEventListener("mousedown", mobileBtnPressed);
     btnMoveBackwards.addEventListener("mousedown", mobileBtnPressed);
     btnMoveDown.addEventListener("mousedown", mobileBtnPressed);
     btnJump.addEventListener("mousedown", mobileBtnPressed);
-    btnWheelie.addEventListener("mousedown", mobileBtnPressed);
+    btnShoot.addEventListener("mousedown", mobileBtnPressed);
 
     btnStart.addEventListener('touchend', gamePause);
 
@@ -65,14 +65,14 @@ function bindButtons(){
     btnMoveBackwards.addEventListener("touchend", mobileBtnReleased);
     btnMoveDown.addEventListener("touchend", mobileBtnReleased);
     btnJump.addEventListener("touchend", mobileBtnReleased);
-    btnWheelie.addEventListener("touchend", mobileBtnReleased);
+    btnShoot.addEventListener("touchend", mobileBtnReleased);
 
     btnMoveUp.addEventListener("mouseup", mobileBtnReleased);
     btnMoveForwards.addEventListener("mouseup", mobileBtnReleased);
     btnMoveBackwards.addEventListener("mouseup", mobileBtnReleased);
     btnMoveDown.addEventListener("mouseup", mobileBtnReleased);
     btnJump.addEventListener("mouseup", mobileBtnReleased);
-    btnWheelie.addEventListener("mouseup", mobileBtnReleased);
+    btnShoot.addEventListener("mouseup", mobileBtnReleased);
 
     container.classList.add("noMouse");
 }
@@ -87,14 +87,14 @@ function unbindButtons(){
     btnMoveBackwards.removeEventListener("touchstart", mobileBtnPressed);
     btnMoveDown.removeEventListener("touchstart", mobileBtnPressed);
     btnJump.removeEventListener("touchstart", mobileBtnPressed);
-    btnWheelie.removeEventListener("touchstart", mobileBtnPressed);
+    btnShoot.removeEventListener("touchstart", mobileBtnPressed);
 
     btnMoveUp.removeEventListener("mousedown", mobileBtnPressed);
     btnMoveForwards.removeEventListener("mousedown", mobileBtnPressed);
     btnMoveBackwards.removeEventListener("mousedown", mobileBtnPressed);
     btnMoveDown.removeEventListener("mousedown", mobileBtnPressed);
     btnJump.removeEventListener("mousedown", mobileBtnPressed);
-    btnWheelie.removeEventListener("mousedown", mobileBtnPressed);
+    btnShoot.removeEventListener("mousedown", mobileBtnPressed);
 
     btnStart.removeEventListener('touchend', gamePause);
 
@@ -106,14 +106,14 @@ function unbindButtons(){
     btnMoveBackwards.removeEventListener("touchend", mobileBtnReleased);
     btnMoveDown.removeEventListener("touchend", mobileBtnReleased);
     btnJump.removeEventListener("touchend", mobileBtnReleased);
-    btnWheelie.removeEventListener("touchend", mobileBtnReleased);
+    btnShoot.removeEventListener("touchend", mobileBtnReleased);
 
     btnMoveUp.removeEventListener("mouseup", mobileBtnReleased);
     btnMoveForwards.removeEventListener("mouseup", mobileBtnReleased);
     btnMoveBackwards.removeEventListener("mouseup", mobileBtnReleased);
     btnMoveDown.removeEventListener("mouseup", mobileBtnReleased);
     btnJump.removeEventListener("mouseup", mobileBtnReleased);
-    btnWheelie.removeEventListener("mouseup", mobileBtnReleased);
+    btnShoot.removeEventListener("mouseup", mobileBtnReleased);
 
     container.classList.remove("noMouse");
 }
@@ -175,7 +175,7 @@ function mobileBtnPressed(ev){
         }
         $('#btnsMove').addClass('up');
     }
-    if(this.id=="btnWheelie") {
+    if(this.id=="btnShoot") {
     	createjs.Ticker.addEventListener("tick", shoot);
         $('#btns').addClass('pressedWheelie');
     }
@@ -217,7 +217,7 @@ function mobileBtnReleased(ev) {
         // $('#introBtnK').removeClass('pressed');
         $('#btnsMove').removeClass('up');
     }
-    if(this.id=="btnWheelie") {
+    if(this.id=="btnShoot") {
     	createjs.Ticker.removeEventListener("tick", shoot);
         $('#btns').removeClass('pressedWheelie');
     }
@@ -229,8 +229,8 @@ function mobileBtnReleased(ev) {
     // // if(btnsDown.indexOf("btnMoveBackwards")>-1){
     // //     createjs.Ticker.addEventListener("tick", backwards);
     // // }
-    // // if(btnsDown.indexOf("btnWheelie")>-1){
-    // //     log('btnWheelie still pressed')
+    // // if(btnsDown.indexOf("btnShoot")>-1){
+    // //     log('btnShoot still pressed')
     // //     createjs.Ticker.addEventListener("tick", shoot);
     // // }
     // log("isPlayer.run"+isPlayer.run);

@@ -54,13 +54,16 @@ function checkKeyPress(e){
 
     if(e.code == "KeyM") {
         toggleMuteAudio();
+        writeToSidePanel("mute");
     }
     else if(e.code == "Space") {
         gamePause();
+        writeToSidePanel("pause");
     } else if(e.code == "KeyZ") {
         zoomInContainer();
+        writeToSidePanel("zoom");
     } else {
-        // gamePause();
+        writeToSidePanel(e.key);
     }
 }
 
@@ -103,7 +106,7 @@ function checkKeys(){
             && !Keyboard.isDown(Keyboard.UP) 
             && btnsDown.indexOf("btnMoveForwards")==-1
             && btnsDown.indexOf("btnMoveBackwards")==-1 
-            && btnsDown.indexOf("btnWheelie")==-1) {
+            && btnsDown.indexOf("btnShoot")==-1) {
             
             isPlayer.runBack=false;
             isPlayer.run=false;
@@ -117,5 +120,32 @@ function checkKeys(){
             else isPlayer.idleBack=true;
 
         }
+    }
+}
+
+var panel1 = document.getElementById("sidePanel1");
+var panel2 = document.getElementById("sidePanel2");
+var panel1H = panel1.clientHeight;
+
+var isFirst = true;
+var lastTxt = "";
+var txtCount = 0;
+function writeToSidePanel(thisText){
+    if(isFirst){
+        isFirst=false;
+        panel1.value=thisText;
+    } else {
+        if(lastTxt==thisText){
+            txtCount++;
+        } else {
+            txtCount=0;
+        }
+        lastTxt = thisText;
+        if(txtCount<1){
+            panel1.value+="\n"+thisText;
+        }
+    }
+    if(panel1H < panel1.scrollHeight){
+       panel1.scrollTop = panel1.scrollHeight;
     }
 }
