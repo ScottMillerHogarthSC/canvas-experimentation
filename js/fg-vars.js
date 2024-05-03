@@ -32,3 +32,5 @@ var obstacle = [
 	{x:(fg.width*5)+320,y:(32*6),w:(32*2),h:32,initX:(fg.width*5)+320},
 	{x:(fg.width*5)+448,y:(32*5),w:(32*4),h:32,initX:(fg.width*5)+448},
 ]
+
+var powerups = [{x:384,y:(32*6),w:(32),h:32,initX:384}]

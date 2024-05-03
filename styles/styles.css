@@ -553,18 +553,18 @@ button {
     width: 59px;
     height: 126px;
     overflow: hidden;
-    filter: blur(.7px);
     background-color: transparent;
     border:none;
 }
 .sidePanel1 {
-    width: 69px;
+    width: 59px;
     top: calc(50% - 196px);
     left: calc(50% + 285px);
     color: #7a96ba;
     clip: rect(0px, 58px, 126px, 0px);
 }
 .sidePanel2 {
+    filter: blur(.7px);
     top: calc(50% - 27px);
     left: calc(50% + 285px);
     height: 80px;

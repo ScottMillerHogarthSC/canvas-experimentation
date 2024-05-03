@@ -142,7 +142,7 @@ function writeToSidePanel(thisText){
         }
         lastTxt = thisText;
         if(txtCount<1){
-            panel1.value+="\n"+thisText;
+            panel1.value+=thisText+" | ";
         }
     }
     if(panel1H < panel1.scrollHeight){

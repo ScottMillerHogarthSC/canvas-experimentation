@@ -544,6 +544,8 @@ function updateStage(){
             
             renderFG();
 
+            renderPowerups();
+
             
 
             // background overlay
@@ -660,6 +662,7 @@ function moveFg(){
             
         // move obstacles
         obstacle.forEach(obs => obs.x=obs.x-(moveFactor*x_moveAmount_fg));
+        powerups.forEach(powups => powups.x=powups.x-(moveFactor*x_moveAmount_fg));
 
     } else {
         if(fg.x>1152) {
@@ -670,6 +673,7 @@ function moveFg(){
             
             // move obstacles
             obstacle.forEach(obs => obs.x=obs.x+(moveFactor*x_moveAmount_fg));
+            powerups.forEach(powups => powups.x=powups.x+(moveFactor*x_moveAmount_fg));
 
         }
     }
@@ -689,6 +693,12 @@ function renderFG(){
     for(i = 0; i<fgsImgs.length; i++) {
         ctxFG.drawImage(fgsImgs[fgsImgIndex[i]], (fg.x+fgsList[i].x), fg.y, fg.width, fg.height);
     }
+}
+
+function renderPowerups(){
+
+    // [ todo ] render powerups
+    // ctxFG.drawImage(npcList[fgsImgIndex[i]], (fg.x+powerups[0].x), powerups.y, powerups.w, powerups.h);
 }
 
 function setFgIndex(){
@@ -815,6 +825,8 @@ function moveSpriteSheets(){
                     sprite_x.explosionX=0;
                     
                     enemyKillCount++;
+                    whichEnemyKillCount++;
+                    writeToSidePanel("bossCount: "+enemyKillCount);
                     gsap.to(score,1,{curr:"+="+enemy[whichEnemyIndex].killValue});
 
                 }
@@ -1173,6 +1185,7 @@ function renderPlayer() {
 }
 
 var curr_obs=0;
+var curr_powerup=0;
 function checkPlayerPosition() {
 
 // player is near edges of screen
@@ -1230,6 +1243,13 @@ function checkPlayerPosition() {
             ctxFG.beginPath();
             ctxFG.rect(obstacle[i].x, obstacle[i].y, obstacle[i].w, obstacle[i].h);
             ctxFG.fillStyle = "rgba(255,255,0,.5)";
+            ctxFG.fill();
+        }
+
+        for(i=0; i<powerups.length; i++){
+            ctxFG.beginPath();
+            ctxFG.rect(powerups[i].x, powerups[i].y, powerups[i].w, powerups[i].h);
+            ctxFG.fillStyle = "rgba(255,255,225,.5)";
             ctxFG.fill();
         }
         
@@ -1352,6 +1372,7 @@ function checkPlayerPosition() {
 
     }
 
+    // set which obstacle is currently closest to player position
     curr_obs=0;
     let obstacleR = obstacle[curr_obs].x+obstacle[curr_obs].w;
     let obstacleL = obstacle[curr_obs].x;
@@ -1367,77 +1388,114 @@ function checkPlayerPosition() {
         obstacleB = obstacle[curr_obs].y+obstacle[curr_obs].h;
     }
 
-
 /////// OBSTACLES + PLATFORMS: //////////
 
 // if within obstacle but lower than its ground level:
-        if(playerR > obstacleL && playerL < obstacleR && playerB > obstacleT && playerT < obstacleT){
-            
-            if(playerR > obstacleL && playerL < obstacleL){
-                player.x=obstacleL-player.hitW;
-            }
+    if(playerR > obstacleL && playerL < obstacleR && playerB > obstacleT && playerT < obstacleT){
+        
+        if(playerR > obstacleL && playerL < obstacleL){
+            player.x=obstacleL-player.hitW;
+        }
 
 
-            // new var to handle moveFactor adjustments when player stuck at obs
-            isPlayer.atObstacle=true;
+        // new var to handle moveFactor adjustments when player stuck at obs
+        isPlayer.atObstacle=true;
 
-            x_moveAmount_bg=0;
+        x_moveAmount_bg=0;
 
 // if within obstacle but above it:
-        } else if(playerR > obstacleL && playerL < obstacleR && playerB < obstacleT){ 
+    } else if(playerR > obstacleL && playerL < obstacleR && playerB < obstacleT){ 
 
-            x_moveAmount_bg=1;
-            
-            if(isPlayer.run){
-                player.x+=2;
-            }
-            if(isPlayer.runBack){
-                player.x-=2;
-            }
+        x_moveAmount_bg=1;
+        
+        if(isPlayer.run){
+            player.x+=2;
+        }
+        if(isPlayer.runBack){
+            player.x-=2;
+        }
 
-            isPlayer.atObstacle=false;
+        isPlayer.atObstacle=false;
 
-            if(player_ground.y>obstacleT){
-                player_ground.y=obstacleT;
-            } 
+        if(player_ground.y>obstacleT){
+            player_ground.y=obstacleT;
+        } 
 
 // not within obstacle
+    } else {
+
+        isPlayer.atObstacle=false;
+        
+        if(playerR < obstacleL || playerL > obstacleR){
+            player_ground.y=player_ground.floor;
+        }
+        
+        x_moveAmount_bg=1;
+        if(isPlayer.run){
+            player.x+=2;
+        }
+        if(isPlayer.runBack){
+            player.x-=2;
+        }
+    }
+
+
+    // if player is above ground make them fall back to groundY (ie. falling off obstacles)
+    if(playerB<player_ground.y) {
+        isPlayer.jump=true;
+        keysWait=true; 
+
+        player.y++;
+        player.y++;
+        player.y++;
+        player.y++;
+        
+    } else {
+        keysWait=false; 
+        isPlayer.jump=false;
+    }
+    // stop player falling through floor:
+    if(playerB>player_ground.y){
+        player.y=player_ground.y-player.hitH-player.hitY;
+    }
+
+
+
+
+
+
+
+// set which "powerup" is currently closest to player position
+    curr_powerup=0;
+    let powerupR = powerups[curr_powerup].x+powerups[curr_powerup].w;
+    let powerupL = powerups[curr_powerup].x;
+    let powerupT = powerups[curr_powerup].y;
+    let powerupB = powerups[curr_powerup].y+powerups[curr_powerup].h;
+
+    while (powerupR < playerL && curr_powerup<=(powerups.length-2)){
+        curr_powerup++;
+
+        powerupR = powerups[curr_powerup].x+powerups[curr_powerup].w; 
+        powerupL = powerups[curr_powerup].x;
+        powerupT = powerups[curr_powerup].y;
+        powerupB = powerups[curr_powerup].y+powerups[curr_powerup].h;
+    }
+
+
+/////// POWERUPS: //////////
+
+// if within powerup :
+        if(playerR > powerupL && playerL < powerupR 
+            && playerT < powerupB && playerB > powerupT){
+            
+            
+            isPlayer.atPowerup=true;
+            console.log("powerup");
+
+// if within powerup but above it:
         } else {
-
-            isPlayer.atObstacle=false;
-            
-            if(playerR < obstacleL || playerL > obstacleR){
-                player_ground.y=player_ground.floor;
-            }
-            
-            x_moveAmount_bg=1;
-            if(isPlayer.run){
-                player.x+=2;
-            }
-            if(isPlayer.runBack){
-                player.x-=2;
-            }
+            isPlayer.atPowerup=false;
         }
-
-        if(playerB<player_ground.y) {
-            isPlayer.jump=true;
-            keysWait=true; 
-
-            player.y++;
-            player.y++;
-            player.y++;
-            player.y++;
-            
-        } else {
-            keysWait=false; 
-            isPlayer.jump=false;
-        }
-    
-        if(playerB>player_ground.y){
-            player.y=player_ground.y-player.hitH-player.hitY;
-        }
-    // console.log(curr_obs);
-
 
 
 /////// ENEMY HITS PLAYER /////////
@@ -1569,7 +1627,7 @@ function setupJumpTL(){
     tlJump = gsap.timeline({paused:true});
     tlJump.addLabel('up', 0)
         .call(writeToSidePanel,["jump"],"up")
-        .to(player,{y:"-="+player.jumpH,ease:"power3.out", duration:0.338},"up");
+        .to(player,{y:"-="+player.jumpH,ease:"power3.out", duration: player.jumpH*0.00563 },"up");
 }
 
 var tlEnemyVars = gsap.timeline({paused:true,onComplete:enemyTLplayed,repeatDelay:4,repeat:-1});
@@ -1993,6 +2051,7 @@ function drawEnemy(img, spx, ind){
 
 var enemyIndexFlag = false;
 var whichEnemy="";
+var whichEnemyKillCount = 0;
 function setEnemyIndex(chosenEnemy){
 
     enemyIndexFlag=true;
@@ -2001,11 +2060,21 @@ function setEnemyIndex(chosenEnemy){
 
     // if chosenEnemy -not yet in use - could be used to force certain enemy:
     if(chosenEnemy==undefined){
-        if(enemyKillCount>=enemy.length) { enemyKillCount=0; }
-        whichEnemyIndex=enemyKillCount;
-        
-        if(whichEnemyIndex==0) { whichEnemy="CyberBike"; }
-        if(whichEnemyIndex==1) { whichEnemy="BattleCar"; }
+            
+
+        // first couple boss should be bike only:
+        if(enemyKillCount<3) {
+            whichEnemy="CyberBike";
+        } else {
+
+            // then we begin rotating between bike/car
+
+            if(whichEnemyKillCount>=enemy.length) { whichEnemyKillCount=0; }
+            whichEnemyIndex=whichEnemyKillCount;    
+            if(whichEnemyIndex==0) { whichEnemy="CyberBike"; }
+            if(whichEnemyIndex==1) { whichEnemy="BattleCar"; }
+        }
+    
 
     // set index manually if passed in to this func:
 
@@ -2057,6 +2126,9 @@ function killNpc(whichNpcIndex){
     isNpc[whichNpcIndex].killed=true;
 
     score.curr=score.curr+10;
+    npcKillCount++;
+
+    writeToSidePanel("killCount:"+npcKillCount);
         
     gsap.delayedCall(2+whichNpcIndex,function(){
 
@@ -2318,6 +2390,8 @@ function restartGame(){
         npc[i].health=npc[i].fullhealth;
     }
     enemyKillCount=0;
+    whichEnemyKillCount=0;
+    npcKillCount=0;
 
 
     // reset all gameplay values so game resets fully
