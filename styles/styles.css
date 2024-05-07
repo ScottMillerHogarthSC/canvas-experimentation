@@ -579,31 +579,20 @@ button {
     display: none;
 }
 .devTools #dev-tools {
-    display: block;
+    display: flex;
+    flex-direction: column;
     z-index: 900;
     position: absolute;
     bottom: 0;
     color: #fff;
-    /* display: none; */
     position: absolute;
     bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: .9vw;
-    width: 100%;
+    left: 0;
+    font-size: .5vw;
+    width: 10%;
     text-align: center;
     padding: 1em 0;
     z-index: 101;
-}
-#log {
-    width: 16%;
-    height: calc(100vh - 142px);
-    left: 0;
-    position: absolute;
-    background: rgba(255,255,0,0.4);
-    color: #fff;
-    font-size: 0.65em;
-    user-select: none;
 }
 .mobile #dev-tools{
     bottom: auto;

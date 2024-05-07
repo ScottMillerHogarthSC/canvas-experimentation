@@ -2752,8 +2752,8 @@ function resizeWindow(){
 }
 
 function log(text){
-    var logtxt = document.getElementById("log");
-    logtxt.value=text+"\n"+logtxt.value;
+    
+    writeToSidePanel(text);
 
 }
 
