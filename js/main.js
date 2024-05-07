@@ -946,7 +946,7 @@ function moveSpriteSheets(){
 
     if(counter==10){
         // powerups sprite updates /////
-        sprite_x.powerupX+=powerups[0].w;
+        sprite_x.powerupX+=powerups[curr_powerup].w;
         if(sprite_x.powerupX>=spritesheetW.powerupW) sprite_x.powerupX=0;
     }
 
@@ -1513,7 +1513,9 @@ function checkPlayerPosition() {
     let powerupT = powerups[curr_powerup].y;
     let powerupB = powerups[curr_powerup].y+powerups[curr_powerup].h;
 
-    while (powerupR < playerL && curr_powerup<=(powerups.length-2)){
+
+    // set curr_powerup to the next one only when player has gone beyond it by one screen length: 
+    while ((powerupR+fg.width) < playerL && curr_powerup<=(powerups.length-2)){
         curr_powerup++;
 
         powerupR = powerups[curr_powerup].x+powerups[curr_powerup].w; 
@@ -2350,7 +2352,7 @@ function applyPowerup(whichPowerupInd){
         }
 
         // reset spritesheetW for next powerup: (if possible)
-        if(whichPowerupInd+1<=powerups.length){
+        if(whichPowerupInd+1<powerups.length){
             spritesheetW.powerupW=powerup_images[whichPowerupInd+1].width;
         }
         
