@@ -490,12 +490,25 @@ function shoot(){
         isPlayer.runBack=false;
 
         if(player.shootRange>0){
+
+            
+
             if(moving_backwards) {
                 isPlayer.attackBack=true;
             } else {
                 isPlayer.attack=true;
             }
-            playSFX(audio_shoot);
+
+            // change this depending on what gun you have:
+            if(player.weapon==1){
+                playSFX(audio_shoot);
+            }
+            if(player.weapon==2){
+                
+                // [todo] add shoot delay
+
+                playSFX(audio_heavyshoot); //[todo]- shotgun sound!
+            }
 
             writeToSidePanel("shoot");
         } else {
@@ -1336,7 +1349,7 @@ function checkPlayerPosition() {
 
                 score.curr=score.curr+0.01;
 
-                npc[i].health--;
+                npc[i].health=npc[i].health-player.shootDamage;
                 npc[i].health = npc[i].health < 0 ? 0 : npc[i].health;
                 if(npc[i].health==0) {
                     if(isNpc[i].walk && !isNpc[i].death) {
@@ -1363,7 +1376,7 @@ function checkPlayerPosition() {
 
                 score.curr=score.curr+0.1;
 
-                npc[i].health--;
+                npc[i].health=npc[i].health-player.shootDamage;
                 npc[i].health = npc[i].health < 0 ? 0 : npc[i].health;
                 if(npc[i].health==0) {
                     if(isNpc[i].walk && !isNpc[i].death) {
@@ -1576,7 +1589,7 @@ function checkPlayerPosition() {
 
             score.curr=score.curr+0.05;
 
-            enemy[whichEnemyIndex].health--;
+            enemy[whichEnemyIndex].health=enemy[whichEnemyIndex].health-player.shootDamage;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
             if(enemy[whichEnemyIndex].health==0) {
                 killEnemy();
@@ -1595,7 +1608,7 @@ function checkPlayerPosition() {
 
             score.curr=score.curr+0.05; 
 
-            enemy[whichEnemyIndex].health--;
+            enemy[whichEnemyIndex].health=enemy[whichEnemyIndex].health-player.shootDamage;
             enemy[whichEnemyIndex].health = enemy[whichEnemyIndex].health < 0 ? 0 : enemy[whichEnemyIndex].health;
             if(enemy[whichEnemyIndex].health==0) {
                 killEnemy();
@@ -2332,10 +2345,19 @@ function applyPowerup(whichPowerupInd){
 
             case "shootRange":
                 player[powerups[whichPowerupInd].which]=180;
+                player.weapon=1;
 
 
                 //[todo] play gun cocking sound! 
-                // playMusic(audio_music02,true);
+                playSFX(audio_shotgun_cocking);
+                break;
+
+            case "shootDamage":
+                player[powerups[whichPowerupInd].which]=2;
+                player.weapon=2;
+
+                //[todo] play gun cocking sound! 
+                playSFX(audio_shotgun_cocking);
                 break;
         }
         
@@ -2358,18 +2380,26 @@ function applyPowerup(whichPowerupInd){
         
 
         // player value :
-        // health:100,jumpH:60,lives:3,shootRange:180};
+        // health:100,jumpH:60,lives:3,shootRange:180,shootDamage:1};
     }
 }
 
 function endPowerUp(whichPowerupInd){
-    // console.log("turned off"+powerups[whichPowerupInd].which);
+    console.log("turned off"+powerups[whichPowerupInd].which);
     writeToSidePanel("Powerup is finished : "+powerups[whichPowerupInd].which);
 
     // restore to normal value
     playMusic(audio_music,true);
-    // if jump:
-    player[powerups[whichPowerupInd].which]=60;
+    
+
+    if(powerups[whichPowerupInd].which=="jumpH"){
+        // if jump:
+        player[powerups[whichPowerupInd].which]=60;
+    }
+    // if we had shotgun, revert to reg gun now
+    else if(powerups[whichPowerupInd].which=="shootDamage"){
+        player.weapon=1;
+    }
 
     powerups[whichPowerupInd].isApplied=false;
     // player.jumpH=60;
@@ -2480,6 +2510,8 @@ function restartGame(){
     score.curr=0;
     player.health=full_health;
     player.lives=full_lives;
+    player.jumpH=60;
+    player.shootRange=0;
     isPlayer.dead=false;
     isPlayer.walk=true;
     collided=false;
@@ -2512,6 +2544,15 @@ function restartGame(){
     enemyKillCount=0;
     whichEnemyKillCount=0;
     npcKillCount=0;
+    enemyIndexFlag=false;
+
+    // reset powerups
+    for (i = powerups.length - 1; i >= 0; i--) {
+        powerups[i].isApplied=false;
+        powerups[i].isUsed=false;
+        powerups[i].x=powerups[i].initX;
+    }
+
 
 
     // reset all gameplay values so game resets fully
