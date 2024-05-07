@@ -153,6 +153,8 @@ body{
     transform: translate(-50%,-50%);
     display: block;
     opacity: 1;
+
+
 }
 .txt {
     color: #fff;
@@ -573,7 +575,7 @@ button {
 
 
 
-#dev-tools,.devTools #footer-primitai  {
+#dev-tools  {
     display: none;
 }
 .devTools #dev-tools {

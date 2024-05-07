@@ -1,7 +1,8 @@
 var canvas = {width:576,height:320}
 var enemy_groundY = 320-96-32;
 var enemy = [{x:canvas.width,y:enemy_groundY,width:96,height:96,hitW:60,hitX:0,hitXB:36,hitH:32,hitY:64,health:200,fullhealth:200,explosionOffsetX:20,explosionOffsetY:0,killValue:50,shootRange:80,shootAmount:1,shootDamage:0.5}, // CyberBike - whichEnemyIndex: 0
-            {x:canvas.width,y:enemy_groundY,width:96,height:96,hitW:96,hitX:0,hitXB:0,hitH:60,hitY:36,health:300,fullhealth:300,explosionOffsetX:0,explosionOffsetY:0,killValue:100,shootRange:150,shootAmount:2,shootDamage:0.2}]; // BattleCar - whichEnemyIndex: 1
+            {x:canvas.width,y:enemy_groundY,width:96,height:96,hitW:96,hitX:0,hitXB:0,hitH:60,hitY:36,health:300,fullhealth:300,explosionOffsetX:0,explosionOffsetY:0,killValue:100,shootRange:150,shootAmount:2,shootDamage:0.2}, // BattleCar - whichEnemyIndex: 1
+            {x:canvas.width,y:enemy_groundY+24,width:72,height:72,hitW:72,hitX:0,hitXB:0,hitH:60,hitY:12,health:100,fullhealth:100,explosionOffsetX:10 ,explosionOffsetY:24,killValue:100,shootRange:0,shootAmount:1,shootDamage:0.2}]; // Robot - whichEnemyIndex: 2
 var enemyCellW = 96;
 var enemyKillCount=0;
 
@@ -44,8 +45,18 @@ var enemiesList = [ // order of the below must be preserved
     {id:"BattleCar-Attack",url:"images/BattleCar/Attack2.png",width:768,height:96,cellW:96},
     {id:"BattleCar-Attack-back",url:"images/BattleCar/Attack2-back.png",width:768,height:96,cellW:96},
     {id:"BattleCar-Hurt",url:"images/BattleCar/Hurt.png",width:384,height:96,cellW:96},
-    {id:"BattleCar-Hurt-back",url:"images/BattleCar/Hurt-back.png",width:384,height:96,cellW:96}]
-]
-;
+    {id:"BattleCar-Hurt-back",url:"images/BattleCar/Hurt-back.png",width:384,height:96,cellW:96}
+],
+[
+    {id:"Robot-Idle",url:"images/Robot/Idle.png",width:384,height:72,cellW:72},
+    {id:"Robot-Idle-back",url:"images/Robot/Idle-back.png",width:384,height:72,cellW:72},
+    {id:"Robot-Walk",url:"images/Robot/Walk.png",width:432,height:72,cellW:72},
+    {id:"Robot-Walk-back",url:"images/Robot/Walk-back.png",width:432,height:72,cellW:72},
+    {id:"Robot-Attack",url:"images/Robot/Attack4.png",width:864,height:72,cellW:72},
+    {id:"Robot-Attack-back",url:"images/Robot/Attack4-back.png",width:864,height:72,cellW:72},
+    {id:"Robot-Hurt",url:"images/Robot/Hurt.png",width:144,height:72,cellW:96},
+    {id:"Robot-Hurt-back",url:"images/Robot/Hurt-back.png",width:144,height:72,cellW:72}
+    ]];
+
 var enemyImgs = [];
 var enemyImgIndex = {walkBack:0, hurtBack:0, walk:0, hurt:0, attack:0, attackBack:0};

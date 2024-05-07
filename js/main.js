@@ -75,7 +75,7 @@ var score = {curr:0};
 
 var nearEdge = {left:false,right:false}
 
-var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, flashX:[0], npcX:[0], fireX:0, droneX:0, bombX:0};
+var sprite_x = {playerX:0, enemyX:0, shootX:0, explosionX:0, flashX:[0], npcX:[0], fireX:0, droneX:0, bombX:0, powerupX:0};
 
 var spritesheetW = {playerW: player_walk.width, 
                     enemyW:enemiesList[0][0].width,
@@ -84,7 +84,8 @@ var spritesheetW = {playerW: player_walk.width,
                     flashW:flash.width,
                     npcW:[npcList[0][2].width],
                     droneW:drone.width,
-                    bombW:bomb.width}; // sprites width
+                    bombW:bomb.width,
+                    powerupW:powerup_images[0].width}; // sprites width
 
 var counter=0;
 var flash_counter=0;
@@ -145,13 +146,8 @@ function initCanvasAnim(){
         }
 
 
-    // powerup
-        powerup_img = new Image();
-        imageAdded++;
-        powerup_img.src = powerup.url;
-        powerup_img.onload = function(){
-            imgLoaded++;
-        }
+    // powerup images:
+        powerup_images.forEach(depictPowerup);
 
 
 
@@ -249,6 +245,16 @@ function depictNpc(arr){
         // console.log(enemyImgs);
     });
 };
+
+function depictPowerup(arr){
+    const myOptions = Object.assign({}, arr);
+    return loadImage(myOptions.url).then(img => {
+        imgLoaded++;
+        img.id=myOptions.id;
+        powerup_imgs.push(img);
+        // console.log(enemyImgs);
+    });
+}
 
 function init_renderPlayer() {
     // player
@@ -483,14 +489,22 @@ function shoot(){
         isPlayer.run=false;
         isPlayer.runBack=false;
 
-        if(moving_backwards) {
-            isPlayer.attackBack=true;
-        } else {
-            isPlayer.attack=true;
-        }
-        playSFX(audio_shoot);
+        if(player.shootRange>0){
+            if(moving_backwards) {
+                isPlayer.attackBack=true;
+            } else {
+                isPlayer.attack=true;
+            }
+            playSFX(audio_shoot);
 
-        writeToSidePanel("shoot");
+            writeToSidePanel("shoot");
+        } else {
+            if(moving_backwards) {
+                isPlayer.idleBack=true;
+            } else {
+                isPlayer.walk=true;
+            }
+        }
     }
 }
 
@@ -624,9 +638,6 @@ function updateStage(){
                 }
             }
         }
-
-
-
         
         
 
@@ -671,6 +682,8 @@ function moveFg(){
             
         // move obstacles
         obstacle.forEach(obs => obs.x=obs.x-(moveFactor*x_moveAmount_fg));
+
+        // move powerups
         powerups.forEach(powups => powups.x=powups.x-(moveFactor*x_moveAmount_fg));
 
     } else {
@@ -682,6 +695,8 @@ function moveFg(){
             
             // move obstacles
             obstacle.forEach(obs => obs.x=obs.x+(moveFactor*x_moveAmount_fg));
+        
+            // move powerups
             powerups.forEach(powups => powups.x=powups.x+(moveFactor*x_moveAmount_fg));
 
         }
@@ -705,10 +720,19 @@ function renderFG(){
 }
 
 function renderPowerups(){
-
-    // [ todo ] render powerups
-    // console.log(powerup_img);
-    ctxFG.drawImage(powerup_img, (fg.x+powerups[0].x), powerups[0].y, powerup.width, powerup.height);//, powerups[0].w, powerups[0].h);
+    // for(i=0; i<=powerup.length; i++){
+    // console.log(powerups[0].x)
+    for(i=0; i<powerups.length; i++){
+        if(!powerups[i].isUsed){
+            ctxFG.drawImage(powerup_imgs[i], sprite_x.powerupX, 0, 
+                powerup_images[i].cellW, powerup_images[i].height,
+                (powerups[i].x), powerups[i].y,
+                powerup_images[i].cellW, powerup_images[i].height);
+        }
+    }
+    // if not used
+        
+            // }
     // ctxFG.drawImage(powerup_img, 0, powerups.y, powerups.w, powerups.h);
 }
 
@@ -918,8 +942,14 @@ function moveSpriteSheets(){
             sprite_x.fireX+=32;
             if(sprite_x.fireX>=192) sprite_x.fireX=0;
         }
-
     }
+
+    if(counter==10){
+        // powerups sprite updates /////
+        sprite_x.powerupX+=powerups[0].w;
+        if(sprite_x.powerupX>=spritesheetW.powerupW) sprite_x.powerupX=0;
+    }
+
     if(counter%2==0){
         sprite_x.shootX+=player.width;
         if(sprite_x.shootX>=spritesheetW.shootW) sprite_x.shootX=0;
@@ -1495,19 +1525,16 @@ function checkPlayerPosition() {
 
 /////// POWERUPS: //////////
 
-// if within powerup :
+// if at powerup :
         if(playerR > powerupL && playerL < powerupR 
             && playerT < powerupB && playerB > powerupT){
             
             
-            isPlayer.atPowerup=true;
-            console.log("powerup");
+            applyPowerup(curr_powerup);
 
-            player.jumpH+=10;
-
-// if within powerup but above it:
+// if not at powerup:
         } else {
-            isPlayer.atPowerup=false;
+            // isPlayer.atPowerup=false;
         }
 
 
@@ -1846,7 +1873,7 @@ function renderNPCs(){
 }
     
 var moveFactor_enemy = 1;
-var whichEnemyIndex=0;
+var whichEnemyIndex = 0;
 var startedAttack = false;
 function renderEnemy(whichEnemy) {
     enemyCellW=enemy.width;
@@ -1910,6 +1937,14 @@ function renderEnemy(whichEnemy) {
                 enemy[whichEnemyIndex].x+=moveFactor_enemy/3;  
             }
         }
+
+        // [todo] Robot attack is a strafe fast movement leaping forwards
+        if(isEnemy.attackBack) {
+            if(whichEnemyIndex==2){
+                enemy[whichEnemyIndex].x-=moveFactor_enemy*2; 
+            }
+        }
+
     } else if(isEnemy.run){
         enemy[whichEnemyIndex].x+=moveFactor_enemy/3; 
 
@@ -1923,6 +1958,13 @@ function renderEnemy(whichEnemy) {
             enemy[whichEnemyIndex].x+=moveFactor_enemy/2; 
             if(isPlayer.runBack && !isPlayer.atObstacle) {
                 enemy[whichEnemyIndex].x+=moveFactor_enemy;  
+            }
+        }
+
+        // [todo] Robot attack is a strafe fast movement leaping forwards
+        if(isEnemy.attack) {
+            if(whichEnemyIndex==2){
+                enemy[whichEnemyIndex].x+=moveFactor_enemy*2; 
             }
         }
     }
@@ -2009,7 +2051,6 @@ function renderEnemy(whichEnemy) {
 }
 
 function renderEnemyUI(){
-    // [todo] draw enemy health
     var enemyBarX = enemy[whichEnemyIndex].x+10;
     var enemyBarY = enemy[whichEnemyIndex].y+enemy[whichEnemyIndex].hitY-25;
     var enemyBarW = enemy[whichEnemyIndex].hitW-20
@@ -2073,11 +2114,11 @@ function setEnemyIndex(chosenEnemy){
 
     // if chosenEnemy -not yet in use - could be used to force certain enemy:
     if(chosenEnemy==undefined){
-            
 
         // first couple boss should be bike only:
         if(enemyKillCount<3) {
             whichEnemy="CyberBike";
+            // whichEnemy="Robot";
         } else {
 
             // then we begin rotating between bike/car
@@ -2086,19 +2127,24 @@ function setEnemyIndex(chosenEnemy){
             whichEnemyIndex=whichEnemyKillCount;    
             if(whichEnemyIndex==0) { whichEnemy="CyberBike"; }
             if(whichEnemyIndex==1) { whichEnemy="BattleCar"; }
+            if(whichEnemyIndex==2) { whichEnemy="Robot"; }
         }
     
 
     // set index manually if passed in to this func:
 
     } else if(chosenEnemy=="BattleCar") { 
-        whichEnemy=="BattleCar";
+        whichEnemy="BattleCar";
         whichEnemyIndex = 1;
     } else if(chosenEnemy=="CyberBike") { 
         whichEnemyIndex = 0;
-        whichEnemy=="CyberBike";
+        whichEnemy="CyberBike";
+    } else if(chosenEnemy=="Robot") { 
+        whichEnemyIndex = 2;
+        whichEnemy="Robot";
     }
 
+    console.log(whichEnemy);
     
     for(i=0; i<enemyImgs.length; i++){
         if(enemyImgs[i].id == whichEnemy+"-Walk-back") {
@@ -2266,6 +2312,65 @@ function gameProgression(){
         // end of foregrounds reached, play ending! 
         startEnding();
     }
+}
+
+
+function applyPowerup(whichPowerupInd){
+    console.log("applyPowerup"+whichPowerupInd);
+
+    if(!powerups[whichPowerupInd].isApplied){
+
+
+        switch(powerups[whichPowerupInd].which){
+            case "jumpH":
+                player[powerups[whichPowerupInd].which]+=60;
+
+                playMusic(audio_music02,true);
+                break;
+
+            case "shootRange":
+                player[powerups[whichPowerupInd].which]=180;
+
+
+                //[todo] play gun cocking sound! 
+                // playMusic(audio_music02,true);
+                break;
+        }
+        
+        writeToSidePanel("Powerup is applied : "+powerups[whichPowerupInd].which);
+
+        powerups[whichPowerupInd].isApplied=true;
+        powerups[whichPowerupInd].isUsed=true;
+
+
+
+        // if powerup has timer limit, set delay to deactivate:
+        if(powerups[whichPowerupInd].powerupTimer>0) {
+            gsap.delayedCall(powerups[whichPowerupInd].powerupTimer, endPowerUp, [whichPowerupInd]);
+        }
+
+        // reset spritesheetW for next powerup: (if possible)
+        if(whichPowerupInd+1<=powerups.length){
+            spritesheetW.powerupW=powerup_images[whichPowerupInd+1].width;
+        }
+        
+
+        // player value :
+        // health:100,jumpH:60,lives:3,shootRange:180};
+    }
+}
+
+function endPowerUp(whichPowerupInd){
+    // console.log("turned off"+powerups[whichPowerupInd].which);
+    writeToSidePanel("Powerup is finished : "+powerups[whichPowerupInd].which);
+
+    // restore to normal value
+    playMusic(audio_music,true);
+    // if jump:
+    player[powerups[whichPowerupInd].which]=60;
+
+    powerups[whichPowerupInd].isApplied=false;
+    // player.jumpH=60;
 }
 
 function startEnding(){

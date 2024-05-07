@@ -3,6 +3,8 @@ noAudio=false,songPlaybackTime,songPlaybackTitle;
 function initAudio(){
     //[audio]
     audio_music = document.getElementById("audio");
+    audio_music02 = document.getElementById("audio02");
+    
     audio_dieMusic = document.getElementById("audio-die_music");
 
     audio_shoot = document.getElementById("audio-shoot");
@@ -20,6 +22,7 @@ function initAudio(){
         if(window.location.href.includes("scottmillerhogarthsc")){
             console.log("online");
             audio_music.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shredded-midi.mp3');
+            audio_music02.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/heart-faith-and-steel-midi.mp3');
             audio_shoot.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shoot1.mp3');
             audio_heavyshoot.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/heavy_shoot.mp3');
             audio_blaster.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/blaster.mp3');
@@ -31,6 +34,8 @@ function initAudio(){
         } else {
             console.log("local");
             audio_music.setAttribute('src','audio/shredded-midi.mp3');
+            audio_music02.setAttribute('src','audio/heart-faith-and-steel-midi.mp3');
+
             audio_shoot.setAttribute('src','audio/shoot1.mp3');
             audio_heavyshoot.setAttribute('src','audio/heavy_shoot.mp3');
             audio_blaster.setAttribute('src','audio/blaster.mp3');
@@ -67,6 +72,14 @@ function preloadMusic(){
     audio_dieMusic.load(); 
     audioMusicArr.push(audio_dieMusic);
     audioMusicTitlesArr.push("<span class='red'>you died</span>");
+
+    audio_music02.addEventListener('canplay', loadedMusic);
+    audio_music02.addEventListener('error', failedtoLoadMusic);
+
+    audio_music02.load(); 
+    audioMusicArr.push(audio_music02);
+    audioMusicTitlesArr.push("with heart heart faith and steel");
+
 
 }
 
@@ -182,6 +195,7 @@ function playSFX(whichSound,stopOtherSounds){
 }
 var _currentMusic;
 function playMusic(whichMusic,fromPause){
+    // console.log(whichMusic)
     if(!fromPause){
         audioMusicArr.forEach(ele => ele.currentTime=0);
     }
@@ -192,10 +206,18 @@ function playMusic(whichMusic,fromPause){
         //set song readout
         _currentMusic = whichMusic;
         // console.log(audioMusicTitlesArr[0]);
+
+
         if(whichMusic.id=="audio"){
+        
             songPlaybackTitle.innerHTML=audioMusicTitlesArr[0];
             songPlaybackTitle.href="https://open.spotify.com/track/6FoHaNsBdvZicXDPcmbmcN";
-        } else if(whichMusic.id=="audio-die_music"){
+        
+        } else if(whichMusic.id=="audio02"){
+            songPlaybackTitle.innerHTML=audioMusicTitlesArr[2];
+            songPlaybackTitle.href="https://open.spotify.com/track/6FoHaNsBdvZicXDPcmbmcN";
+        }
+        else if(whichMusic.id=="audio-die_music"){
             songPlaybackTitle.innerHTML=audioMusicTitlesArr[1];
             songPlaybackTitle.href="https://open.spotify.com/track/6FoHaNsBdvZicXDPcmbmcN";
         }

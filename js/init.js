@@ -255,9 +255,11 @@ function animateWalking(){
 function introSkip(){
     // console.log("nextLabel: "+introTL.nextLabel());
     if(introTL.nextLabel()!="complete" && introTL.nextLabel()!=undefined){
+
         introTL.seek(introTL.nextLabel());
 
     } else if(introTL.nextLabel()=="complete"){ 
+
         wrap.removeEventListener('click', introSkip);
         window.removeEventListener('keydown', introSkip);
         mobileControls.removeEventListener('touchend', introSkip);
@@ -265,13 +267,15 @@ function introSkip(){
         wrap.addEventListener('click', bindButtons);
         window.addEventListener('keydown', bindButtons);
         mobileControls.addEventListener('touchend', bindButtons);
+
     } else {
 
         clearCode();
+        
         gsap.to("#intro-text-playing",0,{alpha:0});
         gsap.to("#intro-text",0,{y:0});
         // console.log("nextLabel undefined");
-        container.removeEventListener('click', introSkip);
+        wrap.removeEventListener('click', introSkip);
         window.removeEventListener('keydown', introSkip);
         mobileControls.removeEventListener('touchend', introSkip);
 
