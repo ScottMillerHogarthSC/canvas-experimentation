@@ -1,4 +1,4 @@
-var audio,audio_shoot,audio_blaster,audio_explosion,audio_playerhurt,audio_playerdead,audio_shotgun_cocking,
+var audio,audio_shoot,audio_blaster,audio_explosion,audio_playerhurt,audio_playerdead,audio_shotgun_cocking,audio_shotgun,
 noAudio=false,songPlaybackTime,songPlaybackTitle;
 function initAudio(){
     //[audio]
@@ -13,6 +13,7 @@ function initAudio(){
     audio_explosion = document.getElementById("audio-explosion");
     audio_playerhurt = document.getElementById("audio-playerhurt");
     audio_playerdead = document.getElementById("audio-playerdead");
+    audio_shotgun = document.getElementById("audio-shotgun");
     audio_shotgun_cocking = document.getElementById("audio-shotgun_cocking");
 
     songPlaybackTime = document.getElementById("song-playback-time");
@@ -32,6 +33,7 @@ function initAudio(){
             audio_playerhurt.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/player-hurt.mp3');
             audio_playerdead.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/player-ded.mp3');
             audio_dieMusic.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/die.mp3');
+            audio_shotgun.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shotgun.mp3');
             audio_shotgun_cocking.setAttribute('src','https://s3.eu-west-2.amazonaws.com/stars-are-my-guide.ga/shotgun-cocking.mp3');
 
         } else {
@@ -46,6 +48,7 @@ function initAudio(){
             audio_playerhurt.setAttribute('src','audio/player-hurt.mp3');
             audio_playerdead.setAttribute('src','audio/player-ded.mp3');
             audio_dieMusic.setAttribute('src','audio/die.mp3');
+            audio_shotgun.setAttribute('src','audio/shotgun.mp3');
             audio_shotgun_cocking.setAttribute('src','audio/shotgun-cocking.mp3');
         }
     } 

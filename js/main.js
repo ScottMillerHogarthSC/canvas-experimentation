@@ -507,7 +507,7 @@ function shoot(){
                 
                 // [todo] add shoot delay
 
-                playSFX(audio_heavyshoot); //[todo]- shotgun sound!
+                playSFX(audio_shotgun);
             }
 
             writeToSidePanel("shoot");
