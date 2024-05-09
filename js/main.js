@@ -205,7 +205,8 @@ const depictBuildings = options => {
     const myOptions = Object.assign({}, options);
     return loadImage(myOptions.url).then(img => {
         imgLoaded++;
-        buildingsImgs.push(img);
+        var int=myOptions.int;
+        buildingsImgs[int]=img;
     });
 };
 
@@ -221,8 +222,8 @@ const depictForegrounds = options => {
     const myOptions = Object.assign({}, options);
     return loadImage(myOptions.url).then(img => {
         imgLoaded++;
-        img.id=myOptions.id;
-        fgsImgs.push(img);
+        var int=myOptions.int;
+        fgsImgs[int]=img;
     });
 };
 
@@ -250,9 +251,8 @@ function depictPowerup(arr){
     const myOptions = Object.assign({}, arr);
     return loadImage(myOptions.url).then(img => {
         imgLoaded++;
-        img.id=myOptions.id;
-        powerup_imgs.push(img);
-        // console.log(enemyImgs);
+        var int=myOptions.id;
+        powerup_imgs[int]=img;
     });
 }
 
@@ -641,7 +641,7 @@ function updateStage(){
         }
 
         if(doFlash){
-            for(i=0;i<=flashes.length-1;i++){
+            for(i=0;i<flashes.length;i++){
                 if(flashes[i].go){
                     audio_explosion.play();
                     ctxPlayer.drawImage(flash_img, sprite_x.flashX[i], 0, 
@@ -717,9 +717,6 @@ function moveFg(){
 }
 var fgIndexSet=false;
 function renderFG(){
-    if(!fgIndexSet){
-        setFgIndex();
-    }
     ctxFG.clearRect(0, 0, canvas.width, canvas.height);
 
     for(i=0; i<buildingsImgs.length; i++){
@@ -728,7 +725,7 @@ function renderFG(){
     }
 
     for(i = 0; i<fgsImgs.length; i++) {
-        ctxFG.drawImage(fgsImgs[fgsImgIndex[i]], (fg.x+fgsList[i].x), fg.y, fg.width, fg.height);
+        ctxFG.drawImage(fgsImgs[i], (fg.x+fgsList[i].x), fg.y, fg.width, fg.height);
     }
 }
 
@@ -749,42 +746,7 @@ function renderPowerups(){
     // ctxFG.drawImage(powerup_img, 0, powerups.y, powerups.w, powerups.h);
 }
 
-function setFgIndex(){
-    fgIndexSet=true;
-    for(i=0; i<fgsImgs.length; i++){
-        if(fgsImgs[i].id == "01") {
-            fgsImgIndex[0] = i;
-        } 
-        if(fgsImgs[i].id == "02") {
-            fgsImgIndex[1] = i;
-        }
-        if(fgsImgs[i].id == "03") {
-            fgsImgIndex[2] = i;
-        }
-        if(fgsImgs[i].id == "04") {
-            fgsImgIndex[3] = i;
-        }
-        if(fgsImgs[i].id == "05") {
-            fgsImgIndex[4] = i;
-        }
-        if(fgsImgs[i].id == "06") {
-            fgsImgIndex[5] = i;
-        }
-        if(fgsImgs[i].id == "07") {
-            fgsImgIndex[6] = i;
-        }
-        if(fgsImgs[i].id == "08") {
-            fgsImgIndex[7] = i;
-        }
-        if(fgsImgs[i].id == "09") {
-            fgsImgIndex[8] = i;
-        }
-        if(fgsImgs[i].id == "01") {
-            fgsImgIndex[9] = i;
-        }
-        
-    }
-}
+
 var attackCount=0;
 function moveSpriteSheets(){
     counter++;
@@ -886,7 +848,7 @@ function moveSpriteSheets(){
 
         ////// NPC SPRITES /////////
         if(!noNpcs){
-            for(i=0; i<=npc.length-1; i++){
+            for(i=0; i<npc.length; i++){
                 if(isNpc[i].walk || isNpc[i].walkBack){
                     spritesheetW.npcW[i]=npcList[0][2].width;
                 } else if(isNpc[i].idle || isNpc[i].idleBack){
@@ -918,7 +880,7 @@ function moveSpriteSheets(){
             if(flash_counter>6){flashes[6].go=true;}
             if(flash_counter>7){flashes[7].go=true;}
             
-            for(i=0;i<=flashes.length-1;i++){
+            for(i=0;i<flashes.length;i++){
 
                 if(flashes[i].go){
                     sprite_x.flashX[i]+=(flash.cellW);
@@ -959,7 +921,7 @@ function moveSpriteSheets(){
 
     if(counter==10){
         // powerups sprite updates /////
-        sprite_x.powerupX+=powerups[curr_powerup].w;
+        sprite_x.powerupX+=powerup_images[curr_powerup].cellW;
         if(sprite_x.powerupX>=spritesheetW.powerupW) sprite_x.powerupX=0;
     }
 
@@ -1331,7 +1293,7 @@ function checkPlayerPosition() {
     var npcR = [];
     var playerHitsNPC=false;
 
-    for(i=0; i<=npc.length-1; i++){
+    for(i=0; i<npc.length; i++){
         npcL[i]=npc[i].x+npc[i].hitX;
         if(isNpc[i].walkBack) { npcL[i] = npc[i].x+npc[i].hitXB; }
         npcR[i] = npc[i].x+npc[i].hitW;
@@ -1735,9 +1697,11 @@ function enemyTLplayed(){
 
 
 var npcIndexFlag=false;
-function setNPCIndex(){
-
+function setNPCIndex(chooseNpc){
     var whichNPC = "Punk";
+    if(chooseNpc!=undefined){
+        whichNPC=chooseNpc;
+    }
     
     for(i=0; i<npcImgs.length; i++){
         if(npcImgs[i].id == whichNPC+"-Walk-back") {
@@ -1765,7 +1729,7 @@ function setNPCIndex(){
             npcImgIndex.deathBack=i;
         }
     }
-    for(i=0; i<=npc.length-1; i++){
+    for(i=0; i<npc.length; i++){
         sprite_x.npcX[i]=0;
         moveFactor_npc[i]=1;
         isNpc[i].walk=true;
@@ -1781,7 +1745,7 @@ function renderNPCs(){
 
     ctxNpc.clearRect(0, 0, canvas.width, canvas.height);
     var ind;
-    for(i=0; i<=npc.length-1; i++){
+    for(i=0; i<npc.length; i++){
 
         if(isNpc[i].hurt || isNpc[i].death) {
             moveFactor_npc[i]=-1.5;
@@ -2159,7 +2123,7 @@ function setEnemyIndex(chosenEnemy){
         whichEnemy="Robot";
     }
 
-    console.log(whichEnemy);
+    // console.log(whichEnemy);
     
     for(i=0; i<enemyImgs.length; i++){
         if(enemyImgs[i].id == whichEnemy+"-Walk-back") {
@@ -2544,7 +2508,7 @@ function restartGame(){
         enemy[i].x=canvas.width;
         enemy[i].health=enemy[i].fullhealth;
     }
-    for(i=0; i<=npc.length-1; i++){
+    for(i=0; i<npc.length; i++){
         sprite_x.npcX[i]=0;
         moveFactor_npc[i]=1;
         isNpc[i].walk=true;

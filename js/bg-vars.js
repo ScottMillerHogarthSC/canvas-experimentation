@@ -14,12 +14,12 @@ var bgsImgs = [];
 
 var bgBuildings = {x:1152,y:0,width:1152,height:324};
 var buildingsList = [
-	{url:"images/Buildings/bg-buildings1.png", x:-bgBuildings.width},
-	{url:"images/Buildings/bg-buildings0.png", x:0},
-	{url:"images/Buildings/bg-buildings2.png", x:bgBuildings.width},
-	{url:"images/Buildings/bg-buildings3.png", x:bgBuildings.width*2},
-	{url:"images/Buildings/bg-buildings4.png", x:bgBuildings.width*3},
-	{url:"images/Buildings/bg-buildings5.png", x:bgBuildings.width*4}
+	{int:0,url:"images/Buildings/bg-buildings1.png", x:-bgBuildings.width},
+	{int:1,url:"images/Buildings/bg-buildings0.png", x:0},
+	{int:2,url:"images/Buildings/bg-buildings2.png", x:bgBuildings.width},
+	{int:3,url:"images/Buildings/bg-buildings3.png", x:bgBuildings.width*2},
+	{int:4,url:"images/Buildings/bg-buildings4.png", x:bgBuildings.width*3},
+	{int:5,url:"images/Buildings/bg-buildings5.png", x:bgBuildings.width*4}
 ];
 var buildingsImgs = [];
 

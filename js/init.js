@@ -127,7 +127,7 @@ function playIntro() {
 
         .to("#container", {className:"noMouse"}, "reset")
         .to("#intro-primitai",{width:introLogoWidth+"px"},"reset")
-        .to(["#intro_txt","#glitch"],{display:"none"}, "reset")
+        .to("#intro_txt",{display:"none"}, "reset")
         .to(".game-canvas",{className:"game-canvas"},"reset")
         .to(["#bgOverlay-canvas","#bg-canvas"],{className:"hidden"},"reset")
 
@@ -145,6 +145,7 @@ function playIntro() {
         .call(clearCode,[],">")
 
     .addLabel("intro-primitai", ">.1")
+        .to("#glitch",{display:"none"}, "intro-primitai")
         .call(playMusic, [audio_music], "intro-primitai")
         .to("#intro-text-playing", {alpha:1},"intro-primitai")
         .to("#intro-text", {alpha:1,y:20},"intro-primitai")

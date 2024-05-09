@@ -3,15 +3,15 @@
 var fg = {x:0,y:0,width:1152,height:324,cellW:32};
 
 var fgsList = [
-{id:"01", url:"images/Foreground/fg0.png", x:-fg.width,y:0},
-{id:"02", url:"images/Foreground/fg0.png", x:0,y:0},
-{id:"03", url:"images/Foreground/fg0.png", x:fg.width,y:0},
-{id:"04", url:"images/Foreground/fg1.png", x:fg.width*2,y:0},
-{id:"05", url:"images/Foreground/fg2.png", x:fg.width*3,y:0},
-{id:"06", url:"images/Foreground/fg3.png", x:fg.width*4,y:0},
-{id:"07", url:"images/Foreground/fg4.png", x:fg.width*5,y:0},
-{id:"08", url:"images/Foreground/fg0.png", x:fg.width*6,y:0},
-{id:"09", url:"images/Foreground/fg-end.png", x:fg.width*7,y:0}
+{int:0, url:"images/Foreground/fg0.png", x:-fg.width,y:0},
+{int:1, url:"images/Foreground/fg0.png", x:0,y:0},
+{int:2, url:"images/Foreground/fg0.png", x:fg.width,y:0},
+{int:3, url:"images/Foreground/fg1.png", x:fg.width*2,y:0},
+{int:4, url:"images/Foreground/fg2.png", x:fg.width*3,y:0},
+{int:5, url:"images/Foreground/fg3.png", x:fg.width*4,y:0},
+{int:6, url:"images/Foreground/fg4.png", x:fg.width*5,y:0},
+{int:7, url:"images/Foreground/fg0.png", x:fg.width*6,y:0},
+{int:8, url:"images/Foreground/fg-end.png", x:fg.width*7,y:0}
 ];  
 var fgsImgs = [];
 var fgsImgIndex = {}
