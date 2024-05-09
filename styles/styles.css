@@ -131,7 +131,7 @@ body{
     position: absolute;
     opacity: 0;
 }
-#overlay-bg,#overlay-death {
+#overlay-bg,#overlay-death,#overlay-jumpH {
     background-color: rgba(255,120,140,0.5);
     mix-blend-mode: saturation;
     max-height: 320px;
@@ -142,6 +142,9 @@ body{
 #overlay-death {
     mix-blend-mode: color;
     background-color: rgba(255,120,140,0.5);
+}
+#overlay-jumpH {
+    animation: pulse 1s infinite alternate;
 }
 #text-overlay {
     position: absolute;
@@ -541,6 +544,10 @@ button {
     0%{ opacity:1 }
     50%{ opacity:1 }
     51%{ opacity:0 }
+    100%{ opacity:0 }
+}
+@keyframes pulse {
+    0%{ opacity:1 }
     100%{ opacity:0 }
 }
 #intro-text-dir {

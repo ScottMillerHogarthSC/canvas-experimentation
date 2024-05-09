@@ -2340,6 +2340,9 @@ function applyPowerup(whichPowerupInd){
             case "jumpH":
                 player[powerups[whichPowerupInd].which]+=60;
 
+                gsap.to("#overlay-jumpH",0,{display:"block"});
+                gsap.to("#overlay-jumpH",.3,{alpha:1});
+
                 playMusic(audio_music02,true);
                 break;
 
@@ -2395,6 +2398,13 @@ function endPowerUp(whichPowerupInd){
     if(powerups[whichPowerupInd].which=="jumpH"){
         // if jump:
         player[powerups[whichPowerupInd].which]=60;
+
+        
+        gsap.to("#overlay-jumpH",0 ,{alpha:1,onComplete:function(){
+            gsap.to("#overlay-jumpH",0,{display:"none"});    
+        }});
+        
+
     }
     // if we had shotgun, revert to reg gun now
     else if(powerups[whichPowerupInd].which=="shootDamage"){
