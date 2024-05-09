@@ -80,6 +80,16 @@ body{
     width: 1270px;
     height: 1370px;
 }
+#glitch {
+    position: absolute;
+    width: 570px;
+    height: 470px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: hard-light;
+    opacity: 0.4;
+}
 #overlay {
     background-image: url(../images/wrapper/overlay1.png);
     background-position: 50% 50%;
@@ -417,21 +427,15 @@ button {
     position: absolute;
     width: 120px;
     cursor: pointer;
+    animation: pop 1s ease-in alternate infinite;
 }
-#intro_txt.intro-played{
-    top: 201px;
-    left: 296px;
-    border: none;
-    background: transparent;
-    font-size: 19px;
+@keyframes pop {
+    0%{ transform: translate(-50%,-50%) scale(1); }
+    100%{ transform: translate(-50%,-50%) scale(.9); }
 }
 #intro_txt:hover{
-    background-color: #000;
-    color: #fff;
-}
-#intro_txt.intro-played:hover{
-    background-color: transparent;
-    color: red;
+    animation: none;
+    transform: translate(-50%,-50%) scale(1.1);
 }
 #intro-bg {
     object-fit: cover;
