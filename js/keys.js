@@ -85,7 +85,16 @@ function checkKeys(){
 
 
         if(Keyboard.isDown(Keyboard.DOWN)){
-            shoot();
+            if(player.weapon==1){
+                shoot();
+            } else if(player.weapon==2){
+                if(!shootBtnDown) {
+                    shoot();
+                }
+            }
+        }
+        if(!Keyboard.isDown(Keyboard.DOWN)){
+            shootBtnDown=false;
         }
 
         if(Keyboard.isDown(Keyboard.UP)){
@@ -113,7 +122,9 @@ function checkKeys(){
             isPlayer.attackBack=false;
             isPlayer.attack=false;
             isPlayer.jump=false;
+            isPlayer.idle=false;
             jumpBtnDown=false;
+            shootBtnDown=false;
 
 
             if(!moving_backwards) isPlayer.walk=true;

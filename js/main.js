@@ -106,10 +106,8 @@ var moving_backwards = false;
 var intro=true;
 
 var tlJump = gsap.timeline({paused:true});
-tlJump = gsap.timeline({paused:true});
-
+var tlShotgun = gsap.timeline({paused:true});
 var deathTL = gsap.timeline({paused:true});
-
 var endingTL = gsap.timeline({paused:true});
 
 // dev Tools
@@ -481,7 +479,10 @@ function jump() {
     tlJump.restart();
 }
 
+var shootBtnDown=false;
 function shoot(){
+    console.log("shoot");
+
     if(!isPlayer.hurt){
         isPlayer.attack=false;
         isPlayer.attackBack=false;
@@ -491,7 +492,7 @@ function shoot(){
 
         if(player.shootRange>0){
 
-            
+            shootBtnDown=true;
 
             if(moving_backwards) {
                 isPlayer.attackBack=true;
@@ -506,8 +507,11 @@ function shoot(){
             if(player.weapon==2){
                 
                 // [todo] add shoot delay
+                setupShotgunTL();
+                tlShotgun.restart();
 
-                playSFX(audio_shotgun);
+                playSFX(audio_shotgun,false,true);
+
             }
 
             writeToSidePanel("shoot");
@@ -925,6 +929,8 @@ function moveSpriteSheets(){
         if(sprite_x.powerupX>=spritesheetW.powerupW) sprite_x.powerupX=0;
     }
 
+
+    // animate shooting muzzle flash
     if(counter%2==0){
         sprite_x.shootX+=player.width;
         if(sprite_x.shootX>=spritesheetW.shootW) sprite_x.shootX=0;
@@ -1182,6 +1188,20 @@ function renderPlayer() {
                 player.x, player.y, 
                 player.width, player.height);
         } else if(isPlayer.walk && (fireStarted && !fireBurned)){
+            spritesheetW.playerW=player_idle.width;
+
+            ctxPlayer.drawImage(player_idle_img, sprite_x.playerX, 0,
+                player.width, player.height,
+                player.x, player.y, 
+                player.width, player.height);
+
+        } else if(isPlayer.idle){
+
+            // make player stop moving while idle -- dont do this during fire scene
+            if(!fireStarted || fireBurned){
+                player.x-=moveFactor*x_moveAmount_fg;
+            }
+
             spritesheetW.playerW=player_idle.width;
 
             ctxPlayer.drawImage(player_idle_img, sprite_x.playerX, 0,
@@ -1645,6 +1665,22 @@ function setupJumpTL(){
     tlJump.addLabel('up', 0)
         .call(writeToSidePanel,["jump"],"up")
         .to(player,{y:"-="+player.jumpH,ease:"power3.out", duration: player.jumpH*0.00563 },"up");
+}
+
+function setupShotgunTL(){
+    tlShotgun = gsap.timeline({paused:true,onComplete:function(){ shootBtnDown=false}});
+    tlShotgun.addLabel('shotgun-fire', 0)
+        .call(writeToSidePanel,["shotgun-fire"],"shotgun-fire")
+        .call(function(){ 
+            if(moving_backwards) {
+                isPlayer.attackBack=false;
+                isPlayer.idleBack=true;
+            } else {
+                isPlayer.attack=false;
+                isPlayer.idle=true;
+            }
+        },[], "<.15")
+        .to(player,{duration: 1.5 },"shotgun-fire");
 }
 
 var tlEnemyVars = gsap.timeline({paused:true,onComplete:enemyTLplayed,repeatDelay:4,repeat:-1});

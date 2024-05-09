@@ -188,8 +188,11 @@ function toggleMuteAudio(){
     }
 }
 
-function playSFX(whichSound,stopOtherSounds){
+function playSFX(whichSound,stopOtherSounds,reset){
     if(!muted && !noAudio){
+        if(reset){
+            whichSound.currentTime=0;
+        }
         if(stopOtherSounds){
             audiosArr.forEach(ele => ele.volume=0);
             whichSound.volume=1;

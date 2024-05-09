@@ -4,6 +4,7 @@ player.y=player_ground.y-player.height;
 
 var isPlayer = {
     walk:true,
+    idle:false,
     idleBack:false,
     run:false,
     runBack:false,
