@@ -1733,6 +1733,7 @@ function setNPCIndex(chooseNpc){
         sprite_x.npcX[i]=0;
         moveFactor_npc[i]=1;
         isNpc[i].walk=true;
+        npc[i].x = Math.floor(Math.random() * (1100 - 596 + 1)) + 596;
     }
     
 }
@@ -1953,10 +1954,14 @@ function renderEnemy(whichEnemy) {
         spritesheetW.enemyW=enemiesList[whichEnemyIndex][7].width;
         drawEnemy(enemyImgIndex.hurtBack, sprite_x.enemyX, whichEnemyIndex)
 
+        enemy[whichEnemyIndex].x+=moveFactor_enemy*.15;   // slow enemy down when being shot
+
     } else if(isEnemy.hurt){
         // hurt
         spritesheetW.enemyW=enemiesList[whichEnemyIndex][6].width;
         drawEnemy(enemyImgIndex.hurt, sprite_x.enemyX, whichEnemyIndex)
+
+        enemy[whichEnemyIndex].x-=moveFactor_enemy*.25;    // slow enemy down when being shot
 
     } else if(isEnemy.attack) {
         enemyCellW = enemiesList[whichEnemyIndex][4].cellW;
@@ -2095,7 +2100,7 @@ function setEnemyIndex(chosenEnemy){
     if(chosenEnemy==undefined){
 
         // first couple boss should be bike only:
-        if(enemyKillCount<3) {
+        if(enemyKillCount<2) {
             whichEnemy="CyberBike";
             // whichEnemy="Robot";
         } else {

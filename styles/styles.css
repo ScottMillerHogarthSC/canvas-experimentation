@@ -154,7 +154,7 @@ body{
     background-color: rgba(255,120,140,0.5);
 }
 #overlay-jumpH {
-    animation: pulse 1s infinite alternate;
+    animation: pulse .5s infinite alternate;
 }
 #text-overlay {
     position: absolute;
