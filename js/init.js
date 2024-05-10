@@ -152,9 +152,9 @@ function playIntro() {
 
         .to("#intro-primitai", 1,{alpha:1}, "intro-primitai")
         .to("#intro-primitai-bg", {y:0}, ">")
-        .to("#intro-primitai-bg",3.5,{y:"-39%",ease:"linear"}, ">")
+        .to("#intro-primitai-bg",1.5,{y:"-39%",ease:"linear"}, ">")
         .to("#intro-presents", {alpha:1}, "<1.5")
-        .to("#intro-primitai", {alpha:0}, "intro-primitai+=5")
+        .to("#intro-primitai", {alpha:0}, "intro-primitai+=3")
 
     .addLabel("intro-licensed-by", ">.2")
         .to("#intro-licensed-by", {alpha:1}, "intro-licensed-by")
