@@ -771,15 +771,8 @@ function moveSpriteSheets(){
         } else {
             sprite_x.playerX+=player.width;
         }
-        
-         // if player is in middle of a jump anim:
-        if(keysWait){
-            if(sprite_x.playerX>=spritesheetW.playerW) {
-                sprite_x.playerX=0;
-            }
-        } else {
-            if(sprite_x.playerX>=spritesheetW.playerW) sprite_x.playerX=0;
-        }
+        if(sprite_x.playerX>=spritesheetW.playerW) sprite_x.playerX=0;
+
         ////// END player /////////
 
 
