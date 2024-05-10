@@ -132,7 +132,9 @@ function playIntro() {
         .to(["#bgOverlay-canvas","#bg-canvas"],{className:"hidden"},"reset")
 
     .addLabel("intro-screen", ">")
-        .call(typeCodes,["intro_screen_txt",2], "intro-screen")
+        .to("#glitch01",{display:"none"}, "intro-screen")
+        .to("#glitch02",{alpha:1}, "<")
+        .call(typeCodes,["intro_screen_txt",2], "<")
 
         .to("#intro-text-dir", {alpha:1}, ">")
         .to(".intro-text-dir-lines", {alpha:1,stagger:0.03},">1")
@@ -145,7 +147,7 @@ function playIntro() {
         .call(clearCode,[],">")
 
     .addLabel("intro-primitai", ">.1")
-        .to("#glitch",{display:"none"}, "intro-primitai")
+        .to(".glitch",{display:"none"}, "intro-primitai")
         .call(playMusic, [audio_music], "intro-primitai")
         .to("#intro-text-playing", {alpha:1},"intro-primitai")
         .to("#intro-text", {alpha:1,y:20},"intro-primitai")
