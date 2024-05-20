@@ -518,7 +518,7 @@ button {
     text-decoration: underline;
     color: #e72ea1;
 }
-#container.noMouse canvas,#container.noMouse .overlays {
+#container.noMouse canvas,#container.noMouse .overlays,,#container.noMouse #screen2 {
     cursor: none;
 }
 #screen {
@@ -535,7 +535,7 @@ button {
     color: #1c9371;
     position: absolute;
     top: calc(50% + 132px);
-    left: calc(50% + 182px);
+    left: calc(50% + 188px);
     transform: rotateY(-19deg) skew(-2deg) scale(0.975);
     font-size: 9px;
     line-height: 13px;

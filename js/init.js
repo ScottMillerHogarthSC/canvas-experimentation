@@ -125,7 +125,7 @@ function playIntro() {
     // console.log(introLogoWidth);
     introTL.addLabel("reset", 0)
 
-        .to("#container", {className:"noMouse"}, "reset")
+        .to("#wrap", {className:"noMouse"}, "reset")
         .to("#intro-primitai",{width:introLogoWidth+"px"},"reset")
         .to("#intro_txt",{display:"none"}, "reset")
         .to(".game-canvas",{className:"game-canvas"},"reset")
@@ -134,6 +134,8 @@ function playIntro() {
     .addLabel("intro-screen", ">")
         .to("#glitch01",{display:"none"}, "intro-screen")
         .to("#glitch02",{alpha:1}, "<")
+
+        .to("#wrap",1,{ease:"expo.out",scale:3,x:"-50%",y:"-75%"},">")
         .call(typeCodes,["intro_screen_txt",2], "<")
 
         .to("#intro-text-dir", {alpha:1}, ">")
@@ -145,6 +147,8 @@ function playIntro() {
         .to("#intro-text", {alpha:0,y:0},"<2")
         .to("#intro-text-dir", {alpha:0},"<")
         .call(clearCode,[],">")
+
+        .to("#wrap",1,{ease:"expo.out",scale:1,x:"0%",y:"0%"},">")
 
     .addLabel("intro-primitai", ">.1")
         .to(".glitch",{display:"none"}, "intro-primitai")

@@ -2303,9 +2303,9 @@ function gameProgression(){
     }
 
     
-
-    // after 3 FGs progssion turn on fire:
-    if(fg.x<-(fg.width*3)-(canvas.width/2)){
+    // [todo] - move 'fire' forwards by one fg 
+    // after 4 FGs progssion turn on fire:
+    if(fg.x<-(fg.width*4)-(canvas.width/2)){
         if(droneStrike=="not"){
             do_droneStrike=true;}
     }
