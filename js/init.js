@@ -48,6 +48,7 @@ function init()
     wrap = document.getElementById("wrap");
     container = document.getElementById("container");
     footer = document.getElementById("footer");
+    introSkip_btn = document.getElementById("introSkip_btn");
 
     intro_city_txt1 = document.getElementById("intro-city-txt1");
     intro_city_txt2 = document.getElementById("intro-city-txt2");
@@ -133,9 +134,9 @@ function playIntro() {
 
     .addLabel("intro-screen", ">")
         .to("#glitch01",{display:"none"}, "intro-screen")
-        .to("#glitch02",{alpha:1}, "<")
+        .to(["#glitch02",introSkip_btn],{alpha:1}, "<")
 
-        .to("#wrap",1,{ease:"expo.out",scale:3,x:"-50%",y:"-75%"},">")
+        .to("#wrap",.5,{ease:"steps(5)",scale:3,x:"-50%",y:"-75%"},">")
         .call(typeCodes,["intro_screen_txt",2], "<")
 
         .to("#intro-text-dir", {alpha:1}, ">")
@@ -148,7 +149,7 @@ function playIntro() {
         .to("#intro-text-dir", {alpha:0},"<")
         .call(clearCode,[],">")
 
-        .to("#wrap",1,{ease:"expo.out",scale:1,x:"0%",y:"0%"},">")
+        .to("#wrap",.5,{ease:"steps(5)",scale:1,x:"0%",y:"0%"},">")
 
     .addLabel("intro-primitai", ">.1")
         .to(".glitch",{display:"none"}, "intro-primitai")
@@ -203,7 +204,7 @@ function playIntro() {
 
 
         .call(clearCode,[],">")
-        .to("#intro-text-playing", {alpha:0},">")
+        .to(["#intro-text-playing",introSkip_btn], {alpha:0},">")
         .to("#intro-text", {alpha:1,y:0},">")
         .call(typeCodes,["intro_screen_txt3",2], ">")
 
@@ -226,9 +227,11 @@ function playIntro() {
     mobileControls.removeEventListener('touchend', playIntro);
     window.removeEventListener('keydown', playIntro);
 
-    wrap.addEventListener('click', introSkip);
-    window.addEventListener('keydown', introSkip);
-    mobileControls.addEventListener('touchend', introSkip);
+
+    // bind skip intro
+    introSkip_btn.addEventListener('click', introSkip);
+    // window.addEventListener('keydown', introSkip);
+    // mobileControls.addEventListener('touchend', introSkip);
 }
 
 var introWalk = {x:-100,spriteX:0}
@@ -259,16 +262,19 @@ function animateWalking(){
 }
 
 function introSkip(){
-    // console.log("nextLabel: "+introTL.nextLabel());
+    console.log("introSkip nextLabel: "+introTL.nextLabel());
     if(introTL.nextLabel()!="complete" && introTL.nextLabel()!=undefined){
 
         introTL.seek(introTL.nextLabel());
 
     } else if(introTL.nextLabel()=="complete"){ 
 
-        wrap.removeEventListener('click', introSkip);
-        window.removeEventListener('keydown', introSkip);
-        mobileControls.removeEventListener('touchend', introSkip);
+        gsap.to(introSkip_btn,0,{alpha:0});
+
+
+        introSkip_btn.removeEventListener('click', introSkip);
+        // window.removeEventListener('keydown', introSkip);
+        // mobileControls.removeEventListener('touchend', introSkip);
         
         wrap.addEventListener('click', bindButtons);
         window.addEventListener('keydown', bindButtons);
@@ -278,10 +284,10 @@ function introSkip(){
 
         clearCode();
         
-        gsap.to("#intro-text-playing",0,{alpha:0});
+        gsap.to(["#intro-text-playing",introSkip_btn],0,{alpha:0});
         gsap.to("#intro-text",0,{y:0});
         // console.log("nextLabel undefined");
-        wrap.removeEventListener('click', introSkip);
+        introSkip_btn.removeEventListener('click', introSkip);
         window.removeEventListener('keydown', introSkip);
         mobileControls.removeEventListener('touchend', introSkip);
 
