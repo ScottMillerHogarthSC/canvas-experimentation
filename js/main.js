@@ -656,28 +656,6 @@ function updateStage(){
             }
         }
         
-        
-
-
-
-        if(nearEdge.left){
-            // ctxPlayer.beginPath();
-            // ctxPlayer.rect(0, 0, 1, canvas.height);
-            // ctxPlayer.fillStyle = "red";
-            // ctxPlayer.fill();
-        } else {
-            
-
-        }
-        if(nearEdge.right){
-            // ctxPlayer.beginPath();
-            // ctxPlayer.rect(canvas.width-1, 0, canvas.width, canvas.height);
-            // ctxPlayer.fillStyle = "red";
-            // ctxPlayer.fill();
-        } else {
-            
-        }
-
         if(!intro){
             moveSpriteSheets();
             checkPlayerPosition();
@@ -734,20 +712,14 @@ function renderFG(){
 }
 
 function renderPowerups(){
-    // for(i=0; i<=powerup.length; i++){
-    // console.log(powerups[0].x)
     for(i=0; i<powerups.length; i++){
         if(!powerups[i].isUsed){
             ctxFG.drawImage(powerup_imgs[i], sprite_x.powerupX, 0, 
                 powerup_images[i].cellW, powerup_images[i].height,
-                (powerups[i].x), powerups[i].y,
+                powerups[i].x, powerups[i].y,
                 powerup_images[i].cellW, powerup_images[i].height);
         }
     }
-    // if not used
-        
-            // }
-    // ctxFG.drawImage(powerup_img, 0, powerups.y, powerups.w, powerups.h);
 }
 
 
@@ -772,7 +744,6 @@ function moveSpriteSheets(){
             sprite_x.playerX+=player.width;
         }
         if(sprite_x.playerX>=spritesheetW.playerW) sprite_x.playerX=0;
-
         ////// END player /////////
 
 
