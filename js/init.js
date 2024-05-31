@@ -141,7 +141,7 @@ function playIntro() {
 
         .to("#intro-text-dir", {alpha:1}, ">")
         .to(".intro-text-dir-lines", {alpha:1,stagger:0.03},">1")
-        .to("#intro-text", {alpha:0,y:100},"<")
+        .to("#intro-text", {alpha:0,y:110},"<")
         .call(clearCode,[],">")
         .to("#intro-text", {alpha:1},"<.5")
         .call(typeCodes,["intro_screen_txt2",2],"<1")
@@ -207,18 +207,20 @@ function playIntro() {
         .to(["#intro-text-playing",introSkip_btn], {alpha:0},">")
         .to("#intro-text", {alpha:1,y:0},">")
         .call(typeCodes,["intro_screen_txt3",2], ">")
+        
+        .call(function(){
+            container.addEventListener('click', bindButtons);
+            window.addEventListener('keydown', bindButtons);
+            mobileControls.addEventListener('touchend', bindButtons);
+        }, [], "<")
 
         .to("#intro-bg",12,{scale:1.1,ease:"linear",transformOrigin:"center bottom"},"<")
         .to(["#intro-player-walk"], {alpha:1},"<")
         .call(introPlayerWalk,[],"<")
         .to("#container", {className:""},">")
 
-    .addLabel("complete", ">")
-        .call(function(){
-            container.addEventListener('click', bindButtons);
-            window.addEventListener('keydown', bindButtons);
-            mobileControls.addEventListener('touchend', bindButtons);
-        }, "complete");
+    .addLabel("complete", ">");
+
 
 
     introTL.play();
@@ -230,8 +232,8 @@ function playIntro() {
 
     // bind skip intro
     introSkip_btn.addEventListener('click', introSkip);
-    // window.addEventListener('keydown', introSkip);
-    // mobileControls.addEventListener('touchend', introSkip);
+    introSkip_btn.addEventListener('touchstart', introSkip);
+    window.addEventListener('keydown', keyboardSkipIntro);
 }
 
 var introWalk = {x:-100,spriteX:0}
@@ -261,8 +263,15 @@ function animateWalking(){
     }
 }
 
+function keyboardSkipIntro(e){
+    console.log(e.code);
+    if(e.code=="Space" || e.code=="ShiftRight" || e.code=="ArrowRight") {
+        introSkip();
+    }
+}
+
 function introSkip(){
-    console.log("introSkip nextLabel: "+introTL.nextLabel());
+    // console.log("introSkip nextLabel: "+introTL.nextLabel());
     if(introTL.nextLabel()!="complete" && introTL.nextLabel()!=undefined){
 
         introTL.seek(introTL.nextLabel());
@@ -273,8 +282,8 @@ function introSkip(){
 
 
         introSkip_btn.removeEventListener('click', introSkip);
-        // window.removeEventListener('keydown', introSkip);
-        // mobileControls.removeEventListener('touchend', introSkip);
+        introSkip_btn.removeEventListener('touchstart', introSkip);
+        window.removeEventListener('keydown', keyboardSkipIntro);
         
         wrap.addEventListener('click', bindButtons);
         window.addEventListener('keydown', bindButtons);
@@ -286,10 +295,10 @@ function introSkip(){
         
         gsap.to(["#intro-text-playing",introSkip_btn],0,{alpha:0});
         gsap.to("#intro-text",0,{y:0});
-        // console.log("nextLabel undefined");
+        
         introSkip_btn.removeEventListener('click', introSkip);
-        window.removeEventListener('keydown', introSkip);
-        mobileControls.removeEventListener('touchend', introSkip);
+        introSkip_btn.removeEventListener('touchstart', introSkip);
+        window.removeEventListener('keydown', keyboardSkipIntro);
 
         bindButtons();
     }
