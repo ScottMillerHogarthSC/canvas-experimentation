@@ -50,8 +50,6 @@ Keyboard.isUp = function (keyCode) {
 
 
 function checkKeyPress(e){
-    // console.log(e.code);
-
     if(e.code == "KeyM") {
         toggleMuteAudio();
         writeToSidePanel("mute");

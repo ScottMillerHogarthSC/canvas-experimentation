@@ -264,7 +264,6 @@ function animateWalking(){
 }
 
 function keyboardSkipIntro(e){
-    console.log(e.code);
     if(e.code=="Space" || e.code=="ShiftRight" || e.code=="ArrowRight") {
         introSkip();
     }
@@ -278,8 +277,8 @@ function introSkip(){
 
     } else if(introTL.nextLabel()=="complete"){ 
 
-        gsap.to(introSkip_btn,0,{alpha:0});
-
+        gsap.to(["#intro-text-playing",introSkip_btn],0,{alpha:0});
+        gsap.to("#intro-text",0,{y:0});
 
         introSkip_btn.removeEventListener('click', introSkip);
         introSkip_btn.removeEventListener('touchstart', introSkip);

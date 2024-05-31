@@ -1451,8 +1451,8 @@ function checkPlayerPosition() {
         player.y++;
         
     } else {
-        keysWait=false; 
-        isPlayer.jump=false;
+        if(isPlayer.jump) isPlayer.jump=false;
+        if(keysWait) keysWait=false; 
     }
     // stop player falling through floor:
     if(playerB>player_ground.y){
