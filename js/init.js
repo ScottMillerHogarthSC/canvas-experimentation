@@ -136,7 +136,7 @@ function playIntro() {
         .to("#glitch01",{display:"none"}, "intro-screen")
         .to(["#glitch02",introSkip_btn],{alpha:1}, "<")
 
-        .to("#wrap",.5,{ease:"steps(5)",scale:3,x:"-50%",y:"-75%"},">")
+        .to("#wrap",.25,{ease:"steps(5)",scale:3,x:"-50%",y:"-75%"},">")
         .call(typeCodes,["intro_screen_txt",2], "<")
 
         .to("#intro-text-dir", {alpha:1}, ">")
@@ -149,7 +149,7 @@ function playIntro() {
         .to("#intro-text-dir", {alpha:0},"<")
         .call(clearCode,[],">")
 
-        .to("#wrap",.5,{ease:"steps(5)",scale:1,x:"0%",y:"0%"},">")
+        .to("#wrap",.25,{ease:"steps(5)",scale:1,x:"0%",y:"0%"},">")
 
     .addLabel("intro-primitai", ">.1")
         .to(".glitch",{display:"none"}, "intro-primitai")

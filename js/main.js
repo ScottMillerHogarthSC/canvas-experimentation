@@ -1731,7 +1731,7 @@ function setNPCIndex(chooseNpc){
     }
     for(i=0; i<npc.length; i++){
         sprite_x.npcX[i]=0;
-        moveFactor_npc[i]=1;
+        moveFactor_npc[i]=npc[i].speed;
         isNpc[i].walk=true;
         npc[i].x = Math.floor(Math.random() * (1100 - 596 + 1)) + 596;
     }
@@ -1749,17 +1749,17 @@ function renderNPCs(){
     for(i=0; i<npc.length; i++){
 
         if(isNpc[i].hurt || isNpc[i].death) {
-            moveFactor_npc[i]=-1.5;
+            moveFactor_npc[i]=npc[i].speed*-1.5;
         } else if(isNpc[i].hurtBack || isNpc[i].deathBack) {
-            moveFactor_npc[i]=.5;
-        } else moveFactor_npc[i]=1;
+            moveFactor_npc[i]=npc[i].speed*.5;
+        } else moveFactor_npc[i]=npc[i].speed;
 
         if(moving_backwards) {
             if(isNpc[i].hurt) {
                 moveFactor_npc[i]=0;
             } else if(isNpc[i].hurtBack) {
                 moveFactor_npc[i]=0;
-            } else moveFactor_npc[i]=1;
+            } else moveFactor_npc[i]=npc[i].speed;
         }
         if(do_droneStrike) {
             moveFactor_npc[i]=0;
@@ -2187,7 +2187,7 @@ function killNpc(whichNpcIndex){
         sprite_x.npcX[whichNpcIndex]=0;
         isNpc[whichNpcIndex].killed=false;
 
-        moveFactor_npc[whichNpcIndex]=1;
+        moveFactor_npc[whichNpcIndex]=npc[whichNpcIndex].speed;
 
         if(getRandomInt(2)==0){
             isNpc[whichNpcIndex].walk=true;
@@ -2515,7 +2515,7 @@ function restartGame(){
     }
     for(i=0; i<npc.length; i++){
         sprite_x.npcX[i]=0;
-        moveFactor_npc[i]=1;
+        moveFactor_npc[i]=npc[i].speed;
         isNpc[i].walk=true;
         npc[i].x=npc[i].initX;
         npc[i].health=npc[i].fullhealth;
